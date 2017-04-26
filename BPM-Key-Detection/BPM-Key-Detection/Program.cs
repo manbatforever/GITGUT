@@ -8,15 +8,26 @@ namespace testapp
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form_BpmKeyAnalyser());
+            string filePath = @"C:\Users\Martin\Music\Thy Art Is Murder - Hate\01 Reign Of Darkness.mp3";
+            int sampleRate;
+            int Channels;
+            double[] samplesStereo = AudioSamples.GetRawSamples(filePath, out sampleRate, out Channels);
+
+            int length = samplesStereo.Length;
+
+            double[][] splitSamples = new double[Channels][];
+
+            for (int channel = 0; channel < Channels; channel++)
+            {
+                splitSamples[channel] = new double[length / 2];
+                for (int i = channel; i < length; i += Channels)
+                {
+                    splitSamples[channel][i / 2] = samplesStereo[i];
+                }
+            }
+            Console.Read();
         }
     }
 }
