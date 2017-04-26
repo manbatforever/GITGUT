@@ -11,7 +11,7 @@ namespace testapp
     {
         public static double[][] GetCQT(Complex[][] FFTsamples, SpectralKernelStruct KernelSpecifications)
         {
-            int Frames = FFTsamples.GetLength(0);
+            int Frames = FFTsamples.Length;
             int BinsTotal = KernelSpecifications.BinsTotal;
             int FrameSize = KernelSpecifications.FrameSize;
             double[][] output = new double[Frames][];

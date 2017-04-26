@@ -30,7 +30,7 @@ namespace testapp
             }
             Exocortex.DSP.Fourier.FFT(temp, length, Exocortex.DSP.FourierDirection.Forward);
             Complex[] output = new Complex[length];
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < length / 2; i++)
             {
                 output[i] = new Complex(temp[i].Re, temp[i].Im);
             }

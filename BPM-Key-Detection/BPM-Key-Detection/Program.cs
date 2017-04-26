@@ -8,15 +8,13 @@ namespace testapp
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form_BpmKeyAnalyser());
+            string FilePath = @"C:\Users\Martin\Music\Chromatic.wav";
+            int SampleRate;
+            int Channels;
+            double[] RawSamples = AudioSamples.GetRawSamples(FilePath, out SampleRate, out Channels);
+            KeyDetection.GetKey(RawSamples, SampleRate, Channels);
         }
     }
 }

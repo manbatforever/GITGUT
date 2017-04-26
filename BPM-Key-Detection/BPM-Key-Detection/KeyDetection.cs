@@ -15,33 +15,24 @@ namespace testapp
             Complex[][] fftSamples = FastFourierTransform.GetFFT(frames);
             SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 55, 12, 6, 1024);
             double[][] toneAmplitudes = ConstantQTransform.GetCQT(fftSamples, kernelSpecs);
-        }
-
-        private static double[] DownSample(double[] inputSamples)
-        {
-            int length = inputSamples.Length;
-            double[] output = new double[length / 4];
-            int j = 0;
-            for (int i = 0; i < length; i += 4)
-            {
-                output[j] = inputSamples[i];
-                j++;
-            }
-            return output;
+            
         }
 
         private static double[] ToMono(double[] input, int Channels)
         {
             int Length = input.Length;
             int outLength = Length / Channels;
-            double[] output = new double[outLength];
-            for (int i = 0; i < outLength; i++)
+            double[] output = new double[outLength + 2];
+            int monoLength = 0;
+            for (int i = 0; i + Channels < Length; i += Channels)
             {
-                for (int a = i * Channels; a < a + Channels; a++)
+                double channelSum = 0;
+                for (int a = i; a < i + Channels; a++)
                 {
-                    output[i] += input[a];
+                    channelSum += input[a];
                 }
-                output[i] /= Channels;
+                output[monoLength] = channelSum / Channels;
+                monoLength++;
             }
             return output;
         }
@@ -49,8 +40,8 @@ namespace testapp
         private static double[][] CreateFrames(double[] Samples)
         {
             int FrameSize = 1024;
-            int Frames = (Samples.Length / FrameSize) - 1;
-            double[][] output = new double[Frames][];
+            int Frames = (Samples.Length / FrameSize);
+            double[][] output = new double[Frames + 1][];
             for (int frameCounter = 0; frameCounter < Frames; frameCounter++)
             {
                 output[frameCounter] = new double[FrameSize];
