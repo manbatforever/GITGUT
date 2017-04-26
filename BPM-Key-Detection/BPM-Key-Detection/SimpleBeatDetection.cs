@@ -10,10 +10,8 @@ namespace testapp
     {
         int i0;
         double C = 0;
-        double[] a = new double[44032];
-        double[] b = new double[44032];
-        double[,] B = new double[2, 44032];
         double[] soundEnergyHistoryBuffer = new double[43];
+        double[][] SplitSamples = new double[2][];
 
         //Beregn instant energien, 'e' (R1)
         double ComputeInstantEnergy()
@@ -22,7 +20,7 @@ namespace testapp
 
             for (int k = i0; k < i0 + 1024; k++)
             {
-                instantEnergy += Math.Pow(a[k], 2) + Math.Pow(b[k], 2);
+                instantEnergy += Math.Pow(SplitSamples[0][k], 2) + Math.Pow(SplitSamples[1][k], 2);
             }
             i0++;
             return instantEnergy;
@@ -55,8 +53,17 @@ namespace testapp
         {
             double[] CopyOfsoundEnergyHistoryBuffer = new double[43];
 
-            soundEnergyHistoryBuffer.CopyTo(CopyOfsoundEnergyHistoryBuffer, 1);
-            CopyOfsoundEnergyHistoryBuffer.CopyTo(soundEnergyHistoryBuffer, 0);
+            //Vi gør dette da det ikke er hensigtsmæssigt at springe mellem to arrays i en for-løkke
+
+            for (int i = 0; i < 43; i++)
+            {
+                CopyOfsoundEnergyHistoryBuffer[i] = soundEnergyHistoryBuffer[i];
+            }
+
+            for (int i = 0, k = 1; k < 43; i++, k++)
+            {
+                soundEnergyHistoryBuffer[i] = CopyOfsoundEnergyHistoryBuffer[k];
+            }
 
             soundEnergyHistoryBuffer[43 - 1] = ComputeInstantEnergy();
         }
@@ -102,8 +109,23 @@ namespace testapp
             return (-0.0025714 * ComputeVariance()) + 1.5142857;
         }
 
-        public int BeatDetection(double[,] SplitSamples)
+        public int BeatDetection(double[][] SplitSamples)
         {
+            this.SplitSamples[0] = new double[SplitSamples[0].Length + 1];
+            this.SplitSamples[1] = new double[SplitSamples[1].Length + 1];
+
+            int AmountOfChannels = SplitSamples.Length;
+            //Vi gør dette da det ikke er hensigtsmæssigt at springe mellem to arrays i en for-løkke
+            for (int i = 0, AmountOfSamples; i < AmountOfChannels; i++)
+            {
+                AmountOfSamples = SplitSamples[i].Length;
+
+                for (int k = 0; k < AmountOfSamples; k++)
+                {
+                    this.SplitSamples[i][k] = SplitSamples[i][k];
+                }
+            }
+
             int beat = 0;
 
             CreateEnergyHistoryBuffer();

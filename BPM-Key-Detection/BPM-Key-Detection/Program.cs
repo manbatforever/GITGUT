@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string filePath = @"C:\Users\Martin\Music\Thy Art Is Murder - Hate\01 Reign Of Darkness.mp3";
+            string filePath = @"C:\Users\MikHup\Desktop\ConsoleApplication24\italo.mp3";
             int sampleRate;
             int Channels;
             double[] samplesStereo = AudioSamples.GetRawSamples(filePath, out sampleRate, out Channels);
@@ -27,7 +27,11 @@ namespace testapp
                     splitSamples[channel][i / 2] = samplesStereo[i];
                 }
             }
-            Console.Read();
+            SimpleBeatDetection sbd = new SimpleBeatDetection();
+
+            Console.WriteLine(sbd.BeatDetection(splitSamples));
+
+            Console.ReadKey();
         }
     }
 }
