@@ -204,7 +204,8 @@ namespace testapp
                     foreach (var MusicFile in Files)
                     {
                         int sampleRate;
-                        double[] samples = AudioSamples.GetMonoSamples(MusicFile.Filepath, out sampleRate);
+                        int channels;
+                        double[] samples = AudioSamples.GetRawSamples(MusicFile.Filepath, out sampleRate, out channels);
                         MessageBox.Show("Got samples");
                         if (BPMChecked)
                         {
@@ -212,7 +213,7 @@ namespace testapp
                         }
                         if (KeyChecked)
                         {
-                            KeyDetection.GetKey(samples, sampleRate);
+                            KeyDetection.GetKey(samples, sampleRate, channels);
                             MessageBox.Show("finished");
                         }
                     }

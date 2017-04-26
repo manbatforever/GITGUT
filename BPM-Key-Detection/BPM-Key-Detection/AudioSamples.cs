@@ -9,27 +9,20 @@ namespace testapp
 {
     static class AudioSamples
     {
-        public static double[] GetMonoSamples(string FilePath, out int SampleRate)
+        public static double[] GetRawSamples(string FilePath, out int SampleRate, out int Channels)
         {
             AudioFileReader File = new AudioFileReader(FilePath);
+
             SampleRate = File.WaveFormat.SampleRate;
-            int rawLength = (int)(File.Length / 4);
-            int channels = File.WaveFormat.Channels;
-            double[] output = new double[rawLength / channels];
+            Channels = File.WaveFormat.Channels;
 
-            float[] buffer = new float[rawLength];
-            File.Read(buffer, 0, rawLength);
-
-            int monoCount = 0;
-            for (int i = 0; i + channels < rawLength; i += channels)
+            int floatLength = (int)(File.Length / 4);
+            double[] output = new double[floatLength];
+            float[] buffer = new float[floatLength];
+            File.Read(buffer, 0, floatLength);
+            for (int i = 0; i < floatLength; i++)
             {
-                float channelSum = 0;
-                for (int a = i; a < i + channels; a++)
-                {
-                    channelSum += buffer[a];
-                }
-                output[monoCount] = channelSum / channels;
-                monoCount++;
+                output[i] = buffer[i];
             }
             return output;
         }

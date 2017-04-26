@@ -9,9 +9,9 @@ namespace testapp
 {
     static class KeyDetection
     {
-        public static void GetKey(double[] Samples, int SampleRate)
+        public static void GetKey(double[] Samples, int SampleRate, int Channels)
         {
-            double[][] frames = CreateFrames(DownSample(Samples));
+            double[][] frames = CreateFrames(ToMono(Samples, Channels));
             Complex[][] fftSamples = FastFourierTransform.GetFFT(frames);
             SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 55, 12, 6, 1024);
             double[][] toneAmplitudes = ConstantQTransform.GetCQT(fftSamples, kernelSpecs);
@@ -30,10 +30,26 @@ namespace testapp
             return output;
         }
 
+        private static double[] ToMono(double[] input, int Channels)
+        {
+            int Length = input.Length;
+            int outLength = Length / Channels;
+            double[] output = new double[outLength];
+            for (int i = 0; i < outLength; i++)
+            {
+                for (int a = i * Channels; a < a + Channels; a++)
+                {
+                    output[i] += input[a];
+                }
+                output[i] /= Channels;
+            }
+            return output;
+        }
+
         private static double[][] CreateFrames(double[] Samples)
         {
             int FrameSize = 1024;
-            int Frames = Samples.Length / FrameSize;
+            int Frames = (Samples.Length / FrameSize) - 1;
             double[][] output = new double[Frames][];
             for (int frameCounter = 0; frameCounter < Frames; frameCounter++)
             {
