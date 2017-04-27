@@ -13,9 +13,17 @@ namespace testapp
         {
             double[][] frames = CreateFrames(ToMono(Samples, Channels));
             Complex[][] fftSamples = FastFourierTransform.GetFFT(frames);
-            SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 55, 12, 6, 1024);
+            SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 110, 12, 6, 1024);
             double[][] toneAmplitudes = ConstantQTransform.GetCQT(fftSamples, kernelSpecs);
-            
+            System.IO.StreamWriter file = new System.IO.StreamWriter("text.txt");
+            foreach (var item in toneAmplitudes)
+            {
+                foreach (var idtem in item)
+                {
+                    file.Write(idtem + ";");
+                }
+                file.WriteLine();
+            }
         }
 
         private static double[] ToMono(double[] input, int Channels)
@@ -40,14 +48,34 @@ namespace testapp
         private static double[][] CreateFrames(double[] Samples)
         {
             int FrameSize = 1024;
-            int Frames = (Samples.Length / FrameSize);
-            double[][] output = new double[Frames + 1][];
+            int Frames = (Samples.Length / FrameSize) - 1;
+            double[][] output = new double[Frames][];
             for (int frameCounter = 0; frameCounter < Frames; frameCounter++)
             {
                 output[frameCounter] = new double[FrameSize];
                 for (int sampleCounter = 0; sampleCounter < FrameSize; sampleCounter++)
                 {
                     output[frameCounter][sampleCounter] = Samples[FrameSize * frameCounter + sampleCounter];
+                }
+            }
+            return output;
+        }
+
+        private static double[][] ReduceToOctave(double[][] input, SpectralKernelStruct kernel)
+        {
+            int Frames = input.Length;
+            int UniqueTones = kernel.BinsPerOctave;
+            int Octaves = kernel.BinsTotal / UniqueTones;
+            double[][] output = new double[Frames][];
+            for (int frame = 0; frame < Frames; frame++)
+            {
+                output[frame] = new double[UniqueTones];
+                for (int octave = 0; octave < Octaves; octave++)
+                {
+                    for (int tone = 0; tone < UniqueTones; tone++)
+                    {
+                        output[frame][tone] += input[frame][tone + octave * UniqueTones];
+                    }
                 }
             }
             return output;

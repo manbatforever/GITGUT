@@ -37,7 +37,14 @@ namespace testapp
         private static bool CheckDatabase(string kernelFileName)
         {
             string[] kernels = Directory.GetFiles(KernelPath);
-            return kernels.Contains(kernelFileName);
+            foreach (string item in kernels)
+            {
+                if (item.Contains(kernelFileName))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static Complex[][] GetKernelFromDatabase(string kernelFileName)

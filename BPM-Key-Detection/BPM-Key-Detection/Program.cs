@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string FilePath = @"C:\Users\Martin\Music\Chromatic.wav";
+            string FilePath = @"C:\Users\Martin\Music\440randomfast.wav";
             int SampleRate;
             int Channels;
             double[] RawSamples = AudioSamples.GetRawSamples(FilePath, out SampleRate, out Channels);
