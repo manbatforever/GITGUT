@@ -16,13 +16,14 @@ namespace testapp
             Complex[][] output = new Complex[frames][];
             for (int frameCounter = 0; frameCounter < frames; frameCounter++)
             {
-                output[frameCounter] = FFT(Samples[frameCounter], frameSize);
+                output[frameCounter] = FFT(Samples[frameCounter]);
             }
             return output;
         }
 
-        private static Complex[] FFT(double[] samples, int length)
+        private static Complex[] FFT(double[] samples)
         {
+            int length = samples.Length;
             Exocortex.DSP.Complex[] temp = new Exocortex.DSP.Complex[length];
             for (int i = 0; i < length; i++)
             {
@@ -37,8 +38,9 @@ namespace testapp
             return output;
         }
 
-        public static Complex[] FFT(Complex[] input, int length)
+        public static Complex[] FFT(Complex[] input)
         {
+            int length = input.Length;
             Exocortex.DSP.Complex[] temp = new Exocortex.DSP.Complex[length];
             for (int i = 0; i < length; i++)
             {

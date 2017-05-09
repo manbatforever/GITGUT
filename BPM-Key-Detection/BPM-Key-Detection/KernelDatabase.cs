@@ -23,7 +23,8 @@ namespace testapp
             }
             else
             {
-                Complex[][] newKernel = Kernel.GetSpectralKernel(KernelSpecs);
+                Kernel kernel = new Kernel(KernelSpecs);
+                Complex[][] newKernel = kernel.AllBinKernels();
                 AddKernel(newKernel, kernelFileName);
                 return newKernel;
             }
