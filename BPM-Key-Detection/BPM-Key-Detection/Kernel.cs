@@ -33,23 +33,34 @@ namespace testapp
             Complex[] output = new Complex[KernelSpecs.FrameSize];
             for (int k = 0; k < KernelSpecs.FrameSize; k++)
             {
-                output[k] = K(k, k_cq);
+                output[k] = Asdf(k, k_cq);
             }
-            return output;
+            return FastFourierTransform.FFT(output);
         }
 
-        private Complex K(double k, double k_cq)
+        /// <summary>
+        /// Udregner enkelte elementer i temporal kerne
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        private Complex Asdf(double n, double k_cq)
         {
-            Complex output = new Complex();
-            for (int n = 0; n < KernelSpecs.FrameSize; n++)
-            {
-                Complex c1 = Complex.Exp(new Complex(0, CenterFrequency(k_cq) * (n - (double)KernelSpecs.FrameSize / 2d)));
-                Complex c2 = Complex.Exp(new Complex(0, -2d * Math.PI * k * n / (double)KernelSpecs.FrameSize));
-                double hamming = Hamming(n - ((double)KernelSpecs.FrameSize) / 2d - N(k_cq) / 2d, k_cq);
-                output += hamming * c1 * c2;
-            }
-            return output;
+            Complex c1 = Complex.Exp(new Complex(0, -CenterFrequency(k_cq) * n));
+            return Hamming(n, k_cq) * c1;
         }
+
+        //private Complex K(double k, double k_cq)
+        //{
+        //    Complex output = new Complex();
+        //    for (int n = 0; n < KernelSpecs.FrameSize; n++)
+        //    {
+        //        Complex c1 = Complex.Exp(new Complex(0, CenterFrequency(k_cq) * (n - (double)KernelSpecs.FrameSize / 2d)));
+        //        Complex c2 = Complex.Exp(new Complex(0, -2d * Math.PI * k * n / (double)KernelSpecs.FrameSize));
+        //        double hamming = Hamming(n - (((double)KernelSpecs.FrameSize) / 2d) - (N(k_cq) / 2d), k_cq);
+        //        output += hamming * c1 * c2;
+        //    }
+        //    return output;
+        //}
 
         private double Hamming(double n, double k_cq)
         {
@@ -59,12 +70,7 @@ namespace testapp
 
         private double N(double k_cq)
         {
-            return Q * (double)KernelSpecs.Samplerate / f(k_cq);
-        }
-
-        private double f(double k_cq)
-        {
-            return Math.Pow(Math.Pow(2d, 1d / (double)KernelSpecs.BinsPerOctave), k_cq) * (double)KernelSpecs.BaseFrequency;
+            return Q * (double)KernelSpecs.Samplerate / CenterFrequency(k_cq);
         }
 
         private double CenterFrequency(double k_cq)

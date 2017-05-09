@@ -14,17 +14,9 @@ namespace testapp
             int Frames = FFTsamples.Length;
             int BinsTotal = KernelSpecifications.BinsTotal;
             int FrameSize = KernelSpecifications.FrameSize;
-            double[][] output = new double[Frames][];
             Complex[][] Kernel = KernelDatabase.GetKernel(KernelSpecifications);
-            System.IO.StreamWriter text = new System.IO.StreamWriter("kernel.txt");
-            foreach (var item in Kernel)
-            {
-                foreach (var istem in item)
-                {
-                    text.Write($"{istem.Magnitude};");
-                }
-                text.WriteLine();
-            }
+
+            double[][] output = new double[Frames][];
             for (int frame = 0; frame < Frames; frame++)
             {
                 output[frame] = new double[BinsTotal];
