@@ -17,7 +17,7 @@ namespace testapp
         {
             this.KernelSpecs = KernelSpecs;
             Q = 1 / (Math.Pow(2d, 1 / (double)KernelSpecs.BinsPerOctave) - 1);
-            NLength = 
+            NLength = N(0); 
         }
 
         public Complex[][] AllBinKernels()
@@ -67,7 +67,7 @@ namespace testapp
         private double Hamming(double n, double k_cq)
         {
             double alpha = 25d / 46d;
-            return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / );
+            return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / N(k_cq));
         }
 
         private double N(double k_cq)
