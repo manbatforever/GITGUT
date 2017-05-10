@@ -11,11 +11,13 @@ namespace testapp
     {
         private SpectralKernelStruct KernelSpecs;
         private double Q;
+        private double NLength;
 
         public Kernel(SpectralKernelStruct KernelSpecs)
         {
             this.KernelSpecs = KernelSpecs;
             Q = 1 / (Math.Pow(2d, 1 / (double)KernelSpecs.BinsPerOctave) - 1);
+            NLength = 
         }
 
         public Complex[][] AllBinKernels()
@@ -35,7 +37,7 @@ namespace testapp
             {
                 output[k] = Asdf(k, k_cq);
             }
-            return FastFourierTransform.FFT(output);
+            return output;
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace testapp
         /// <returns></returns>
         private Complex Asdf(double n, double k_cq)
         {
-            Complex c1 = Complex.Exp(new Complex(0, -CenterFrequency(k_cq) * n));
+            Complex c1 = Complex.Exp(new Complex(0, 2d * Math.PI * n * Q / N(k_cq)));
             return Hamming(n, k_cq) * c1;
         }
 
@@ -65,7 +67,7 @@ namespace testapp
         private double Hamming(double n, double k_cq)
         {
             double alpha = 25d / 46d;
-            return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / N(k_cq));
+            return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / );
         }
 
         private double N(double k_cq)

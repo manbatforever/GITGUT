@@ -25,7 +25,7 @@ namespace testapp
             {
                 Kernel kernel = new Kernel(KernelSpecs);
                 Complex[][] newKernel = kernel.AllBinKernels();
-                AddKernel(newKernel, kernelFileName);
+                //AddKernel(newKernel, kernelFileName);
                 return newKernel;
             }
         }

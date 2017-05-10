@@ -9,50 +9,89 @@ namespace testapp
 {
     static class FastFourierTransform
     {
-        public static Complex[][] GetFFT(double[][] Samples)
+        public static Complex[][] FFT(double[][] input)
         {
-            int frames = Samples.Length;
-            int frameSize = Samples[0].Length;
-            Complex[][] output = new Complex[frames][];
-            for (int frameCounter = 0; frameCounter < frames; frameCounter++)
+            int inputLength = input.Length;
+            Complex[][] output = new Complex[inputLength][];
+            for (int i = 0; i < inputLength; i++)
             {
-                output[frameCounter] = FFT(Samples[frameCounter]);
+                output[i] = FFT(input[i]);
             }
             return output;
         }
 
-        private static Complex[] FFT(double[] samples)
+        public static Complex[] FFT(double[] input)
         {
-            int length = samples.Length;
-            Exocortex.DSP.Complex[] temp = new Exocortex.DSP.Complex[length];
-            for (int i = 0; i < length; i++)
+            int inputLength = input.Length;
+            Complex[] output = new Complex[inputLength];
+            for (int i = 0; i < inputLength; i++)
             {
-                temp[i] = (Exocortex.DSP.Complex)samples[i];
+                output[i] = new Complex(input[i], 0);
             }
-            Exocortex.DSP.Fourier.FFT(temp, length, Exocortex.DSP.FourierDirection.Forward);
-            Complex[] output = new Complex[length];
-            for (int i = 0; i < length; i++)
-            {
-                output[i] = new Complex(temp[i].Re, temp[i].Im);
-            }
+            FFT(output);
             return output;
         }
 
-        public static Complex[] FFT(Complex[] input)
+        public static void FFT(Complex[] buffer)
         {
-            int length = input.Length;
-            Exocortex.DSP.Complex[] temp = new Exocortex.DSP.Complex[length];
-            for (int i = 0; i < length; i++)
+            int bufferLength = buffer.Length;
+            CheckLength(bufferLength);
+
+            int bits = (int)Math.Log(bufferLength, 2);
+            for (int j = 1; j < buffer.Length / 2; j++)
             {
-                temp[i] = new Exocortex.DSP.Complex(input[i].Real, input[i].Imaginary);
+
+                int swapPos = BitReverse(j, bits);
+                var temp = buffer[j];
+                buffer[j] = buffer[swapPos];
+                buffer[swapPos] = temp;
             }
-            Exocortex.DSP.Fourier.FFT(temp, length, Exocortex.DSP.FourierDirection.Forward);
-            Complex[] output = new Complex[length];
-            for (int i = 0; i < length; i++)
+
+            for (int N = 2; N <= buffer.Length; N <<= 1)
             {
-                output[i] = new Complex(temp[i].Re, temp[i].Im);
+                for (int i = 0; i < buffer.Length; i += N)
+                {
+                    for (int k = 0; k < N / 2; k++)
+                    {
+
+                        int evenIndex = i + k;
+                        int oddIndex = i + k + (N / 2);
+                        var even = buffer[evenIndex];
+                        var odd = buffer[oddIndex];
+
+                        double term = -2 * Math.PI * k / (double)N;
+                        Complex exp = new Complex(Math.Cos(term), Math.Sin(term)) * odd;
+
+                        buffer[evenIndex] = even + exp;
+                        buffer[oddIndex] = even - exp;
+
+                    }
+                }
             }
-            return output;
+        }
+
+        private static int BitReverse(int n, int bits)
+        {
+            int reversedN = n;
+            int count = bits - 1;
+
+            n >>= 1;
+            while (n > 0)
+            {
+                reversedN = (reversedN << 1) | (n & 1);
+                count--;
+                n >>= 1;
+            }
+
+            return ((reversedN << count) & ((1 << bits) - 1));
+        }
+
+        private static void CheckLength(int length)
+        {
+            if ((length & (length - 1)) == 0)
+            {
+                throw new Exception("Length has to be power of 2");
+            }
         }
     }
 }

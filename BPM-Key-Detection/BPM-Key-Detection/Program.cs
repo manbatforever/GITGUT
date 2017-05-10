@@ -10,9 +10,21 @@ namespace testapp
     {
         static void Main()
         {
-            string FilePath = @"C:\Users\Martin\Music\440randomfast.wav";
-            double[] RawSamples = AudioSamples.GetRawSamples(FilePath, out int SampleRate, out int Channels);
-            KeyDetection.GetKey(RawSamples, SampleRate, Channels);
+            //string FilePath = @"C:\Users\Martin\Music\440randomfast.wav";
+            //double[] RawSamples = AudioSamples.GetRawSamples(FilePath, out int SampleRate, out int Channels);
+            //KeyDetection.GetKey(RawSamples, SampleRate, Channels);
+            System.IO.StreamWriter file = new System.IO.StreamWriter("kerneltest.txt");
+            SpectralKernelStruct specs = new SpectralKernelStruct(44100, 440, 12, 6, 1024);
+            Kernel kernel = new Kernel(specs);
+            System.Numerics.Complex[][] k = kernel.AllBinKernels();
+            foreach (var item in k)
+            {
+                foreach (var aitem in item)
+                {
+                    file.Write(aitem.Real + ";");
+                }
+                file.WriteLine();
+            }
         }
     }
 }

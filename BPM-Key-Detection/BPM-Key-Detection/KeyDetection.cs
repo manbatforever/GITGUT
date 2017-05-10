@@ -12,15 +12,15 @@ namespace testapp
         public static void GetKey(double[] Samples, int SampleRate, int Channels)
         {
             double[][] frames = CreateFrames(ToMono(Samples, Channels));
-            Complex[][] fftSamples = FastFourierTransform.GetFFT(frames);
+            Complex[][] fftSamples = FastFourierTransform.FFT(frames);
             SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 440, 12, 6, 2048);
             double[][] toneAmplitudes = ConstantQTransform.GetCQT(fftSamples, kernelSpecs);
             System.IO.StreamWriter file = new System.IO.StreamWriter("text.txt");
-            foreach (var item in fftSamples)
+            foreach (var item in toneAmplitudes)
             {
                 foreach (var idtem in item)
                 {
-                    file.Write(idtem.Magnitude + ";");
+                    file.Write(idtem + ";");
                 }
                 file.WriteLine();
             }
