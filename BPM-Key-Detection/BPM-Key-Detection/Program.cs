@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string filePath = @"C:\Users\MikHup\Desktop\ConsoleApplication24\italo.mp3";
+            string filePath = @"C:\Users\Maskine\Desktop\P2kode\GITGUT-BPM\BPM-Key-Detection\italo.mp3";
             int sampleRate;
             int Channels;
             double[] samplesStereo = AudioSamples.GetRawSamples(filePath, out sampleRate, out Channels);
@@ -27,9 +27,9 @@ namespace testapp
                     splitSamples[channel][i / 2] = samplesStereo[i];
                 }
             }
-            SimpleBeatDetection sbd = new SimpleBeatDetection();
+            BPMDetection sbd = new BPMDetection();
 
-            Console.WriteLine(sbd.BeatDetection(splitSamples));
+            sbd.start(splitSamples);
 
             Console.ReadKey();
         }
