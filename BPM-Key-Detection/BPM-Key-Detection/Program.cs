@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string filePath = @"C:\Users\Maskine\Desktop\P2kode\GITGUT-BPM\BPM-Key-Detection\120 BPM - Simple Straight Beat - Drum Track - Loop - Metronome.mp3";
+            string filePath = @"C:\Users\MikHup\Desktop\p2musik\120 BPM Metronome.mp3";
             int sampleRate;
             int Channels;
             double[] samplesStereo = AudioSamples.GetRawSamples(filePath, out sampleRate, out Channels);
@@ -27,7 +27,7 @@ namespace testapp
                     splitSamples[channel][i / 2] = samplesStereo[i];
                 }
             }
-            BPMDetection sbd = new BPMDetection();
+            FinalBPMDetection sbd = new FinalBPMDetection();
 
             sbd.start(splitSamples);
 

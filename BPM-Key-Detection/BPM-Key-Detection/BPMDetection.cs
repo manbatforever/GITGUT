@@ -7,11 +7,7 @@ using System.Numerics;
 
 namespace testapp
 {
-    class SongNotLongEnoughException : Exception
-    {
-        public SongNotLongEnoughException() : base("The song does not have enough samples to be analyzed.") { }
-        public SongNotLongEnoughException(string songName) : base($"The song {songName} does not have enough samples to be analyzed.") { }
-    }
+
 
     class BPMDetection
     {
