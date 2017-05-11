@@ -7,21 +7,28 @@ using System.Numerics;
 
 namespace testapp
 {
+    class SongNotLongEnoughException : Exception
+    {
+        public SongNotLongEnoughException() : base("The song does not have enough samples to be analyzed.") { }
+        public SongNotLongEnoughException(string songName) : base($"The song {songName} does not have enough samples to be analyzed.") { }
+    }
+
     class BPMDetection
     {
         int N = 44100 * 5;
         int fs = 44100;
-        int ampMax = 32767;
+        int ampMax = 1; //ampMax er 1 da NAudio gør at amplituden ligger mellem 1 og -1
         int amountOfSubbands = 16;
         int amountOfBPMc = 200 / 5 - 1;
 
         double aconst = 1810.833;
         double bconst = -1610.833;
 
-        double[] a = new double[44100 * 5];
-        double[] b = new double[44100 * 5];
+        double[] a = new double[44100 * 5 + 1];
+        double[] b = new double[44100 * 5 + 1];
         double[] ta = new double[44100 * 5];
         double[] tb = new double[44100 * 5];
+        double[] eBPMMax = new double[16];
         double[][] tas = new double[16][];
         double[][] tbs = new double[16][];
         BPMToTest[] _bpmc = new BPMToTest[200 / 5 - 1];
@@ -56,31 +63,40 @@ namespace testapp
             Console.WriteLine(9);
             FindMaxBPMInSubband();
             Console.WriteLine(10);
-            ComputeBPM();
+            FindEbpmMax();
             Console.WriteLine(11);
+            ComputeBPM();
+            Console.WriteLine(12);
+            throw new Exception();
         }
         //Her udvælges samples i midten af nummeret og lægges over i venstre stream og højre stream
         void FillLeftRight(double[][] splitSamples)
         {
-            int sampleMidSong = Convert.ToInt32(splitSamples[0].Length / 2);
-            for (int k = sampleMidSong; k < N; k++)
+            if(splitSamples[0].Length < N + 1 || splitSamples[1].Length < N + 1)
             {
-                a[k] = splitSamples[0][k];
+                //Lav en exception der tager hånd om dette
+                throw new SongNotLongEnoughException();
             }
-            for (int k = sampleMidSong; k < N; k++)
+
+            int sampleMidSong = Convert.ToInt32(splitSamples[0].Length / 2 - fs * 2.5);
+            for (int i = sampleMidSong, k = 0; k < N + 1; i++, k++)
             {
-                b[k] = splitSamples[1][k];
+                a[k] = splitSamples[0][i];
+            }
+            for (int i = sampleMidSong, k = 0; k < N + 1; i++, k++)
+            {
+                b[k] = splitSamples[1][i];
             }
         }
 
         //Derivation and combfilter algorithms
         void DifferentiationOfLeftAndRight()
         {
-            for (int k = 0; k < N - 1; k++)
+            for (int k = 0; k < N; k++)
             {
                 a[k] = fs * (a[k + 1] - a[k]);
             }
-            for (int k = 0; k < N - 1; k++)
+            for (int k = 0; k < N; k++)
             {
                 b[k] = fs * (b[k + 1] - b[k]);
             }
@@ -88,23 +104,23 @@ namespace testapp
 
         void FFTComplexSignal()
         {
-            int powOfTwo = NextPowerOfTwo(N);
-            Complex[] complexSignal = new Complex[powOfTwo];
-
-            for (int k = 0; k < powOfTwo; k++)
-            {
-                complexSignal[k] = (k < N) ? new Complex(a[k], b[k]) : new Complex(0, 0);
-            }
-            FastFourierTransform.FFT(complexSignal);
+            Complex[] complexSignal = new Complex[N];
+            Complex[] FFTComplexSignal = new Complex[N];
 
             for (int k = 0; k < N; k++)
             {
-                ta[k] = complexSignal[k].Real;
+                complexSignal[k] = new Complex(a[k], b[k]);
+            }
+            FFTComplexSignal = FastFourierTransform.FFT(complexSignal);
+
+            for (int k = 0; k < N; k++)
+            {
+                ta[k] = FFTComplexSignal[k].Real;
             }
 
             for (int k = 0; k < N; k++)
             {
-                tb[k] = complexSignal[k].Imaginary;
+                tb[k] = FFTComplexSignal[k].Imaginary;
             }
         }
 
@@ -115,7 +131,6 @@ namespace testapp
             for (int s = 0; s < amountOfSubbands; s++)
             {
                 ws = CalculateSubbandWidth(s + 1);
-                Console.WriteLine(ws);
                 tas[s] = new double[ws];
                 tbs[s] = new double[ws];
                 for (int i = 0; i < ws; i++, ka++)
@@ -169,26 +184,26 @@ namespace testapp
                 for (int s = 0; s < amountOfSubbands; s++)
                 {
                     int lengthOfTrain = _bpmc[i].L[s].Length;
-                    int powerOfTwo = NextPowerOfTwo(lengthOfTrain);
 
-                    Complex[] complexTrainOfImpulses = new Complex[powerOfTwo];
+                    Complex[] complexTrainOfImpulses = new Complex[lengthOfTrain];
+                    Complex[] FFTComplexTrainOfImpulses = new Complex[lengthOfTrain];
 
-                    for (int k = 0; k < powerOfTwo; k++)
+                    for (int k = 0; k < lengthOfTrain; k++)
                     {
-                        complexTrainOfImpulses[k] = (k < lengthOfTrain) ? new Complex(_bpmc[i].L[s][k], _bpmc[i].L[s][k]) : new Complex(0, 0);
+                        complexTrainOfImpulses[k] = new Complex(_bpmc[i].L[s][k], _bpmc[i].L[s][k]);
                     }
-                    FastFourierTransform.FFT(complexTrainOfImpulses);
+                    FFTComplexTrainOfImpulses = FastFourierTransform.FFT(complexTrainOfImpulses);
                     int ws = CalculateSubbandWidth(s + 1);
                     _bpmc[i].Tl[s] = new double[ws];
                     _bpmc[i].Tj[s] = new double[ws];
 
                     for (int k = 0; k < ws; k++)
                     {
-                        _bpmc[i].Tl[s][k] = complexTrainOfImpulses[k].Real;
+                        _bpmc[i].Tl[s][k] = FFTComplexTrainOfImpulses[k].Real;
                     }
                     for (int k = 0; k < ws; k++)
                     {
-                        _bpmc[i].Tl[s][k] = complexTrainOfImpulses[k].Imaginary;
+                        _bpmc[i].Tj[s][k] = FFTComplexTrainOfImpulses[k].Imaginary;
                     }
                 }
             }
@@ -240,16 +255,35 @@ namespace testapp
             //EBPMMAX = Max væredien af alle max værdierne af subbandsne
         }
 
+        void FindEbpmMax()
+        {            
+            for (int i = 0; i < amountOfBPMc; i++)
+            {
+                for (int s = 0; s < amountOfSubbands; s++)
+                {
+                    if (_bpmc[i].SubbandBPMMax[s] > eBPMMax[s])
+                    {
+                        eBPMMax[s] = _bpmc[i].SubbandBPMMax[s];
+                    }
+                }
+            }
+        }
+
         void ComputeBPM()
         {
-            double BPMMax = _bpmc[1].SubbandBPMMax.Max();
-            double sum = 0;
+            double BPMMax = _bpmc[23].SubbandBPMMax.Max();
+            //double BPMMax = 120;
+            double sum = 0, sum2 = 0;
 
-            for (int i = 0; i < amountOfSubbands; i++)
+            for (int s = 0; s < amountOfSubbands; s++)
             {
-                sum += _bpmc[1].SubbandBPMMax[i] * BPMMax;
+                sum += eBPMMax[s];
             }
-            Console.WriteLine(sum * (1 / _bpmc[1].SubbandBPMMax.Sum()));
+            for (int s = 0; s < amountOfSubbands; s++)
+            {
+                sum2 += eBPMMax[s] * BPMMax;
+            }
+            Console.WriteLine((1 / sum) * sum2);
         }
 
         double CalculateTI(double BPM)

@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string filePath = @"C:\Users\Maskine\Desktop\P2kode\GITGUT-BPM\BPM-Key-Detection\italo.mp3";
+            string filePath = @"C:\Users\Maskine\Desktop\P2kode\GITGUT-BPM\BPM-Key-Detection\120 BPM - Simple Straight Beat - Drum Track - Loop - Metronome.mp3";
             int sampleRate;
             int Channels;
             double[] samplesStereo = AudioSamples.GetRawSamples(filePath, out sampleRate, out Channels);
