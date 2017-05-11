@@ -11,11 +11,12 @@ namespace testapp
     {
         public static void GetKey(double[] Samples, int SampleRate, int Channels)
         {
-            double[][] frames = CreateFrames(ToMono(Samples, Channels));
-            Complex[][] fftSamples = FastFourierTransform.FFT(frames);
             SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 110, 12, 6, 16384);
+            double[][] frames = CreateFrames(ToMono(Samples, Channels), kernelSpecs);
+            Complex[][] fftSamples = FastFourierTransform.FFT(frames);
             double[][] toneAmplitudes = ConstantQTransform.GetCQT(fftSamples, kernelSpecs);
-            System.IO.StreamWriter file = new System.IO.StreamWriter("text.txt");
+            double[][] sngle = ReduceToOctave(toneAmplitudes, kernelSpecs);
+            System.IO.StreamWriter file = new System.IO.StreamWriter("toneamp.txt");
             foreach (var item in toneAmplitudes)
             {
                 foreach (var idtem in item)
@@ -23,6 +24,15 @@ namespace testapp
                     file.Write(idtem + ";");
                 }
                 file.WriteLine();
+            }
+            System.IO.StreamWriter file2 = new System.IO.StreamWriter("chroma.txt");
+            foreach (var item in sngle)
+            {
+                foreach (var idtem in item)
+                {
+                    file2.Write(idtem + ";");
+                }
+                file2.WriteLine();
             }
         }
 
@@ -45,9 +55,9 @@ namespace testapp
             return output;
         }
 
-        private static double[][] CreateFrames(double[] Samples)
+        private static double[][] CreateFrames(double[] Samples, SpectralKernelStruct kernel)
         {
-            int FrameSize = 16384;
+            int FrameSize = kernel.FrameSize;
             int Frames = (Samples.Length / FrameSize) - 1;
             double[][] output = new double[Frames][];
             for (int frameCounter = 0; frameCounter < Frames; frameCounter++)

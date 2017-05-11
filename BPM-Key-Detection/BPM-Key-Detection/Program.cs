@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string FilePath = @"C:\Users\Martin\Music\D3_2sec.wav";
+            string FilePath = @"C:\Users\Martin\Music\Chromatic.wav";
             double[] RawSamples = AudioSamples.GetRawSamples(FilePath, out int SampleRate, out int Channels);
             KeyDetection.GetKey(RawSamples, SampleRate, Channels);
             //System.IO.StreamWriter file = new System.IO.StreamWriter("kerneltest.txt");

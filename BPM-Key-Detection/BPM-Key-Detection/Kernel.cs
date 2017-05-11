@@ -32,7 +32,7 @@ namespace testapp
 
         public Complex[] SingleBinKernel(double k_cq)
         {
-            double[] output = new double[16384];
+            double[] output = new double[KernelSpecs.FrameSize];
             for (int k = 0; k < N(k_cq); k++)
             {
                 output[k + (int)(NLength / 2  - N(k_cq) / 2)] = Asdf(k, k_cq).Real;
