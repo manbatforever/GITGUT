@@ -23,16 +23,16 @@ namespace testapp
         public static Complex[] FFT(double[] input)
         {
             int length = input.Length;
-            Exocortex.DSP.Complex[] temp = new Exocortex.DSP.Complex[length];
+            MathNet.Numerics.Complex32[] temp = new MathNet.Numerics.Complex32[length];
             for (int i = 0; i < length; i++)
             {
-                temp[i] = (Exocortex.DSP.Complex)input[i];
+                temp[i] = new MathNet.Numerics.Complex32(Convert.ToSingle(input[i]), 0);
             }
-            Exocortex.DSP.Fourier.FFT(temp, length, Exocortex.DSP.FourierDirection.Forward);
+            MathNet.Numerics.IntegralTransforms.Fourier.Forward(temp);
             Complex[] output = new Complex[length];
             for (int i = 0; i < length; i++)
             {
-                output[i] = new Complex(temp[i].Re, temp[i].Im);
+                output[i] = new Complex(temp[i].Real, temp[i].Imaginary);
             }
             return output;
         }

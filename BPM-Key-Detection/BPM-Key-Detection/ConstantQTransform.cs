@@ -35,7 +35,7 @@ namespace testapp
             {
                 temp += KernelBin[i] * FFTSamples[i];
             }
-            return temp.Magnitude / FrameSize;
+            return (temp / FrameSize).Magnitude;
         }
     }
 }

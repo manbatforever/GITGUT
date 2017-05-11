@@ -17,7 +17,7 @@ namespace testapp
         {
             this.KernelSpecs = KernelSpecs;
             Q = 1 / (Math.Pow(2d, 1 / (double)KernelSpecs.BinsPerOctave) - 1);
-            NLength = Math.Ceiling(N(0)); 
+            NLength = Math.Ceiling(N(0));
         }
 
         public Complex[][] AllBinKernels()
@@ -32,7 +32,7 @@ namespace testapp
 
         public Complex[] SingleBinKernel(double k_cq)
         {
-            double[] output = new double[2048];
+            double[] output = new double[16384];
             for (int k = 0; k < N(k_cq); k++)
             {
                 output[k + (int)(NLength / 2  - N(k_cq) / 2)] = Asdf(k, k_cq).Real;

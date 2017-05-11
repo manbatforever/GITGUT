@@ -13,7 +13,7 @@ namespace testapp
         {
             double[][] frames = CreateFrames(ToMono(Samples, Channels));
             Complex[][] fftSamples = FastFourierTransform.FFT(frames);
-            SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 440, 12, 6, 2048);
+            SpectralKernelStruct kernelSpecs = new SpectralKernelStruct(SampleRate, 110, 12, 6, 16384);
             double[][] toneAmplitudes = ConstantQTransform.GetCQT(fftSamples, kernelSpecs);
             System.IO.StreamWriter file = new System.IO.StreamWriter("text.txt");
             foreach (var item in toneAmplitudes)
@@ -47,7 +47,7 @@ namespace testapp
 
         private static double[][] CreateFrames(double[] Samples)
         {
-            int FrameSize = 2048;
+            int FrameSize = 16384;
             int Frames = (Samples.Length / FrameSize) - 1;
             double[][] output = new double[Frames][];
             for (int frameCounter = 0; frameCounter < Frames; frameCounter++)
