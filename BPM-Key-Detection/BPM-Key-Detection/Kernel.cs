@@ -17,7 +17,7 @@ namespace testapp
         {
             this.KernelSpecs = KernelSpecs;
             Q = 1 / (Math.Pow(2d, 1 / (double)KernelSpecs.BinsPerOctave) - 1);
-            NLength = N(0); 
+            NLength = Math.Ceiling(N(0)); 
         }
 
         public Complex[][] AllBinKernels()
@@ -32,12 +32,12 @@ namespace testapp
 
         public Complex[] SingleBinKernel(double k_cq)
         {
-            Complex[] output = new Complex[KernelSpecs.FrameSize];
-            for (int k = 0; k < KernelSpecs.FrameSize; k++)
+            double[] output = new double[2048];
+            for (int k = 0; k < N(k_cq); k++)
             {
-                output[k] = Asdf(k, k_cq);
+                output[k + (int)(NLength / 2  - N(k_cq) / 2)] = Asdf(k, k_cq).Real;
             }
-            return output;
+            return FastFourierTransform.FFT(output);
         }
 
         /// <summary>
@@ -68,6 +68,7 @@ namespace testapp
         {
             double alpha = 25d / 46d;
             return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / N(k_cq));
+            //return 0.5d * (1d - Math.Cos(2d * Math.PI * n / N(k_cq)));
         }
 
         private double N(double k_cq)
