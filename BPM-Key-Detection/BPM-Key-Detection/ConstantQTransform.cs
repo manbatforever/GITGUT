@@ -14,7 +14,8 @@ namespace testapp
             int Frames = FFTsamples.Length;
             int BinsTotal = KernelSpecifications.BinsTotal;
             int FrameSize = KernelSpecifications.FrameSize;
-            Complex[][] Kernel = KernelDatabase.GetKernel(KernelSpecifications);
+            Kernel CalculateKernel = new Kernel(KernelSpecifications);
+            Complex[][] Kernel = CalculateKernel.AllBinKernels();
 
             double[][] output = new double[Frames][];
             for (int frame = 0; frame < Frames; frame++)
