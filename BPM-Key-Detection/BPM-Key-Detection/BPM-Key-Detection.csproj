@@ -38,9 +38,6 @@
     <Reference Include="NAudio, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.8.0\lib\net35\NAudio.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
       <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
@@ -61,7 +58,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioSamples.cs" />
     <Compile Include="ConstantQTransform.cs" />
     <Compile Include="FastFourierTransform.cs" />
     <Compile Include="Form_BpmKeyAnalyser.cs">
@@ -71,14 +67,11 @@
       <DependentUpon>Form_BpmKeyAnalyser.cs</DependentUpon>
     </Compile>
     <Compile Include="Kernel.cs" />
-    <Compile Include="KernelDatabase.cs" />
-    <Compile Include="KeyDetection.cs" />
     <Compile Include="KeyEstimation.cs" />
     <Compile Include="MusicFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpectralKernel.cs" />
-    <Compile Include="SpectralKernelStruct.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

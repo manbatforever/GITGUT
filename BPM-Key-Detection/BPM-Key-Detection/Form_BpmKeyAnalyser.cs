@@ -203,18 +203,13 @@ namespace BPM_Key_Detection
                 {
                     foreach (var MusicFile in Files)
                     {
-                        int sampleRate;
-                        int channels;
-                        double[] samples = AudioSamples.GetRawSamples(MusicFile.Filepath, out sampleRate, out channels);
-                        MessageBox.Show("Got samples");
                         if (BPMChecked)
                         {
                             
                         }
                         if (KeyChecked)
                         {
-                            KeyDetection.GetKey(samples, sampleRate, channels);
-                            MessageBox.Show("finished");
+                            KeyEstimation keyEstimation = new KeyEstimation(MusicFile);
                         }
                     }
                 }

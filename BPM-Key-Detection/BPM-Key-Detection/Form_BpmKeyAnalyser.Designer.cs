@@ -1,4 +1,4 @@
-﻿namespace testapp
+﻿namespace BPM_Key_Detection
 {
     partial class Form_BpmKeyAnalyser
     {
