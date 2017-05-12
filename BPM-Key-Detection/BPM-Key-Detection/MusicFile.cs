@@ -78,6 +78,8 @@ namespace BPM_Key_Detection
             return output;
         }
 
+
+
         public string FileName { get { return _fileName; } }
         public string Titel { get { return _titel; } }
         public string Album { get { return _album; } }
@@ -86,7 +88,7 @@ namespace BPM_Key_Detection
         public string Key { get { return _key; } }
         public string Comment { get { return _comment; } }
         public uint Bpm { get { return _bpm; } }
-        public int SampleRate { get { return _sampleRate; } }
+        public int Samplerate { get { return _sampleRate; } }
         public int Channels { get { return _channels; } }
         public bool BadFile { get { return _badFile; } }
     }

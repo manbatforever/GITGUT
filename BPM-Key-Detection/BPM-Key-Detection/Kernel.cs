@@ -7,66 +7,105 @@ using System.Numerics;
 
 namespace BPM_Key_Detection
 {
-    static class Kernel
+    class Kernel
     {
-        public static Complex[][] GetSpectralKernel(SpectralKernelStruct inputKernel)
+        private double _Q;
+
+        private double _samplerate;
+        private double _baseFrequency;
+        private double _binsPerOctave;
+        private double _binsTotal;
+        private double _samplesPerFrame;
+        private double[][] _allTemporalKernels;
+        private Complex[][] _allSpectralKernels;
+
+        public double Samplerate { get => _samplerate; }
+        public double BaseFrequency { get => _baseFrequency; }
+        public double BinsPerOctave { get => _binsPerOctave;  }
+        public double BinsTotal { get => _binsTotal; }
+        public double SamplesPerFrame { get => _samplesPerFrame; }
+        public double[][] AllTemporalKernels { get => _allTemporalKernels; }
+        public Complex[][] AllSpectralKernels { get => _allSpectralKernels; }
+
+        public Kernel(double samplerate, double baseFrequency, double binsPerOctave, double octaves, double samplesPerFrame)
         {
-            Complex[][] output = new Complex[inputKernel.BinsTotal][];
-            for (int kernelNumber = 0; kernelNumber < inputKernel.BinsTotal; kernelNumber++)
+            _samplerate = samplerate;
+            _baseFrequency = baseFrequency;
+            _binsPerOctave = binsPerOctave;
+            _binsTotal = octaves * binsPerOctave;
+            _Q = 1d / (Math.Pow(2d, 1d / binsPerOctave) - 1d); // Constant Q
+            _samplesPerFrame = samplesPerFrame; // NextPowerOf2(WindowLength(0)); // For at være sikker på at få hele den længste temporal kernel med.
+        }
+
+        public void Start()
+        {
+            _allTemporalKernels = GetAllTemporalKernels();
+            _allSpectralKernels = GetAllSpectralKernels(_allTemporalKernels);
+        }
+
+        private Complex[][] GetAllSpectralKernels(double[][] AllTemporalKernels)
+        {
+            return FastFourierTransform.FFT(AllTemporalKernels);
+        }
+
+        private double[][] GetAllTemporalKernels()
+        {
+            double[][] AllTemporalKernels = new double[(int)_binsTotal][];
+            for (int k_cq = 0; k_cq < _binsTotal; k_cq++)
             {
-                output[kernelNumber] = GetKernel(inputKernel, kernelNumber);
+                AllTemporalKernels[k_cq] = GetSingleTemporalKernel(k_cq);
             }
-            return output;
+            return AllTemporalKernels;
         }
 
-        private static Complex[] GetKernel(SpectralKernelStruct Kernel, int kernelNumber)
+        private double[] GetSingleTemporalKernel(double k_cq)
         {
-            Complex[] output = new Complex[Kernel.FrameSize];
-            for (int k = 0; k < Kernel.FrameSize; k++)
+            double[] SingleTemporalKernel = new double[(int)_samplesPerFrame];
+            for (int element = 0;
+                element < _samplesPerFrame; 
+                element++)
             {
-                output[k] = Placeholder(Kernel, k, kernelNumber);
+                if (element < ((_samplesPerFrame / 2d) + (WindowLength(k_cq) / 2d)) && element > ((_samplesPerFrame / 2d) - (WindowLength(k_cq) / 2d)))
+                {
+                    SingleTemporalKernel[element] = CalculateSingleTemporalKernelElement(element, k_cq).Real;
+                }
             }
-            return output;
+            return SingleTemporalKernel;
         }
 
-        private static Complex Placeholder(SpectralKernelStruct Kernel, int k, int kernelNumber)
+        private Complex CalculateSingleTemporalKernelElement(double n, double k_cq)
         {
-            Complex output = new Complex();
-            foreach (Complex number in placeholder2(Kernel, k, kernelNumber))
-            {
-                output += number;
-            }
-            return output;
+            Complex c1 = Complex.Exp(new Complex(0, 2d * Math.PI * n * _Q / WindowLength(k_cq))); // Brown lign. (5)
+            return HammingFunction(n - ((_samplesPerFrame / 2d) - (WindowLength(k_cq) / 2d)), k_cq) * c1; // Brown og Puckette lign (4)
         }
 
-        private static Complex[] placeholder2(SpectralKernelStruct Kernel, double k, double kernelNumber)
-        {
-            Complex[] output = new Complex[Kernel.FrameSize];
-            for (double n = 0; n < Kernel.FrameSize; n++)
-            {
-                Complex complexFactor1 = new Complex(0, CenterFrequency(Kernel, kernelNumber) * (n - Kernel.FrameSize / 2d));
-                Complex complexFactor2 = new Complex(0, -2d * Math.PI * k * n / Kernel.FrameSize);
-                double hamming = HammingWindow(Kernel, n, kernelNumber);
-                output[(int)n] = hamming * Complex.Exp(complexFactor1) * Complex.Exp(complexFactor2);
-            }
-            return output;
-        }
-
-        private static double CenterFrequency(SpectralKernelStruct Kernel, double kernelNumber)
-        {
-            return Math.Pow(2d, kernelNumber / Kernel.BinsPerOctave) * Kernel.BaseFrequency;
-        }
-
-        private static double HammingWindow(SpectralKernelStruct Kernel, double n, double kernelNumber)
+        private double HammingFunction(double n, double k_cq)
         {
             double alpha = 25d / 46d;
-            return alpha - (1 - alpha) * Math.Cos(2d * Math.PI * n / WindowLength(Kernel, kernelNumber));
+            return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / WindowLength(k_cq)); // Hamming window function
+            //return 0.5d * (1d - Math.Cos(2d * Math.PI * n / WindowLength(k_cq))); // Hann window function
         }
 
-        private static double WindowLength(SpectralKernelStruct Kernel, double kernelNumber)
+        private double WindowLength(double k_cq)
         {
-            double Q = 1d / (Math.Pow(2d, 1d / Kernel.BinsPerOctave) - 1d);
-            return Q * (double)Kernel.Samplerate / CenterFrequency(Kernel, kernelNumber);
+            return _Q * _samplerate / CenterFrequency(k_cq);
+        }
+
+        private double CenterFrequency(double k_cq)
+        {
+            return Math.Pow(Math.Pow(2d, 1d / _binsPerOctave), k_cq) * _baseFrequency;
+        }
+
+        private int NextPowerOf2(double input)
+        {
+            int power = 0;
+            int result = 0;
+            do
+            {
+                result = (int)Math.Pow(2, power);
+                power++;
+            } while (result <= input);
+            return result;
         }
     }
 }
