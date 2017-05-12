@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace testapp
+namespace BPM_Key_Detection
 {
     static class Program
     {

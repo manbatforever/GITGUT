@@ -5,34 +5,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 
-namespace testapp
+namespace BPM_Key_Detection
 {
     static class FastFourierTransform
     {
-        public static Complex[][] GetFFT(double[][] Samples)
+        public static Complex[][] FFT(double[][] input)
         {
-            int frames = Samples.GetLength(0);
-            int frameSize = Samples[0].Length;
-            Complex[][] output = new Complex[frames][];
-            for (int frameCounter = 0; frameCounter < frames; frameCounter++)
+            int length = input.Length;
+            Complex[][] output = new Complex[length][];
+            for (int i = 0; i < length; i++)
             {
-                output[frameCounter] = FFT(Samples[frameCounter], frameSize);
+                output[i] = FFT(input[i]);
             }
             return output;
         }
 
-        private static Complex[] FFT(double[] samples, int length)
+        public static Complex[] FFT(double[] input)
         {
-            Exocortex.DSP.Complex[] temp = new Exocortex.DSP.Complex[length];
+            int length = input.Length;
+            MathNet.Numerics.Complex32[] temp = new MathNet.Numerics.Complex32[length];
             for (int i = 0; i < length; i++)
             {
-                temp[i] = (Exocortex.DSP.Complex)samples[i];
+                temp[i] = new MathNet.Numerics.Complex32(Convert.ToSingle(input[i]), 0);
             }
-            Exocortex.DSP.Fourier.FFT(temp, length, Exocortex.DSP.FourierDirection.Forward);
+            MathNet.Numerics.IntegralTransforms.Fourier.Forward(temp);
             Complex[] output = new Complex[length];
             for (int i = 0; i < length; i++)
             {
-                output[i] = new Complex(temp[i].Re, temp[i].Im);
+                output[i] = new Complex(temp[i].Real, temp[i].Imaginary);
             }
             return output;
         }

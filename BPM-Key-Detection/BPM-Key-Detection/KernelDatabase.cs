@@ -7,7 +7,7 @@ using System.Numerics;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace testapp
+namespace BPM_Key_Detection
 {
     static class KernelDatabase
     {

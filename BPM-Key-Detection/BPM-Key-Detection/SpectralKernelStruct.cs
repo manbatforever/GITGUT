@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace testapp
+namespace BPM_Key_Detection
 {
     struct SpectralKernelStruct
     {

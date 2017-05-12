@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace testapp
+namespace BPM_Key_Detection
 {
     public partial class Form_BpmKeyAnalyser : Form
     {

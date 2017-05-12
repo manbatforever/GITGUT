@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TagLib;
+using NAudio.Wave;
 
-namespace testapp
+namespace BPM_Key_Detection
 {
     public class MusicFile
     {
@@ -17,22 +18,25 @@ namespace testapp
         private string _key;
         private string _comment;
         private uint _bpm;
-        private float[] _samples;
+        private int _sampleRate;
+        private int _channels;
         private bool _badFile;
 
-        public MusicFile(string FileName)
+        public MusicFile(string FilePath)
         {
             _badFile = false;
-            GetMetadata(FileName);
+            GetMetadata(FilePath);
+            GetSamplerateAndChannels(FilePath);
+            
         }
 
-        private void GetMetadata(string FileName)
+        private void GetMetadata(string FilePath)
         {
-            _filepath = FileName;
-            _fileName = FileName.Substring(FileName.LastIndexOf("\\") + 1);
+            _filepath = FilePath;
+            _fileName = FilePath.Substring(FilePath.LastIndexOf("\\") + 1);
             try
             {
-                File file = File.Create(FileName);
+                File file = File.Create(FilePath);
 
                 TagLib.Id3v2.Tag fileTag = (TagLib.Id3v2.Tag)file.GetTag(TagTypes.Id3v2, false);
                 _titel = file.Tag.Title; // string
@@ -49,6 +53,31 @@ namespace testapp
                 _badFile = true;
             }
         }
+
+        private void GetSamplerateAndChannels(string FilePath)
+        {
+            AudioFileReader File = new AudioFileReader(FilePath);
+            _sampleRate = File.WaveFormat.SampleRate;
+            _channels = File.WaveFormat.Channels;
+            File.Close();
+        }
+
+        public double[] GetRawSamples()
+        {
+            AudioFileReader File = new AudioFileReader(Filepath);
+
+            int floatLength = (int)(File.Length / 4);
+            float[] buffer = new float[floatLength];
+            File.Read(buffer, 0, floatLength);
+
+            double[] output = new double[floatLength];
+            for (int i = 0; i < floatLength; i++)
+            {
+                output[i] = buffer[i];
+            }
+            return output;
+        }
+
         public string FileName { get { return _fileName; } }
         public string Titel { get { return _titel; } }
         public string Album { get { return _album; } }
@@ -57,7 +86,8 @@ namespace testapp
         public string Key { get { return _key; } }
         public string Comment { get { return _comment; } }
         public uint Bpm { get { return _bpm; } }
-        public float[] Samples { get { return _samples; } set { _samples = value; } }
+        public int SampleRate { get { return _sampleRate; } }
+        public int Channels { get { return _channels; } }
         public bool BadFile { get { return _badFile; } }
     }
 }

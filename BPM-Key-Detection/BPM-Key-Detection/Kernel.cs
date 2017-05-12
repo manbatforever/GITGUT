@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 
-namespace testapp
+namespace BPM_Key_Detection
 {
     static class Kernel
     {
