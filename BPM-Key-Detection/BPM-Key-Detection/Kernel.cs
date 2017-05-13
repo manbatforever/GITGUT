@@ -35,6 +35,7 @@ namespace BPM_Key_Detection
             _binsTotal = octaves * binsPerOctave;
             _Q = 1d / (Math.Pow(2d, 1d / binsPerOctave) - 1d); // Constant Q
             _samplesPerFrame = samplesPerFrame; // NextPowerOf2(WindowLength(0)); // For at være sikker på at få hele den længste temporal kernel med.
+            Start();
         }
 
         public void Start()
@@ -45,7 +46,21 @@ namespace BPM_Key_Detection
 
         private Complex[][] GetAllSpectralKernels(double[][] AllTemporalKernels)
         {
-            return FastFourierTransform.FFT(AllTemporalKernels);
+            int numOfKernels = AllTemporalKernels.Length;
+            Complex[][] allSpectralKernels = new Complex[numOfKernels][];
+            for (int kernel = 0; kernel < numOfKernels; kernel++)
+            {
+                Complex[] spectralKernel = FastFourierTransform.FFT(AllTemporalKernels[kernel]);
+                for (int i = 0; i < _samplesPerFrame; i++)
+                {
+                    if (spectralKernel[i].Magnitude < 0.1)
+                    {
+                        spectralKernel[i] = 0;
+                    }
+                }
+                allSpectralKernels[kernel] = spectralKernel;
+            }
+            return allSpectralKernels;
         }
 
         private double[][] GetAllTemporalKernels()
@@ -61,9 +76,7 @@ namespace BPM_Key_Detection
         private double[] GetSingleTemporalKernel(double k_cq)
         {
             double[] SingleTemporalKernel = new double[(int)_samplesPerFrame];
-            for (int element = 0;
-                element < _samplesPerFrame; 
-                element++)
+            for (int element = 0;element < _samplesPerFrame; element++)
             {
                 if (element < ((_samplesPerFrame / 2d) + (WindowLength(k_cq) / 2d)) && element > ((_samplesPerFrame / 2d) - (WindowLength(k_cq) / 2d)))
                 {
@@ -81,9 +94,9 @@ namespace BPM_Key_Detection
 
         private double HammingFunction(double n, double k_cq)
         {
-            double alpha = 25d / 46d;
-            return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / WindowLength(k_cq)); // Hamming window function
-            //return 0.5d * (1d - Math.Cos(2d * Math.PI * n / WindowLength(k_cq))); // Hann window function
+            //double alpha = 25d / 46d;
+            //return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / WindowLength(k_cq)); // Hamming window function
+            return 0.5d * (1d - Math.Cos(2d * Math.PI * n / WindowLength(k_cq))); // Hann window function
         }
 
         private double WindowLength(double k_cq)

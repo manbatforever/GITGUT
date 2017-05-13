@@ -9,14 +9,23 @@ namespace BPM_Key_Detection
     class KeyEstimation
     {
         private MusicFile _musicFile;
-        public KeyEstimation()
-        {
-
-        }
 
         public KeyEstimation(MusicFile musicFile)
         {
             _musicFile = musicFile;
+            Start();
+        }
+
+        public void TestCQT()
+        {
+            double[] monoSamples = _musicFile.GetRawSamples();
+            if (_musicFile.Channels != 1)
+            {
+                monoSamples = ToMono(monoSamples, _musicFile.Channels);
+            }
+            ConstantQTransform cqt = new ConstantQTransform(monoSamples, _musicFile.Samplerate);
+
+            
         }
 
         public void Start()
@@ -27,8 +36,20 @@ namespace BPM_Key_Detection
                 monoSamples = ToMono(monoSamples, _musicFile.Channels);
             }
             ConstantQTransform cqt = new ConstantQTransform(monoSamples, _musicFile.Samplerate);
+
+            System.IO.StreamWriter file = new System.IO.StreamWriter("cqttest.txt");
+            foreach (var item in cqt.ToneAmplitudes)
+            {
+                foreach (var iatem in item)
+                {
+                    file.Write(iatem + ";");
+                }
+                file.WriteLine();
+            }
+            file.Close();
+
             ChromaVector chromaVector = new ChromaVector(cqt.ToneAmplitudes, ConstantQTransform.TonesTotal, ConstantQTransform.TonesPerOctave); //TonesTotal and TonesPerOctave are accessed through type (they are constants)
-            EstimateKey(chromaVector.MultiFrameVectorValues);
+            EstimateKey(chromaVector.VectorValues);
         }
 
         private double[] ToMono(double[] multiChannelSamples, int channels)
@@ -61,8 +82,8 @@ namespace BPM_Key_Detection
         {
             KeyProfile majorProfile = new MajorProfile();
             KeyProfile minorProfile = new MinorProfile();
-            double[][] MajorProfiles = majorProfile.CreateProfileForEachTonica();
-            double[][] MinorProfiles = majorProfile.CreateProfileForEachTonica();
+            //double[][] MajorProfiles = majorProfile.CreateProfileForEachTonica();
+            //double[][] MinorProfiles = majorProfile.CreateProfileForEachTonica();
 
             Dictionary<string, double> majorSimilarities = new Dictionary<string, double>();
             Dictionary<string, double> minorSimilarities = new Dictionary<string, double>();
@@ -71,8 +92,8 @@ namespace BPM_Key_Detection
             //double[] MinorSimilarity = new double[12]; //Gammelt array før dictionaries
             for (int toneIndex = 0; toneIndex < 12; toneIndex++) //Loop igennem alle 12 toner, og fyld dictionaries med keys og values
             {
-                majorSimilarities.Add(arrayOfToneNames[toneIndex], VectorOperations.CosineSimilarity(majorProfile.Profile, chromaVectorValues, 12)); //Key = tone name, value = Cosine similarity result 
-                minorSimilarities.Add(arrayOfToneNames[toneIndex], VectorOperations.CosineSimilarity(minorProfile.Profile, chromaVectorValues, 12));
+                majorSimilarities.Add(arrayOfToneNames[toneIndex], VectorOperations.CosineSimilarity(majorProfile.CreateProfileForTonica(toneIndex), chromaVectorValues, 12)); //Key = tone name, value = Cosine similarity result 
+                minorSimilarities.Add(arrayOfToneNames[toneIndex], VectorOperations.CosineSimilarity(minorProfile.CreateProfileForTonica(toneIndex), chromaVectorValues, 12));
                 //MajorSimilarity[i] = VectorOperations.CosineSimilarity(MajorProfiles[i], chromaVector, 12);
                 //MinorSimilarity[i] = VectorOperations.CosineSimilarity(MinorProfiles[i], chromaVector, 12);
                 //Console.Write(MajorSimilarity[i] + " ");
@@ -82,6 +103,8 @@ namespace BPM_Key_Detection
 
             //Console.Write(MajorSimilarity.ToList().IndexOf(MajorSimilarity.Max()) + " ");
             //Console.WriteLine(MinorSimilarity.ToList().IndexOf(MinorSimilarity.Max()));
+            Console.Write(majorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key + "dur ");
+            Console.WriteLine(minorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key + "mol");
             Console.ReadKey();
         }
     }

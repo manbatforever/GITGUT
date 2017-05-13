@@ -14,13 +14,14 @@ namespace BPM_Key_Detection
         [STAThread]
         static void Main()
         {
+
+            MusicFile music = new MusicFile(@"C:\Users\Martin\Music\Avicii_-_Levels_-_12B.mp3");
+            KeyEstimation keyest = new KeyEstimation(music);
+            //keyest.TestCQT();
+
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form_BpmKeyAnalyser());
-
-            KeyEstimation keyEst = new KeyEstimation();
-            double[] chrVector = new double[] { 0.12314, 0.145134, 0.1245, 0.1354893, 0.893159, 0.83195831, 0.91358315, 0.89134518378, 0.9135, 0.347341, 0.173843, 0.138473 };
-            keyEst.EstimateKey(chrVector);
         }
     }
 }

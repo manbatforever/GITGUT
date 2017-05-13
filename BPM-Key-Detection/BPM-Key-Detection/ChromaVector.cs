@@ -12,9 +12,9 @@ namespace BPM_Key_Detection
         private int _tonesTotal;
         private int _tonesPerOctave;
         private int _numOfOctaves;
-        private double[] _multiFrameVectorValues;
+        private double[] _vectorValues;
 
-        public double[] MultiFrameVectorValues { get => _multiFrameVectorValues; }
+        public double[] VectorValues { get => _vectorValues; set => _vectorValues = value; }
 
         public ChromaVector(double[][] toneAmplitudes, int tonesTotal, int tonesPerOctave)
         {
@@ -23,43 +23,76 @@ namespace BPM_Key_Detection
             _tonesPerOctave = tonesPerOctave;
             _numOfOctaves = tonesTotal / tonesPerOctave;
 
-            _multiFrameVectorValues = CreateMultiFrameChromaVector(toneAmplitudes);
+            GetVectorValues(toneAmplitudes);
+        }
+        public ChromaVector(double[] singleFrame, int tonesTotal, int tonesPerOctave)
+        {
+            _tonesTotal = tonesTotal;
+            _tonesPerOctave = tonesPerOctave;
+            _numOfOctaves = tonesTotal / tonesPerOctave;
+
+            _vectorValues = GetVectorValues(singleFrame);
         }
 
-
-
-        private double[] CreateMultiFrameChromaVector(double[][] toneAmplitudes)
+        private void GetVectorValues(double[][] toneAmplitudes) //For multiple frames
         {
             int numOfFrames = toneAmplitudes.Length;
-            double[] chromaVector = new double[_tonesPerOctave];
+            _vectorValues = new double[_tonesPerOctave];
             for (int frame = 0; frame < numOfFrames; frame++)
             {
-                double[] tempSingleFrameChromaVector = CreateSingleFrameChromaVector(toneAmplitudes[frame]);
+                double[] tempSingleFrameChromaVector = GetVectorValues(toneAmplitudes[frame]);
                 for (int element = 0; element < _tonesPerOctave; element++)
                 {
-                    chromaVector[element] += tempSingleFrameChromaVector[element];
+                    _vectorValues[element] += tempSingleFrameChromaVector[element];
                 }
             }
-            return chromaVector;
         }
-
-        public double[] GetSingleFrameChromaVector(int frameNumber)
-        {
-            return CreateSingleFrameChromaVector(_toneAmplitudes[frameNumber]);
-        }
-
-        private double[] CreateSingleFrameChromaVector(double[] singleFrame)
+        private double[] GetVectorValues(double[] singleFrame) // For single frame
         {
             double[] chromaVector = new double[_tonesPerOctave];
-            for (int tone = 0; tone < _tonesPerOctave; tone++)
+            for (int octave = 0; octave < _numOfOctaves; octave++)
             {
-                for (int octave = 0; octave < _numOfOctaves; octave++)
+                for (int tone = 0; tone < _tonesPerOctave; tone++)
                 {
+                    int f = tone + octave * _tonesPerOctave;
                     chromaVector[tone] += singleFrame[tone + octave * _tonesPerOctave];
                 }
             }
             return chromaVector;
         }
+
+        //private double[] CreateMultiFrameChromaVector(double[][] toneAmplitudes) //Gammel metode
+        //{
+        //    int numOfFrames = toneAmplitudes.Length;
+        //    double[] chromaVector = new double[_tonesPerOctave];
+        //    for (int frame = 0; frame < numOfFrames; frame++)
+        //    {
+        //        double[] tempSingleFrameChromaVector = CreateSingleFrameChromaVector(toneAmplitudes[frame]);
+        //        for (int element = 0; element < _tonesPerOctave; element++)
+        //        {
+        //            chromaVector[element] += tempSingleFrameChromaVector[element];
+        //        }
+        //    }
+        //    return chromaVector;
+        //}
+
+        //public double[] GetSingleFrameChromaVector(int frameNumber) //Gammel metode
+        //{
+        //    return CreateSingleFrameChromaVector(_toneAmplitudes[frameNumber]);
+        //}
+
+        //private double[] CreateSingleFrameChromaVector(double[] singleFrame)
+        //{
+        //    double[] chromaVector = new double[_tonesPerOctave];
+        //    for (int tone = 0; tone < _tonesPerOctave; tone++)
+        //    {
+        //        for (int octave = 0; octave < _numOfOctaves; octave++)
+        //        {
+        //            chromaVector[tone] += singleFrame[tone + octave * _tonesPerOctave];
+        //        }
+        //    }
+        //    return chromaVector;
+        //}
 
     }
 }

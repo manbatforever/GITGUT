@@ -18,7 +18,7 @@ namespace BPM_Key_Detection
         public const int TonesPerOctave = 12;
         public const int TonesTotal = NumOfOctaves * TonesPerOctave;
         private const double MinimumFrequency = 27.5;
-        private const int SamplesPerFrame = 16384;
+        private const int SamplesPerFrame = 4096 ;
 
         public double[][] ToneAmplitudes { get => _toneAmplitudes; }
 
@@ -26,12 +26,13 @@ namespace BPM_Key_Detection
         {
             _inputSamples = inputSamples;
             _sampleRate = sampleRate;
+            Start();
         }
 
         public void Start()
         {
             Kernel kernel = new Kernel(_sampleRate, MinimumFrequency, TonesPerOctave, NumOfOctaves, SamplesPerFrame);
-            double[][] sampleFrames = CreateSampleFrames(_inputSamples, SamplesPerFrame, 4);
+            double[][] sampleFrames = CreateSampleFrames(_inputSamples, SamplesPerFrame, 2);
             Complex[][] fftSamples = FastFourierTransform.FFT(sampleFrames); // X[k] brown og puckette lign. (5)
             _toneAmplitudes = EfficientCQT(kernel.AllSpectralKernels, fftSamples);
         }
@@ -40,7 +41,7 @@ namespace BPM_Key_Detection
         private double[][] CreateSampleFrames(double[] samples, int samplesPerFrame, int hopsPerFrame)
         {
             int SampleLength = samples.Length;
-            int NumOfFrames = (SampleLength / samplesPerFrame - 1) * hopsPerFrame;
+            int NumOfFrames = (SampleLength / samplesPerFrame + 1) * hopsPerFrame;
             int HopSize = samplesPerFrame / hopsPerFrame;
             double[][] SampleFrames = new double[NumOfFrames][];
             for (int frame = 0; frame < NumOfFrames; frame++)
@@ -48,7 +49,11 @@ namespace BPM_Key_Detection
                 double[] SampleFrame = new double[samplesPerFrame];
                 for (int sample = 0; sample < samplesPerFrame; sample++)
                 {
-                    SampleFrame[sample] = samples[HopSize * frame + sample];
+                    int sampleIndex = HopSize * frame + sample;
+                    if (sampleIndex < SampleLength)
+                    {
+                        SampleFrame[sample] = samples[sampleIndex];
+                    }
                 }
                 SampleFrames[frame] = SampleFrame;
             }
@@ -59,7 +64,7 @@ namespace BPM_Key_Detection
         {
             int numOfSampleFrames = fftSamples.Length;
             double[][] toneAmplitudes = new double[numOfSampleFrames][];
-            for (int frame = 0; frame < numOfSampleFrames; frame++)
+            for (int frame = 0;numOfSampleFrames == 0 || frame < numOfSampleFrames; frame++)
             {
                 toneAmplitudes[frame] = new double[TonesTotal];
                 for (int tone = 0; tone < TonesTotal; tone++)
