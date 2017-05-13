@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string filePath = @"C:\Users\MikHup\Desktop\p2musik\100 BPM Metronome.mp3";
+            string filePath = @"C:\Users\MikHup\Desktop\p2musik\TiK ToK Kesha 120.mp3";
             int sampleRate;
             int Channels;
             double[] samplesStereo = AudioSamples.GetRawSamples(filePath, out sampleRate, out Channels);
@@ -27,7 +27,7 @@ namespace testapp
                     splitSamples[channel][i / 2] = samplesStereo[i];
                 }
             }
-            BPMDetection sbd = new BPMDetection();
+            FinalBPMDetection sbd = new FinalBPMDetection();
 
             sbd.start(splitSamples);
 

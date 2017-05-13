@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -66,7 +66,7 @@ namespace testapp
                 throw new SongNotLongEnoughException();
             }
 
-            int sampleMidSong = Convert.ToInt32(splitSamples[0].Length / 2 - fs * (SampleLength / 2));
+            int sampleMidSong = Convert.ToInt32((splitSamples[0].Length - fs * SampleLength) / 2);
             for (int i = sampleMidSong, k = 0; k < N; i++, k++)
             {
                 a[k] = splitSamples[0][i];
@@ -204,4 +204,4 @@ namespace testapp
             return Convert.ToInt32(E.Max());
         }
     }
-}*/
+}
