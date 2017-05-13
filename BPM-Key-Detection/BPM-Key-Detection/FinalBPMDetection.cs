@@ -18,53 +18,47 @@ namespace testapp
         int N = 44100 * 5;
         int fs = 44100;
         int ampMax = 1; //ampMax er 1 da NAudio gør at amplituden ligger mellem 1 og -1
-        int amountOfBPMc = (180 - 60) / 1;
+        int amountOfBPMc = (180 - 60) / 3;
+        int _BPMcChange = 3;
 
-        int[][] L = new int[(180 - 60) / 1][];
-
-        double[] a = new double[44100 * 5 + 1];
-        double[] b = new double[44100 * 5 + 1];
+        double[] a = new double[44100 * 5];
+        double[] b = new double[44100 * 5];
         double[] ta = new double[44100 * 5];
         double[] tb = new double[44100 * 5];
-        int[] Ti = new int[(180 - 60) / 1];
-        double[] MaxBPME = new double[(180 - 60) / 1];
-        double[][] tl = new double[(180 - 60) / 1][];
-        double[][] tj = new double[(180 - 60) / 1][];
-        double[][] E = new double[(180 - 60) / 1][];
+        int[] Ti = new int[(180 - 60) / 3];
+        double[] MaxBPME = new double[(180 - 60) / 3];
+        BPMc[] _BPMc = new BPMc[(180 - 60) / 3];
+
 
         public void start(double[][] splitSamples)
         {
+            for (int i = 0; i < amountOfBPMc; i++)
+            {
+                _BPMc[i] = new BPMc();
+            }
             FillLeftRight(splitSamples);
-            Console.WriteLine(7);
             FFTComplexSignal();
-            Console.WriteLine(6);
             TestByBPM();
-            Console.WriteLine(5);
             ComputeTrainOfImpulses();
-            Console.WriteLine(4);
             ComputeEnergy();
-            Console.WriteLine(3);
             BPMcMaxE();
-            Console.WriteLine(2);
             Console.WriteLine(ComputeBPM());
-            Console.WriteLine(1);
-            throw new Exception();
         }
 
         void FillLeftRight(double[][] splitSamples)
         {
-            if (splitSamples[0].Length < N + 1 || splitSamples[1].Length < N + 1)
+            if (splitSamples[0].Length < N || splitSamples[1].Length < N)
             {
                 //Lav en exception der tager hånd om dette
                 throw new SongNotLongEnoughException();
             }
 
             int sampleMidSong = Convert.ToInt32(splitSamples[0].Length / 2 - fs * 2.5);
-            for (int i = sampleMidSong, k = 0; k < N + 1; i++, k++)
+            for (int i = sampleMidSong, k = 0; k < N; i++, k++)
             {
                 a[k] = splitSamples[0][i];
             }
-            for (int i = sampleMidSong, k = 0; k < N + 1; i++, k++)
+            for (int i = sampleMidSong, k = 0; k < N; i++, k++)
             {
                 b[k] = splitSamples[1][i];
             }
@@ -94,9 +88,9 @@ namespace testapp
 
         void TestByBPM()
         {
-            for (int BPMc = 60, i = 0; BPMc < 180; BPMc += 1, i++)
+            for (int i = 0; i < amountOfBPMc; i++)
             {
-                Ti[i] = Convert.ToInt32(CalculateTi(BPMc));
+                Ti[i] = Convert.ToInt32(CalculateTi(i * _BPMcChange + _BPMcChange));
             }
         }
 
@@ -109,16 +103,16 @@ namespace testapp
         {
             for (int i = 0; i < amountOfBPMc; i++)
             {
-                L[i] = new int[N];
+                _BPMc[i].L = new int[N];
                 for (int k = 0; k < N; k++)
                 {
                     if ((k % Ti[i]) == 0)
                     {
-                        L[i][k] = ampMax;
+                        _BPMc[i].L[k] = ampMax;
                     }
                     else
                     {
-                        L[i][k] = 0;
+                        _BPMc[i].L[k] = 0;
                     }
                 }
             }
@@ -130,20 +124,20 @@ namespace testapp
 
                 for (int k = 0; k < N; k++)
                 {
-                    complexSignal[k] = new Complex(L[i][k], L[i][k]);
+                    complexSignal[k] = new Complex(_BPMc[i].L[k], _BPMc[i].L[k]);
                 }
 
                 FFTComplexSignal = FastFourierTransform.FFT(complexSignal);
-                tl[i] = new double[N];
-                tj[i] = new double[N];
+                _BPMc[i].TL = new double[N];
+                _BPMc[i].TJ = new double[N];
 
                 for (int k = 0; k < N; k++)
                 {
-                    tl[i][k] = FFTComplexSignal[k].Real;
+                    _BPMc[i].TL[k] = FFTComplexSignal[k].Real;
                 }
                 for (int k = 0; k < N; k++)
                 {
-                    tj[i][k] = FFTComplexSignal[k].Imaginary;
+                    _BPMc[i].TJ[k] = FFTComplexSignal[k].Imaginary;
                 }
             }
         }
@@ -152,11 +146,11 @@ namespace testapp
         {
             for (int i = 0; i < amountOfBPMc; i++)
             {
-                E[i] = new double[N];
+                _BPMc[i].E = new double[N];
 
                 for (int k = 0; k < N; k++)
                 {
-                    E[i][k] = (ta[k] + i * tb[k]) * (tl[i][k] + i * tj[i][k]);
+                    _BPMc[i].E[k] = (ta[k] + i * tb[k]) * (_BPMc[i].TL[k] + i * _BPMc[i].TJ[k]);
                 }
             }
         }
@@ -165,13 +159,12 @@ namespace testapp
         {
             for (int i = 0; i < amountOfBPMc; i++)
             {
-                MaxBPME[i] = E[i].Max();
+                MaxBPME[i] = _BPMc[i].E.Max();
             }
         }
 
         int ComputeBPM()
         {
-            Console.WriteLine(MaxBPME.Max());
             return Convert.ToInt32(MaxBPME.Max());
         }
     }

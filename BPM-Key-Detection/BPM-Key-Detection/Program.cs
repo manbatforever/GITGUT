@@ -10,7 +10,7 @@ namespace testapp
     {
         static void Main()
         {
-            string filePath = @"C:\Users\MikHup\Desktop\p2musik\120 BPM Metronome.mp3";
+            string filePath = @"C:\Users\Chris Kevin Lukas\Desktop\100 BPM Metronome.mp3";
             int sampleRate;
             int Channels;
             double[] samplesStereo = AudioSamples.GetRawSamples(filePath, out sampleRate, out Channels);
