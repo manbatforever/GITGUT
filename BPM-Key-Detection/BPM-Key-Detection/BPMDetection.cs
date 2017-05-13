@@ -7,15 +7,20 @@ using System.Numerics;
 
 namespace testapp
 {
-
+    class SongNotLongEnoughException : Exception
+    {
+        public SongNotLongEnoughException() : base("The song does not have enough samples to be analyzed.") { }
+        public SongNotLongEnoughException(string songName) : base($"The song {songName} does not have enough samples to be analyzed.") { }
+    }
 
     class BPMDetection
     {
+        static int amountOfSubbands = 16;
+        static int amountOfBPMc = 200 / 5 - 1;
+        
         int N = 44100 * 5;
         int fs = 44100;
         int ampMax = 1; //ampMax er 1 da NAudio gør at amplituden ligger mellem 1 og -1
-        int amountOfSubbands = 16;
-        int amountOfBPMc = 200 / 5 - 1;
 
         double aconst = 1810.833;
         double bconst = -1610.833;
@@ -24,10 +29,10 @@ namespace testapp
         double[] b = new double[44100 * 5 + 1];
         double[] ta = new double[44100 * 5];
         double[] tb = new double[44100 * 5];
-        double[] eBPMMax = new double[16];
-        double[][] tas = new double[16][];
-        double[][] tbs = new double[16][];
-        BPMToTest[] _bpmc = new BPMToTest[200 / 5 - 1];
+        double[] eBPMMax = new double[amountOfSubbands];
+        double[][] tas = new double[amountOfSubbands][];
+        double[][] tbs = new double[amountOfSubbands][];
+        BPMToTest[] _bpmc = new BPMToTest[amountOfBPMc];
 
 
         public void start(double[][] array)
@@ -57,12 +62,7 @@ namespace testapp
             Console.WriteLine(8);
             TestBPM();
             Console.WriteLine(9);
-            FindMaxBPMInSubband();
-            Console.WriteLine(10);
-            FindEbpmMax();
-            Console.WriteLine(11);
-            ComputeBPM();
-            Console.WriteLine(12);
+            Console.WriteLine(FindMaxBPMOfSubband()); 
             throw new Exception();
         }
         //Her udvælges samples i midten af nummeret og lægges over i venstre stream og højre stream
@@ -140,6 +140,11 @@ namespace testapp
             }
         }
 
+        double CalculateTI(double BPM)
+        {
+            return (60 / BPM) * Convert.ToDouble(fs);
+        }
+
         void GenerateTrainOfImpulses()
         {
             int ws;
@@ -205,7 +210,7 @@ namespace testapp
             }
         }
 
-        int NextPowerOfTwo(int i)
+        /*int NextPowerOfTwo(int i)
         {
             for (int p = 0; true; p++)
             {
@@ -214,20 +219,20 @@ namespace testapp
                     return Convert.ToInt32(Math.Pow(2, p));
                 }
             }            
-        }        
+        } */       
 
         void TestBPM()
         {
             for (int p = 0; p < amountOfBPMc; p++)
             {
-                double[][] E = new double[amountOfSubbands][];
+                double[] E = new double[amountOfSubbands];
 
                 for (int s = 0; s < amountOfSubbands; s++)
                 {
-                    double[] sum = new double[CalculateSubbandWidth(s + 1)];
+                    double sum = 0;
                     for (int k = 0; k < CalculateSubbandWidth(s + 1); k++)
                     {
-                        sum[k] = (tas[s][k] + s * tbs[s][k]) * (_bpmc[p].Tl[s][k] + s * _bpmc[p].Tj[s][k]);
+                        sum += Complex.Abs(new Complex(tas[s][k], tbs[s][k]) * new Complex(_bpmc[p].Tl[s][k], _bpmc[p].Tj[s][k]));
                     }
                     E[s] = sum;
                 }
@@ -235,7 +240,30 @@ namespace testapp
             }
         }
 
-        void FindMaxBPMInSubband()
+        int FindMaxBPMOfSubband()
+        {
+            double EBPMMaxSum = 0, EBPMProductSum = 0;
+            for (int i = 0; i < amountOfSubbands; i++)
+            {
+                double MaxBPME = 0;
+                int BPMResult = 0;
+                for (int k = 0; k < amountOfBPMc; k++)
+                {
+                    if (_bpmc[k].E[i] > MaxBPME)
+                    {
+                        MaxBPME = _bpmc[k].E[i];
+                        BPMResult = k * 5 + 5;
+                    }
+                }
+
+                EBPMMaxSum += MaxBPME;
+                EBPMProductSum += MaxBPME * BPMResult;
+            }
+
+            return Convert.ToInt32(EBPMProductSum / EBPMMaxSum);
+        }
+
+        /*void FindMaxBPMInSubband()
         {
             double[] MaxBPMOfSubbands = new double[amountOfSubbands];
             for (int i = 0; i < amountOfBPMc; i++)
@@ -280,11 +308,6 @@ namespace testapp
                 sum2 += eBPMMax[s] * BPMMax;
             }
             Console.WriteLine((1 / sum) * sum2);
-        }
-
-        double CalculateTI(double BPM)
-        {
-            return (60 / BPM) * Convert.ToDouble(fs);
-        }
+        }*/
     }
 }

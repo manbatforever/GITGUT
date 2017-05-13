@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,59 +15,81 @@ namespace testapp
 
     class FinalBPMDetection
     {
-        int N = 44100 * 5;
+        static int BPMStart = 50;
+        static int BPMEnd = 200;
+        static int BPMDevisor = 10;
+        static int TestBPM = BPMEnd - BPMStart;
+        static int SampleLength = 10;
+
+        int N = 44100 * SampleLength;
         int fs = 44100;
         int ampMax = 1; //ampMax er 1 da NAudio gør at amplituden ligger mellem 1 og -1
-        int amountOfBPMc = (180 - 60) / 1;
+        int amountOfBPMc = (BPMEnd - BPMStart) / BPMDevisor;
 
-        int[][] L = new int[(180 - 60) / 1][];
+        int[][] L = new int[TestBPM / BPMDevisor][];
 
-        double[] a = new double[44100 * 5 + 1];
-        double[] b = new double[44100 * 5 + 1];
-        double[] ta = new double[44100 * 5];
-        double[] tb = new double[44100 * 5];
-        int[] Ti = new int[(180 - 60) / 1];
-        double[] MaxBPME = new double[(180 - 60) / 1];
-        double[][] tl = new double[(180 - 60) / 1][];
-        double[][] tj = new double[(180 - 60) / 1][];
-        double[][] E = new double[(180 - 60) / 1][];
+        double[] a = new double[44100 * SampleLength];
+        double[] b = new double[44100 * SampleLength];
+        double[] ta = new double[44100 * SampleLength];
+        double[] tb = new double[44100 * SampleLength];
+        int[] Ti = new int[TestBPM / BPMDevisor];
+        double[] MaxBPME = new double[TestBPM / BPMDevisor];
+        double[][] tl = new double[TestBPM / BPMDevisor][];
+        double[][] tj = new double[TestBPM / BPMDevisor][];
+        double[] E = new double[TestBPM / BPMDevisor];
 
         public void start(double[][] splitSamples)
         {
             FillLeftRight(splitSamples);
             Console.WriteLine(7);
-            FFTComplexSignal();
+            //DifferentiationOfLeftAndRight();
             Console.WriteLine(6);
-            TestByBPM();
+            FFTComplexSignal();
             Console.WriteLine(5);
-            ComputeTrainOfImpulses();
+            TestByBPM();
             Console.WriteLine(4);
-            ComputeEnergy();
+            ComputeTrainOfImpulses();
             Console.WriteLine(3);
-            BPMcMaxE();
+            ComputeEnergy();
             Console.WriteLine(2);
-            Console.WriteLine(ComputeBPM());
+            //BPMcMaxE();
+            Console.WriteLine(BPMcMaxE());
             Console.WriteLine(1);
             throw new Exception();
         }
-
+       
         void FillLeftRight(double[][] splitSamples)
         {
-            if (splitSamples[0].Length < N + 1 || splitSamples[1].Length < N + 1)
+            if (splitSamples[0].Length <= N || splitSamples[1].Length <= N)
             {
                 //Lav en exception der tager hånd om dette
                 throw new SongNotLongEnoughException();
             }
 
-            int sampleMidSong = Convert.ToInt32(splitSamples[0].Length / 2 - fs * 2.5);
-            for (int i = sampleMidSong, k = 0; k < N + 1; i++, k++)
+            int sampleMidSong = Convert.ToInt32(splitSamples[0].Length / 2 - fs * (SampleLength / 2));
+            for (int i = sampleMidSong, k = 0; k < N; i++, k++)
             {
                 a[k] = splitSamples[0][i];
             }
-            for (int i = sampleMidSong, k = 0; k < N + 1; i++, k++)
+            for (int i = sampleMidSong, k = 0; k < N; i++, k++)
             {
                 b[k] = splitSamples[1][i];
             }
+        }
+
+        void DifferentiationOfLeftAndRight()
+        {
+            for (int k = 0; k < N - 1; k++)
+            {
+                a[k] = fs * (a[k + 1] - a[k]);
+            }
+            a[N - 1] = 0;
+
+            for (int k = 0; k < N - 1; k++)
+            {
+                b[k] = fs * (b[k + 1] - b[k]);
+            }
+            b[N - 1] = 0;
         }
 
         void FFTComplexSignal()
@@ -94,7 +116,7 @@ namespace testapp
 
         void TestByBPM()
         {
-            for (int BPMc = 60, i = 0; BPMc < 180; BPMc += 1, i++)
+            for (int BPMc = BPMStart, i = 0; BPMc < BPMEnd; BPMc += BPMDevisor, i++)
             {
                 Ti[i] = Convert.ToInt32(CalculateTi(BPMc));
             }
@@ -118,7 +140,7 @@ namespace testapp
                     }
                     else
                     {
-                        L[i][k] = 0;
+                        L[i][k] = -1;
                     }
                 }
             }
@@ -152,27 +174,34 @@ namespace testapp
         {
             for (int i = 0; i < amountOfBPMc; i++)
             {
-                E[i] = new double[N];
+                E[i] = 0;
 
                 for (int k = 0; k < N; k++)
                 {
-                    E[i][k] = (ta[k] + i * tb[k]) * (tl[i][k] + i * tj[i][k]);
+                    E[i] += Complex.Abs(new Complex(ta[k], tb[k]) * new Complex(tl[i][k], tj[i][k]));
                 }
             }
         }
 
-        void BPMcMaxE()
+        int BPMcMaxE()
         {
+            double MaxBPME = 0;
+            int BPMResult = 0;
             for (int i = 0; i < amountOfBPMc; i++)
             {
-                MaxBPME[i] = E[i].Max();
+                if(E[i] > MaxBPME)
+                {
+                    MaxBPME = E[i];
+                    BPMResult = i;
+                }
             }
+            return BPMResult * BPMDevisor + BPMStart;
         }
 
         int ComputeBPM()
         {
-            Console.WriteLine(MaxBPME.Max());
-            return Convert.ToInt32(MaxBPME.Max());
+            Console.WriteLine();
+            return Convert.ToInt32(E.Max());
         }
     }
-}
+}*/

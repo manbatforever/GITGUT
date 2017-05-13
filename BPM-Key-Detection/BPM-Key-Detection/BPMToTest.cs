@@ -13,7 +13,7 @@ namespace testapp
         public double[] TrainOfImpulses { get; set; }
         public double[][] Tl { get; set; }
         public double[][] Tj { get; set; }
-        public double[][] E { get; set; }
+        public double[] E { get; set; }
         public double[] SubbandBPMMax { get; set; }
 
     }
