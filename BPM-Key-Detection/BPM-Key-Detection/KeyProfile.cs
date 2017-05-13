@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    abstract class ToneProfile
+    abstract class KeyProfile
     {
         private double[] _profile;
 
-        public double[] Profile { get => _profile; }
+        public double[] Profile { get => _profile; protected set => _profile = value; }
 
+        // Rearranges the values in the profile, returning an array of profiles for each tonica
         public double[][] CreateProfileForEachTonica()
         {
             double[][] ProfileForEachTonica = new double[12][];

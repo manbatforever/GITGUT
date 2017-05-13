@@ -6,12 +6,26 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    class MajorProfile : ToneProfile
+    class MajorProfile : KeyProfile
     {
         
         public MajorProfile()
         {
-            
+            this.Profile = new double[]
+        {
+            7.23900502618145225142, // Tonica
+            3.50351166725158691406,
+            3.58445177536649417505,
+            2.84511816478676315967,
+            5.81898892118549859731,
+            4.55865057415321039969,
+            2.44778850545506543313,
+            6.99473192146829525484,
+            3.39106613673504853068,
+            4.55614256655143456953,
+            4.07392666663523606019,
+            4.45932757378886890365
+        };
         }
     }
 }
