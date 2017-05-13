@@ -50,8 +50,8 @@ namespace BPM_Key_Detection
 
         public static double CosineSimilarity(double[] V1, double[] V2, int length)
         {
-            return DotProduct(V1, V2, length) / (Magnitude(V1, length) * Magnitude(V2, length));
-            //return IbrahimUpper(V1, V2, length) / Math.Sqrt(IbrahimLower(V1, length) * IbrahimLower(V2, length));
+            //return DotProduct(V1, V2, length) / (Magnitude(V1, length) * Magnitude(V2, length));
+            return IbrahimUpper(V1, V2, length) / Math.Sqrt(IbrahimLower(V1, length) * IbrahimLower(V2, length));
         }
     }
 }

@@ -15,7 +15,7 @@ namespace BPM_Key_Detection
         static void Main()
         {
 
-            MusicFile music = new MusicFile(@"C:\Users\Martin\Music\Avicii_-_Levels_-_12B.mp3");
+            MusicFile music = new MusicFile(@"C:\Users\Martin\Music\Bingo_Players_-_Knock_You_Out_-_9A.mp3");
             KeyEstimation keyest = new KeyEstimation(music);
             //keyest.TestCQT();
 
