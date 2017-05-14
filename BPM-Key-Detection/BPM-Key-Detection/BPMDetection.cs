@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,14 +19,16 @@ namespace testapp
         
         static int BPMStart = 50;
         static int BPMEnd = 200;
-        static int BPMDevisor = 10;
+        static int BPMDevisor = 1;
         static int TestBPMInt = BPMEnd - BPMStart; //navn skal ændres
-        static int SampleLength = 5;
-        static int amountOfBPMc = (BPMEnd - BPMStart) / BPMDevisor;
+        static int SampleLength = 10;
         static int N = 44100 * SampleLength;
 
         int fs = 44100;
         int ampMax = 1; //ampMax er 1 da NAudio gør at amplituden ligger mellem 1 og -1
+
+        int[] Ti = new int[TestBPMInt / BPMDevisor];
+        int amountOfBPMc = (BPMEnd - BPMStart) / BPMDevisor;
 
         double aconst = 1810.833;
         double bconst = -1610.833;
@@ -35,11 +37,10 @@ namespace testapp
         double[] b = new double[N];
         double[] ta = new double[N];
         double[] tb = new double[N];
-        int[] Ti = new int[TestBPMInt / BPMDevisor];
         double[] eBPMMax = new double[amountOfSubbands];
         double[][] tas = new double[amountOfSubbands][];
         double[][] tbs = new double[amountOfSubbands][];
-        BPMToTest[] _bpmc = new BPMToTest[amountOfBPMc];
+        BPMToTest[] _bpmc = new BPMToTest[(BPMEnd - BPMStart) / BPMDevisor];
 
         public void start(double[][] array)
         {
@@ -70,7 +71,7 @@ namespace testapp
         //Her udvælges samples i midten af nummeret og lægges over i venstre stream og højre stream
         void FillLeftRight(double[][] splitSamples)
         {
-            if(splitSamples[0].Length <= N || splitSamples[1].Length <= N)
+            if (splitSamples[0].Length <= N || splitSamples[1].Length <= N)
             {
                 //Lav en exception der tager hånd om dette
                 throw new SongNotLongEnoughException();
@@ -87,18 +88,17 @@ namespace testapp
             }
         }
 
-        //Derivation and combfilter algorithms
         void DifferentiationOfLeftAndRight()
         {
-            for (int k = 0; k < N - 1; k++)
+            for (int k = 1; k < N - 2; k++)
             {
-                a[k] = fs * (a[k + 1] - a[k]);
+                a[k] = 0.5 * fs * (a[k + 1] - a[k - 1]);
             }
             a[N - 1] = 0;
 
-            for (int k = 0; k < N - 1; k++)
+            for (int k = 1; k < N - 2; k++)
             {
-                b[k] = fs * (b[k + 1] - b[k]);
+                b[k] = 0.5 * fs * (b[k + 1] - b[k - 1]);
             }
             b[N - 1] = 0;
         }
@@ -184,9 +184,9 @@ namespace testapp
             }
         }
 
-        int CalculateSubbandWidth(int i)
+        int CalculateSubbandWidth(int s)
         {
-            return (int)Math.Floor(aconst * i + bconst);
+            return (int)Math.Floor(aconst * s + bconst);
         }
 
         void FFTTrainOfImpulses()
@@ -223,7 +223,7 @@ namespace testapp
             }
         }
 
-        int NextPowerOfTwo(int i)
+        /*int NextPowerOfTwo(int i)
         {
             for (int p = 0; true; p++)
             {
@@ -232,7 +232,7 @@ namespace testapp
                     return Convert.ToInt32(Math.Pow(2, p));
                 }
             }            
-        }        
+        }*/
 
         void TestBPM()
         {
@@ -255,16 +255,16 @@ namespace testapp
         int FindMaxBPMOfSubband()
         {
             double EBPMMaxSum = 0, EBPMProductSum = 0;
-            for (int i = 0; i < amountOfSubbands; i++)
+            for (int s = 0; s < amountOfSubbands; s++)
             {
                 double MaxBPME = 0;
                 int BPMResult = 0;
-                for (int k = 0; k < amountOfBPMc; k++)
+                for (int i = 0; i < amountOfBPMc; i++)
                 {
-                    if (_bpmc[k].E[i] > MaxBPME)
+                    if (_bpmc[i].E[s] > MaxBPME && MaxBPME + 0.2 < _bpmc[i].E[s])
                     {
-                        MaxBPME = _bpmc[k].E[i];
-                        BPMResult = k * BPMDevisor + BPMStart;
+                        MaxBPME = _bpmc[i].E[s];
+                        BPMResult = i * BPMDevisor + BPMStart;
                     }
                 }
 
@@ -274,52 +274,5 @@ namespace testapp
 
             return Convert.ToInt32(EBPMProductSum / EBPMMaxSum);
         }
-
-        void FindMaxBPMInSubband()
-        {
-            double[] MaxBPMOfSubbands = new double[amountOfSubbands];
-            for (int i = 0; i < amountOfBPMc; i++)
-            {
-                for (int k = 0; k < amountOfSubbands; k++)
-                {
-                    MaxBPMOfSubbands[k] = _bpmc[i].E[k].Max();
-                }
-                _bpmc[i].SubbandBPMMax = MaxBPMOfSubbands;
-            }
-
-            //BPMMAX = alle max værdier i hvert subband
-            //EBPMMAX = Max væredien af alle max værdierne af subbandsne
-        }
-
-        void FindEbpmMax()
-        {            
-            for (int i = 0; i < amountOfBPMc; i++)
-            {
-                for (int s = 0; s < amountOfSubbands; s++)
-                {
-                    if (_bpmc[i].SubbandBPMMax[s] > eBPMMax[s])
-                    {
-                        eBPMMax[s] = _bpmc[i].SubbandBPMMax[s];
-                    }
-                }
-            }
-        }
-
-        void ComputeBPM()
-        {
-            double BPMMax = _bpmc[23].SubbandBPMMax.Max();
-            //double BPMMax = 120;
-            double sum = 0, sum2 = 0;
-
-            for (int s = 0; s < amountOfSubbands; s++)
-            {
-                sum += eBPMMax[s];
-            }
-            for (int s = 0; s < amountOfSubbands; s++)
-            {
-                sum2 += eBPMMax[s] * BPMMax;
-            }
-            Console.WriteLine((1 / sum) * sum2);
-        }
     }
-}*/
+}
