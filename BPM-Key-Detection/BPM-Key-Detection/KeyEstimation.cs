@@ -9,23 +9,14 @@ namespace BPM_Key_Detection
     class KeyEstimation
     {
         private MusicFile _musicFile;
+        private string _musicFileKey;
+
+        public string MusicFileKey { get => _musicFileKey; }
 
         public KeyEstimation(MusicFile musicFile)
         {
             _musicFile = musicFile;
             Start();
-        }
-
-        public void TestCQT()
-        {
-            double[] monoSamples = _musicFile.GetRawSamples();
-            if (_musicFile.Channels != 1)
-            {
-                monoSamples = ToMono(monoSamples, _musicFile.Channels);
-            }
-            ConstantQTransform cqt = new ConstantQTransform(monoSamples, _musicFile.Samplerate);
-
-            
         }
 
         public void Start()
@@ -37,19 +28,10 @@ namespace BPM_Key_Detection
             }
             ConstantQTransform cqt = new ConstantQTransform(monoSamples, _musicFile.Samplerate);
 
-            System.IO.StreamWriter file = new System.IO.StreamWriter("cqttest.txt");
-            foreach (var item in cqt.ToneAmplitudes)
-            {
-                foreach (var iatem in item)
-                {
-                    file.Write(iatem + ";");
-                }
-                file.WriteLine();
-            }
-            file.Close();
+            
 
             ChromaVector chromaVector = new ChromaVector(cqt.ToneAmplitudes, ConstantQTransform.TonesTotal, ConstantQTransform.TonesPerOctave); //TonesTotal and TonesPerOctave are accessed through type (they are constants)
-            EstimateKey(chromaVector.VectorValues);
+            _musicFileKey = EstimateKey(chromaVector.VectorValues);
         }
 
         private double[] ToMono(double[] multiChannelSamples, int channels)
@@ -78,7 +60,7 @@ namespace BPM_Key_Detection
 
         
 
-        public void EstimateKey(double[] chromaVectorValues)
+        public string EstimateKey(double[] chromaVectorValues)
         {
             KeyProfile majorProfile = new MajorProfile();
             KeyProfile minorProfile = new MinorProfile();
@@ -87,7 +69,7 @@ namespace BPM_Key_Detection
 
             Dictionary<string, double> majorSimilarities = new Dictionary<string, double>();
             Dictionary<string, double> minorSimilarities = new Dictionary<string, double>();
-            string[] arrayOfToneNames = new string[] {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
+            string[] arrayOfToneNames = new string[] {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
             //double[] MajorSimilarity = new double[12]; //Gammelt array før dictionaries
             //double[] MinorSimilarity = new double[12]; //Gammelt array før dictionaries
             for (int toneIndex = 0; toneIndex < 12; toneIndex++) //Loop igennem alle 12 toner, og fyld dictionaries med keys og values
@@ -98,14 +80,13 @@ namespace BPM_Key_Detection
                 //MinorSimilarity[i] = VectorOperations.CosineSimilarity(MinorProfiles[i], chromaVector, 12);
                 //Console.Write(MajorSimilarity[i] + " ");
                 //Console.WriteLine(MinorSimilarity[i]);
-                Console.WriteLine(majorSimilarities.ElementAt(toneIndex) + " " + minorSimilarities.ElementAt(toneIndex));
             }
 
             //Console.Write(MajorSimilarity.ToList().IndexOf(MajorSimilarity.Max()) + " ");
             //Console.WriteLine(MinorSimilarity.ToList().IndexOf(MinorSimilarity.Max()));
-            Console.Write(majorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key + "dur ");
-            Console.WriteLine(minorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key + "mol");
-            Console.ReadKey();
+            string majorkey = majorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+            string minorkey = minorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+            return (majorSimilarities[majorkey] < minorSimilarities[minorkey]) ? minorkey + " mol" : majorkey + " dur";
         }
     }
 }

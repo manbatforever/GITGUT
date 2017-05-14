@@ -55,11 +55,21 @@ namespace BPM_Key_Detection
                 for (int tone = 0; tone < _tonesPerOctave; tone++)
                 {
                     int f = tone + octave * _tonesPerOctave;
-                    chromaVector[tone] += singleFrame[tone + octave * _tonesPerOctave];
+                    chromaVector[tone] += singleFrame[tone + octave * _tonesPerOctave] * _octaveWeights[octave];
                 }
             }
             return chromaVector;
         }
+
+        private double[] _octaveWeights = new double[]
+        {
+            0.39997267549999998559,
+            0.55634425248300645173,
+            0.52496636345143543600,
+            0.60847548384277727607,
+            0.59898115679999996974,
+            0.49072435317960994006,
+        };
 
         //private double[] CreateMultiFrameChromaVector(double[][] toneAmplitudes) //Gammel metode
         //{

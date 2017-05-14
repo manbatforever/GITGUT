@@ -18,8 +18,8 @@ namespace BPM_Key_Detection
         public const int TonesPerOctave = 12;
         public const int TonesTotal = NumOfOctaves * TonesPerOctave;
         private const double MinimumFrequency = 27.5;
-        private const int SamplesPerFrame = 16384;
-        private const int DownSamplingFactor = 4;
+        private const int SamplesPerFrame = 4096 * 2 * 2;
+        private const int DownSamplingFactor = 10;
 
         public double[][] ToneAmplitudes { get => _toneAmplitudes; }
 
@@ -32,10 +32,26 @@ namespace BPM_Key_Detection
 
         public void Start()
         {
-            Kernel kernel = new Kernel(_sampleRate, MinimumFrequency, TonesPerOctave, NumOfOctaves, SamplesPerFrame);
+            IbrahimSpectralKernel kernel = new IbrahimSpectralKernel(_sampleRate, MinimumFrequency, TonesPerOctave, NumOfOctaves, SamplesPerFrame);
+
+            
+
+            //Kernel kernel = new Kernel(_sampleRate, MinimumFrequency, TonesPerOctave, NumOfOctaves, SamplesPerFrame);
             double[][] sampleFrames = CreateSampleFrames(DownSample(_inputSamples), 4);
-            Complex[][] fftSamples = FastFourierTransform.FFT(sampleFrames); // X[k] brown og puckette lign. (5)
-            _toneAmplitudes = EfficientCQT(kernel.AllSpectralKernels, fftSamples);
+
+
+            double[][] fftSamples = FastFourierTransform.FFTNonComplex(sampleFrames); // X[k] brown og puckette lign. (5)
+            _toneAmplitudes = EfficientCQT(kernel.GetAllSpectralKernels(), fftSamples);
+            System.IO.StreamWriter file = new System.IO.StreamWriter("cqttest.txt");
+            foreach (var item in _toneAmplitudes)
+            {
+                foreach (var iatem in item)
+                {
+                    file.Write(iatem + ";");
+                }
+                file.WriteLine();
+            }
+            file.Close();
         }
 
         private double[] DownSample(double[] inputSamples)
@@ -54,6 +70,7 @@ namespace BPM_Key_Detection
 
         private double[][] CreateSampleFrames(double[] samples, int hopsPerFrame)
         {
+            double[] blackmanWindow = BlackmanWindow();
             int SampleLength = samples.Length;
             int NumOfFrames = (SampleLength / SamplesPerFrame + 1) * hopsPerFrame;
             int HopSize = SamplesPerFrame / hopsPerFrame;
@@ -66,7 +83,7 @@ namespace BPM_Key_Detection
                     int sampleIndex = HopSize * frame + sample;
                     if (sampleIndex < SampleLength)
                     {
-                        SampleFrame[sample] = BlackmanWindow(samples[sampleIndex]);
+                        SampleFrame[sample] = samples[sampleIndex] * blackmanWindow[sample];
                     }
                 }
                 SampleFrames[frame] = SampleFrame;
@@ -74,12 +91,21 @@ namespace BPM_Key_Detection
             return SampleFrames;
         }
 
-        private double BlackmanWindow(double sample)
+        private double[] BlackmanWindow()
         {
-            return 0.42d - (0.5d * Math.Cos((2d * Math.PI * sample) / ((double)SamplesPerFrame - 1d))) + (0.08d * Math.Cos((4d * Math.PI * sample) / ((double)SamplesPerFrame - 1d)));
+            double a = 0.16d;
+            double a0 = (1d - a) / 2d;
+            double a1 = 1d / 2d;
+            double a2 = a / 2d;
+            double[] blackmanWindow = new double[SamplesPerFrame];
+            for (int n = 0; n < SamplesPerFrame; n++)
+            {
+                 blackmanWindow[n] = a0 - (a1 * Math.Cos((2d * Math.PI * n) / ((double)SamplesPerFrame))) + (a2 * Math.Cos((4d * Math.PI * n) / ((double)SamplesPerFrame)));
+            }
+            return blackmanWindow;
         }
 
-        private double[][] EfficientCQT(Complex[][] spectralKernels, Complex[][] fftSamples)
+        private double[][] EfficientCQT(double[][] spectralKernels, double[][] fftSamples)
         {
             int numOfSampleFrames = fftSamples.Length;
             double[][] toneAmplitudes = new double[numOfSampleFrames][];
@@ -94,12 +120,12 @@ namespace BPM_Key_Detection
             return toneAmplitudes;
         }
 
-        private double ToneAmplitude(Complex[] spectralKernelBin, Complex[] fftSamples) // Udfører brown og puckette lign. (5)
+        private double ToneAmplitude(double[] spectralKernelBin, double[] fftSamples) // Udfører brown og puckette lign. (5)
         {
             double temp = 0;
             for (int i = 0; i < SamplesPerFrame; i++)
             {
-                temp += spectralKernelBin[i].Magnitude * fftSamples[i].Magnitude;
+                temp += spectralKernelBin[i] * fftSamples[i];
             }
             return temp / SamplesPerFrame;
         }

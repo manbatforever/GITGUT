@@ -70,10 +70,11 @@ namespace BPM_Key_Detection
             float[] buffer = new float[floatLength];
             File.Read(buffer, 0, floatLength);
 
+            NAudio.Dsp.BiQuadFilter lowPassFilter = NAudio.Dsp.BiQuadFilter.LowPassFilter(_sampleRate, 2000, 1);
             double[] output = new double[floatLength];
             for (int i = 0; i < floatLength; i++)
             {
-                output[i] = buffer[i];
+                output[i] = lowPassFilter.Transform(buffer[i]);
             }
             return output;
         }

@@ -210,6 +210,7 @@ namespace BPM_Key_Detection
                         if (KeyChecked)
                         {
                             KeyEstimation keyEstimation = new KeyEstimation(MusicFile);
+                            MessageBox.Show(MusicFile.FileName + "\n" + keyEstimation.MusicFileKey);
                         }
                     }
                 }
