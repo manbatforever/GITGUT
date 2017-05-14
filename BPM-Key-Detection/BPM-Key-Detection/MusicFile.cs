@@ -79,7 +79,7 @@ namespace BPM_Key_Detection
             return output;
         }
 
-
+        
 
         public string FileName { get { return _fileName; } }
         public string Titel { get { return _titel; } }

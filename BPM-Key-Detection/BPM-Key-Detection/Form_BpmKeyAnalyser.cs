@@ -197,6 +197,7 @@ namespace BPM_Key_Detection
 
         private void Start_Click(object sender, EventArgs e)
         {
+            int correctCounter = 0;
             if (Files.Any() == true)
             {
                 if (BPMChecked || KeyChecked)
@@ -210,9 +211,13 @@ namespace BPM_Key_Detection
                         if (KeyChecked)
                         {
                             KeyEstimation keyEstimation = new KeyEstimation(MusicFile);
-                            MessageBox.Show(MusicFile.FileName + "\n" + keyEstimation.MusicFileKey);
+                            if (MusicFile.Key.Contains(keyEstimation.MusicFileKey))
+                            {
+                                correctCounter++;
+                            }
                         }
                     }
+                    MessageBox.Show(correctCounter.ToString());
                 }
                 else
                 {
