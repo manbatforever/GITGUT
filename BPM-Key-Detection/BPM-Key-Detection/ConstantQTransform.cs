@@ -42,16 +42,16 @@ namespace BPM_Key_Detection
 
             double[][] fftSamples = FastFourierTransform.FFTNonComplex(sampleFrames); // X[k] brown og puckette lign. (5)
             _toneAmplitudes = EfficientCQT(kernel.GetAllSpectralKernels(), fftSamples);
-            System.IO.StreamWriter file = new System.IO.StreamWriter("cqttest.txt");
-            foreach (var item in _toneAmplitudes)
-            {
-                foreach (var iatem in item)
-                {
-                    file.Write(iatem + ";");
-                }
-                file.WriteLine();
-            }
-            file.Close();
+            //System.IO.StreamWriter file = new System.IO.StreamWriter("cqttest.txt");
+            //foreach (var item in _toneAmplitudes)
+            //{
+            //    foreach (var iatem in item)
+            //    {
+            //        file.Write(iatem + ";");
+            //    }
+            //    file.WriteLine();
+            //}
+            //file.Close();
         }
 
         private double[] DownSample(double[] inputSamples)
