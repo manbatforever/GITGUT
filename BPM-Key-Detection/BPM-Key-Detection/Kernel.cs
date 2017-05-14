@@ -46,20 +46,6 @@ namespace BPM_Key_Detection
 
         private Complex[][] GetAllSpectralKernels(double[][] AllTemporalKernels)
         {
-            //int numOfKernels = AllTemporalKernels.Length;
-            //Complex[][] allSpectralKernels = new Complex[numOfKernels][];
-            //for (int kernel = 0; kernel < numOfKernels; kernel++)
-            //{
-            //    Complex[] spectralKernel = FastFourierTransform.FFT(AllTemporalKernels[kernel]);
-            //    for (int i = 0; i < _samplesPerFrame; i++)
-            //    {
-            //        if (spectralKernel[i].Magnitude < 1)
-            //        {
-            //            spectralKernel[i] = 0;
-            //        }
-            //    }
-            //    allSpectralKernels[kernel] = spectralKernel;
-            //}
             return FastFourierTransform.FFT(AllTemporalKernels);
         }
 
@@ -96,7 +82,6 @@ namespace BPM_Key_Detection
         {
             double alpha = 25d / 46d;
             return alpha - (1d - alpha) * Math.Cos(2d * Math.PI * n / WindowLength(k_cq)); // Hamming window function
-            //return 0.5d * (1d - Math.Cos(2d * Math.PI * n / WindowLength(k_cq))); // Hann window function
         }
 
         private double WindowLength(double k_cq)

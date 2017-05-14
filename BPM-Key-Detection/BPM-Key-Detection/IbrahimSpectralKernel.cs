@@ -36,18 +36,18 @@ namespace BPM_Key_Detection
 
         private double[] GetSingleSpectralKernel(int k)
         {
-            int lLimit = (int)Math.Ceiling(LeftWindowLimit(k));
-            int rLimit = (int)Math.Floor(RightWindowLimit(k));
+            int leftLimit = (int)Math.Ceiling((1d - (_Q / 2d)) * WindowLengthHelpingFunction(k));
+            int rightLimit = (int)Math.Floor((1d + (_Q / 2d)) * WindowLengthHelpingFunction(k));
             double[] spectralKernel = new double[(int)_samplesPerFrame];
-            for (int b = lLimit; b <= rLimit; b++)
+            for (int b = leftLimit; b <= rightLimit; b++)
             {
                 double spectralWindowSum = 0;
-                for (double i = lLimit; i <= rLimit; i++)
+                for (double i = leftLimit; i <= rightLimit; i++)
                 {
-                    spectralWindowSum += SpectralWindowFunction(i, k, lLimit, rLimit);
+                    spectralWindowSum += SpectralWindowFunction(i, k, leftLimit, rightLimit);
                 }
-                if (spectralWindowSum != 0 && rLimit != lLimit)
-                    spectralKernel[b] = SpectralWindowFunction(b, k, lLimit, rLimit) * _tonesOfInterest[k] / spectralWindowSum;
+                if (spectralWindowSum != 0 && rightLimit != leftLimit)
+                    spectralKernel[b] = SpectralWindowFunction(b, k, leftLimit, rightLimit) * _tonesOfInterest[k] / spectralWindowSum;
             }
             return spectralKernel;
         }
@@ -55,16 +55,6 @@ namespace BPM_Key_Detection
         private double SpectralWindowFunction(double x, int k, double lLimit, double rLimit)
         {
             return 1d - Math.Cos(2d * Math.PI * ((x - lLimit) / (rLimit - lLimit)));
-        }
-
-        private double LeftWindowLimit(int k)
-        {
-            return (1d - (_Q / 2d)) * WindowLengthHelpingFunction(k);
-        }
-
-        private double RightWindowLimit(int k)
-        {
-            return (1d + (_Q / 2d)) * WindowLengthHelpingFunction(k);
         }
 
         private double WindowLengthHelpingFunction(int k)

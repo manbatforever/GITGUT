@@ -55,37 +55,17 @@ namespace BPM_Key_Detection
             return monoSamples;
         }
 
-        
-
-        
-
-        
-
         private int EstimateKey(double[] chromaVectorValues)
         {
             KeyProfile majorProfile = new MajorProfile();
             KeyProfile minorProfile = new MinorProfile();
-
             double[] allSimilarities = new double[24];
             for (int i = 0; i < 12; i++)
             {
                 allSimilarities[i] = VectorOperations.CosineSimilarity(majorProfile.CreateProfileForTonica(i), chromaVectorValues, 12);
                 allSimilarities[i + 12] = VectorOperations.CosineSimilarity(minorProfile.CreateProfileForTonica(i), chromaVectorValues, 12);
             }
-
             return allSimilarities.ToList().IndexOf(allSimilarities.Max());
-
-            //Dictionary<string, double> majorSimilarities = new Dictionary<string, double>();
-            //Dictionary<string, double> minorSimilarities = new Dictionary<string, double>();
-            //string[] arrayOfToneNames = new string[] {"A", "A#/Bb", "B", "C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab"};
-            //for (int toneIndex = 0; toneIndex < 12; toneIndex++)
-            //{
-            //    majorSimilarities.Add(arrayOfToneNames[toneIndex], VectorOperations.CosineSimilarity(majorProfile.CreateProfileForTonica(toneIndex), chromaVectorValues, 12)); //Key = tone name, value = Cosine similarity result 
-            //    minorSimilarities.Add(arrayOfToneNames[toneIndex], VectorOperations.CosineSimilarity(minorProfile.CreateProfileForTonica(toneIndex), chromaVectorValues, 12));
-            //}
-            //string majorkey = majorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-            //string minorkey = minorSimilarities.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-            //string key = (majorSimilarities[majorkey] < minorSimilarities[minorkey]) ? minorkey + " mol" : majorkey + " dur";
         }
 
         private string FormatToMusicNotation(int key)
