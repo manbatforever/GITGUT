@@ -211,7 +211,8 @@ namespace BPM_Key_Detection
                         if (KeyChecked)
                         {
                             KeyEstimation keyEstimation = new KeyEstimation(MusicFile);
-                            if (MusicFile.Key.Contains(keyEstimation.MusicFileKey))
+                            keyEstimation.Start();
+                            if (MusicFile.Key.Contains(keyEstimation.CamelotNotation))
                             {
                                 correctCounter++;
                             }

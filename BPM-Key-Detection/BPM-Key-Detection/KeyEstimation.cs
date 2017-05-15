@@ -9,14 +9,16 @@ namespace BPM_Key_Detection
     class KeyEstimation
     {
         private MusicFile _musicFile;
-        private string _musicFileKey;
+        private string _camelotNotation;
+        private string _musicNotation;
 
-        public string MusicFileKey { get => _musicFileKey; }
+        public string CamelotNotation { get => _camelotNotation; }
+        public string MusicNotation { get => _musicNotation; }
 
         public KeyEstimation(MusicFile musicFile)
         {
             _musicFile = musicFile;
-            Start();
+            //Start();
         }
 
         public void Start()
@@ -27,12 +29,10 @@ namespace BPM_Key_Detection
                 monoSamples = ToMono(monoSamples, _musicFile.Channels);
             }
             ConstantQTransform cqt = new ConstantQTransform(monoSamples, _musicFile.Samplerate);
-
-            
-
             ChromaVector chromaVector = new ChromaVector(cqt.ToneAmplitudes, ConstantQTransform.TonesTotal, ConstantQTransform.TonesPerOctave); //TonesTotal and TonesPerOctave are accessed through type (they are constants)
             int key = EstimateKey(chromaVector.VectorValues);
-            _musicFileKey = FormatToCamelotNotation(key);
+            _camelotNotation = FormatToCamelotNotation(key);
+            _musicNotation = FormatToMusicNotation(key);
         }
 
         private double[] ToMono(double[] multiChannelSamples, int channels)
