@@ -33,6 +33,7 @@
             this.Start = new System.Windows.Forms.Button();
             this.GetBPM = new System.Windows.Forms.CheckBox();
             this.GetKey = new System.Windows.Forms.CheckBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,7 +63,7 @@
             this.dataGridView.Location = new System.Drawing.Point(12, 76);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
-            this.dataGridView.Size = new System.Drawing.Size(1010, 473);
+            this.dataGridView.Size = new System.Drawing.Size(1010, 434);
             this.dataGridView.TabIndex = 1;
             this.dataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_Files);
             this.dataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView_RowPostPaint);
@@ -72,9 +73,9 @@
             // 
             // Start
             // 
-            this.Start.Location = new System.Drawing.Point(292, 30);
+            this.Start.Location = new System.Drawing.Point(130, 12);
             this.Start.Name = "Start";
-            this.Start.Size = new System.Drawing.Size(75, 23);
+            this.Start.Size = new System.Drawing.Size(112, 58);
             this.Start.TabIndex = 2;
             this.Start.Text = "Start";
             this.Start.UseVisualStyleBackColor = true;
@@ -83,7 +84,7 @@
             // GetBPM
             // 
             this.GetBPM.AutoSize = true;
-            this.GetBPM.Location = new System.Drawing.Point(568, 30);
+            this.GetBPM.Location = new System.Drawing.Point(248, 21);
             this.GetBPM.Name = "GetBPM";
             this.GetBPM.Size = new System.Drawing.Size(69, 17);
             this.GetBPM.TabIndex = 3;
@@ -94,7 +95,7 @@
             // GetKey
             // 
             this.GetKey.AutoSize = true;
-            this.GetKey.Location = new System.Drawing.Point(687, 30);
+            this.GetKey.Location = new System.Drawing.Point(248, 44);
             this.GetKey.Name = "GetKey";
             this.GetKey.Size = new System.Drawing.Size(64, 17);
             this.GetKey.TabIndex = 4;
@@ -102,11 +103,20 @@
             this.GetKey.UseVisualStyleBackColor = true;
             this.GetKey.CheckedChanged += new System.EventHandler(this.GetKey_CheckedChanged);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 526);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(630, 23);
+            this.progressBar1.TabIndex = 5;
+            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
+            // 
             // Form_BpmKeyAnalyser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1034, 561);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.GetKey);
             this.Controls.Add(this.GetBPM);
             this.Controls.Add(this.Start);
@@ -128,6 +138,7 @@
         private System.Windows.Forms.Button Start;
         private System.Windows.Forms.CheckBox GetBPM;
         private System.Windows.Forms.CheckBox GetKey;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

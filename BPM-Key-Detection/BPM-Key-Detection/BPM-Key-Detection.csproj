@@ -84,6 +84,9 @@
     <Compile Include="KeyProfile.cs" />
     <Compile Include="SingleFrameChromaVector.cs" />
     <Compile Include="VectorOperations.cs" />
+    <EmbeddedResource Include="Form_BpmKeyAnalyser.resx">
+      <DependentUpon>Form_BpmKeyAnalyser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

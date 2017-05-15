@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +16,7 @@ namespace BPM_Key_Detection
         private List<MusicFile> Files = new List<MusicFile>();
         private bool BPMChecked = false;
         private bool KeyChecked = false;
+        private bool processRunning = false;
         public Form_BpmKeyAnalyser()
         {
             InitializeComponent();
@@ -24,6 +26,11 @@ namespace BPM_Key_Detection
         // Stores the filepath for all selected files in ArrayOfFiles.
         private void button_FileDialog(object sender, EventArgs e)
         {
+            if (processRunning)
+            {
+                MessageBox.Show("A process is already running.");
+                return;
+            }
             OpenFileDialog fd = new OpenFileDialog();
             fd.Filter = "Music file (*.mp3, *.wave) | *.mp3; *.wave";
             fd.Multiselect = true;
@@ -197,38 +204,60 @@ namespace BPM_Key_Detection
 
         private void Start_Click(object sender, EventArgs e)
         {
-            int correctCounter = 0;
-            if (Files.Any() == true)
+            if (processRunning)
             {
-                if (BPMChecked || KeyChecked)
+                MessageBox.Show("A process is already running.");
+                return;
+            }
+            Thread backgroundThread = new Thread( new ThreadStart(() =>
+            {
+                processRunning = true;
+                int i = 0;
+                int correctCounter = 0;
+                if (Files.Any() == true)
                 {
-                    foreach (var MusicFile in Files)
+                    if (BPMChecked || KeyChecked)
                     {
-                        if (BPMChecked)
+                        foreach (var MusicFile in Files)
                         {
-                            
-                        }
-                        if (KeyChecked)
-                        {
-                            KeyEstimation keyEstimation = new KeyEstimation(MusicFile);
-                            keyEstimation.Start();
-                            if (MusicFile.Key.Contains(keyEstimation.CamelotNotation))
+                            if (BPMChecked)
                             {
-                                correctCounter++;
+
                             }
+                            if (KeyChecked)
+                            {
+                                KeyEstimation keyEstimation = new KeyEstimation(MusicFile);
+                                keyEstimation.Start();
+                                if (MusicFile.Key.Contains(keyEstimation.CamelotNotation))
+                                {
+                                    correctCounter++;
+                                }
+                            }
+                            progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / Files.Count(); }));
+                            i++;
                         }
+                        MessageBox.Show(correctCounter.ToString());
                     }
-                    MessageBox.Show(correctCounter.ToString());
+                    else
+                    {
+                        MessageBox.Show("BPM or Key not checked!", "Check Error!");
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("BPM or Key not checked!", "Check Error!");
+                    MessageBox.Show("No files selected!", "Start Error!");
                 }
+                MessageBox.Show("Analysis complete!","Status message");
+                progressBar1.BeginInvoke(
+                        new Action(() =>
+                        {
+                            progressBar1.Value = 0;
+                        }
+                ));
+                processRunning = false;
             }
-            else
-            {
-                MessageBox.Show("No files selected!", "Start Error!");
-            }
+            ));
+            backgroundThread.Start();
         }
 
         private void GetBPM_CheckedChanged(object sender, EventArgs e)
@@ -239,6 +268,11 @@ namespace BPM_Key_Detection
         private void GetKey_CheckedChanged(object sender, EventArgs e)
         {
             KeyChecked = !KeyChecked;
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
