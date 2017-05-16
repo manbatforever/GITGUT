@@ -6,41 +6,48 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public class Samples
+    public class MusicFileSamples : Samples
     {
-
-        private double[] _sampleArray;
-        private int _numOfSamples;
         private int _sampleRate;
         private int _channels;
+        private bool _lowpassFiltered;
+        private bool _isMono;
+        private bool _downSampled;
 
-        public double[] SampleArray { get => _sampleArray; }
-        public int NumOfSamples { get => _numOfSamples; }
-        public int SampleRate { get => _sampleRate; }
+        public int Samplerate { get => _sampleRate; }
         public int Channels { get => _channels; }
+        public bool LowpassFiltered { get => _lowpassFiltered; }
+        public bool IsMono { get => _isMono; }
+        public bool DownSampled { get => _downSampled; }
 
-        public Samples(float[] samples, int numOfSamples, int sampleRate, int channels)
+        public MusicFileSamples(float[] sampleValues, int sampleRate, int channels)
         {
-            _sampleArray = new double[numOfSamples];
-            for (int i = 0; i < numOfSamples; i++)
+            _numOfSamples = sampleValues.Length;
+            _sampleArray = new double[_numOfSamples];
+            for (int i = 0; i < _numOfSamples; i++)
             {
-                _sampleArray[i] = samples[i];
+                _sampleArray[i] = sampleValues[i];
             }
-            _numOfSamples = numOfSamples;
             _sampleRate = sampleRate;
             _channels = channels;
         }
 
-        public Samples(double[] samples, int numOfSamples, int sampleRate, int channels)
+        public MusicFileSamples(double[] sampleValues, int sampleRate, int channels)
         {
-            _sampleArray = samples;
-            _numOfSamples = numOfSamples;
+            _numOfSamples = sampleValues.Length;
+            _sampleArray = sampleValues;
             _sampleRate = sampleRate;
             _channels = channels;
         }
 
+        public MusicFileSamples(double[] sampleValues)
+        {
+            _numOfSamples = sampleValues.Length;
+            _sampleArray = sampleValues;
+        }
 
-        public Samples ApplyLowpassFilter(int cutoffFrequency)
+
+        public MusicFileSamples LowpassFilter(int cutoffFrequency)
         {
             NAudio.Dsp.BiQuadFilter lowpassFilter = NAudio.Dsp.BiQuadFilter.LowPassFilter(_sampleRate, cutoffFrequency, 1);
             double[] filteredSamples = new double[_numOfSamples];
@@ -48,10 +55,10 @@ namespace BPM_Key_Detection
             {
                 filteredSamples[i] = lowpassFilter.Transform(Convert.ToSingle(_sampleArray[i]));
             }
-            return new Samples(filteredSamples, _numOfSamples, _sampleRate, _channels);
+            return new MusicFileSamples(filteredSamples, _sampleRate, _channels);
         }
 
-        public Samples ToMono()
+        public MusicFileSamples ToMono()
         {
             if (_channels == 1)
             {
@@ -70,12 +77,12 @@ namespace BPM_Key_Detection
                     }
                     monoSamples[monoSample] = channelSum;
                 }
-                return new Samples(monoSamples, monoLength, _sampleRate, 1);
+                return new MusicFileSamples(monoSamples, _sampleRate, 1);
             }
-            
+
         }
 
-        public Samples DownSample(int downSamplingFactor)
+        public MusicFileSamples DownSample(int downSamplingFactor)
         {
             int newSamplerate = _sampleRate / downSamplingFactor;
             int newLength = _numOfSamples / downSamplingFactor;
@@ -87,12 +94,7 @@ namespace BPM_Key_Detection
                     downSampled[step] = _sampleArray[step * downSamplingFactor + channel];
                 }
             }
-            return new Samples(downSampled, newLength, newSamplerate, _channels);
-        }
-
-        public FramedSamples CreateSampleFrames(int samplesPerFrame, int hopSize)
-        {
-            return new FramedSamples(this, samplesPerFrame, hopSize);
+            return new MusicFileSamples(downSampled, newSamplerate, _channels);
         }
     }
 }

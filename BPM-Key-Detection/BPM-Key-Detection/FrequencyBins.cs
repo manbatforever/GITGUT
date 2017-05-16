@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BPM_Key_Detection
+{
+    public class FrequencyBins
+    {
+        private double[] _binValues;
+        private int _numOfBins;
+
+        public FrequencyBins(double[] binValues)
+        {
+            _binValues = binValues;
+            _numOfBins = binValues.Length;
+        }
+
+        public FrequencyBins(MathNet.Numerics.Complex32[] binValues)
+        {
+            _numOfBins = binValues.Length;
+            _binValues = new double[_numOfBins];
+            for (int i = 0; i < _numOfBins; i++)
+            {
+                _binValues[i] = binValues[i].Magnitude;
+            }
+        }
+
+        public double[] BinValues { get => _binValues; }
+        public int NumOfBins { get => _numOfBins; }
+    }
+}

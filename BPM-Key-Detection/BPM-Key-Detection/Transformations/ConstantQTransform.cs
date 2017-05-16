@@ -22,11 +22,11 @@ namespace BPM_Key_Detection
 
         public ConstantQTransform(Samples samples)
         {
-            FramedSamples t = samples.ApplyLowpassFilter(CutoffFrequency).ToMono().DownSample(DownSamplingFactor).CreateSampleFrames(SamplesPerFrame, HopSize);
+            Frames t = samples.LowpassFilter(CutoffFrequency).ToMono().DownSample(DownSamplingFactor).CreateSampleFrames(SamplesPerFrame, HopSize);
             ApplyWindowFunction(t, BlackmanWindow());
         }
 
-        private void ApplyWindowFunction(FramedSamples framedSamples, double[] windowFunction)
+        private void ApplyWindowFunction(Frames framedSamples, double[] windowFunction)
         {
             for (int frame = 0; frame < framedSamples.NumOfFrames; frame++)
             {

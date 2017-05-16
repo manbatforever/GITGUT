@@ -24,7 +24,6 @@ namespace BPM_Key_Detection
         {
             _badFile = false;
             GetMetadata(FilePath);
-            GetSamplerateAndChannels(FilePath);
             _filepath = FilePath;
             _fileName = FilePath.Substring(FilePath.LastIndexOf("\\") + 1);
         }
