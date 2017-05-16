@@ -31,9 +31,11 @@ namespace BPM_Key_Detection
                 MessageBox.Show("A process is already running.");
                 return;
             }
-            OpenFileDialog fd = new OpenFileDialog();
-            fd.Filter = "Music file (*.mp3, *.wave) | *.mp3; *.wave";
-            fd.Multiselect = true;
+            OpenFileDialog fd = new OpenFileDialog()
+            {
+                Filter = "Music file (*.mp3, *.wave) | *.mp3; *.wave",
+                Multiselect = true
+            };
             fd.ShowDialog();
             string[] ArrayOfFiles = fd.FileNames;
             MakeListOfFiles(ArrayOfFiles);
@@ -218,7 +220,7 @@ namespace BPM_Key_Detection
                 {
                     if (BPMChecked || KeyChecked)
                     {
-                        foreach (var MusicFile in Files)
+                        foreach (MusicFile musicFile in Files)
                         {
                             if (BPMChecked)
                             {
@@ -226,9 +228,8 @@ namespace BPM_Key_Detection
                             }
                             if (KeyChecked)
                             {
-                                KeyEstimation keyEstimation = new KeyEstimation(MusicFile);
-                                keyEstimation.Start();
-                                if (MusicFile.Key.Contains(keyEstimation.CamelotNotation))
+                                musicFile.EstimateKey();
+                                if (musicFile.Key.Contains(musicFile.CamelotNotation))
                                 {
                                     correctCounter++;
                                 }

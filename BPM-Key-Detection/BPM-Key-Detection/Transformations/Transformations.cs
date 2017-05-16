@@ -17,13 +17,26 @@ namespace BPM_Key_Detection
         public static readonly int TonesTotal = TonesPerOctave * NumOfOctaves;
         public static readonly double MinimumFrequency = 27.5;
 
-        public static ToneAmplitudes CQT(MusicFileSamples samples)
+        public static SingleFrameToneAmplitudes[] CQT(MusicFileSamples musicFileSamples)
         {
-            MusicFileSamples musicFileSamples = samples.LowpassFilter(CutoffFrequency).ToMono().DownSample(DownSamplingFactor);
+            musicFileSamples.LowpassFilter(CutoffFrequency);
+            musicFileSamples.ToMono();
+            musicFileSamples.DownSample(DownSamplingFactor);
             MusicFileSamples[] framedMusicFileSamples = CreateSampleFrames(musicFileSamples, SamplesPerFrame, HopSize, new BlackmanWindow());
             FrequencyBins[] ffTransformedSamples = FFT(framedMusicFileSamples);
             SpectralKernel[] spectralKernel = CreateSpectralKernels(musicFileSamples.Samplerate);
-            
+
+            return CalculateToneAmplitudes(ffTransformedSamples, spectralKernel);
+        }
+
+        private static SingleFrameToneAmplitudes[] CalculateToneAmplitudes(FrequencyBins[] ffTransformedSamples, SpectralKernel[] spectralKernels)
+        {
+            SingleFrameToneAmplitudes[] allFramesToneAmplitudes = new SingleFrameToneAmplitudes[ffTransformedSamples.Length];
+            for (int frame = 0; frame < ffTransformedSamples.Length; frame++)
+            {
+                allFramesToneAmplitudes[frame] = new SingleFrameToneAmplitudes(ffTransformedSamples[frame], spectralKernels);
+            }
+            return allFramesToneAmplitudes;
         }
 
         private static SpectralKernel[] CreateSpectralKernels(int samplerate)
@@ -40,7 +53,7 @@ namespace BPM_Key_Detection
         {
             if (window == null)
             {
-                window = new DefaultWindow(); // Mulighed for at undlade vinduefunktion.
+                window = new DefaultWindow(); // Applies a window with no effects
             }
             window.WindowFunction(samplesPerFrame);
             int numOfFrames = allSamples.NumOfSamples / samplesPerFrame;
@@ -73,7 +86,7 @@ namespace BPM_Key_Detection
             MathNet.Numerics.Complex32[] tempComplex = new MathNet.Numerics.Complex32[samples.NumOfSamples];
             for (int sample = 0; sample < samples.NumOfSamples; sample++)
             {
-                tempComplex[sample] = new MathNet.Numerics.Complex32((float)samples.SampleArray[sample], 0); // Mister lidt præcision
+                tempComplex[sample] = new MathNet.Numerics.Complex32((float)samples.SampleArray[sample], 0); // Cast to float, lose precision
             }
             MathNet.Numerics.IntegralTransforms.Fourier.Forward(tempComplex);
             return new FrequencyBins(tempComplex);

@@ -67,10 +67,9 @@
     <Compile Include="Kernels\SpectralKernel.cs" />
     <Compile Include="Samples\TemporalKernelSamples.cs" />
     <Compile Include="Samples\MusicFileSamples.cs" />
-    <Compile Include="ToneAmplitudes.cs" />
+    <Compile Include="SingleFrameToneAmplitudes.cs" />
     <Compile Include="WindowFunctions\BlackmanWindow.cs" />
     <Compile Include="ChromaVector.cs" />
-    <Compile Include="Transformations\ConstantQTransform.cs" />
     <Compile Include="Transformations\CQTConstants.cs" />
     <Compile Include="WindowFunctions\DefaultWindow.cs" />
     <Compile Include="Transformations\FastFourierTransform.cs" />
@@ -84,7 +83,6 @@
     <Compile Include="WindowFunctions\HammingWindow.cs" />
     <Compile Include="WindowFunctions\HannWindow.cs" />
     <Compile Include="Kernels\IbrahimSpectralKernel.cs" />
-    <Compile Include="KeyEstimation.cs" />
     <Compile Include="MajorProfile.cs" />
     <Compile Include="MinorProfile.cs" />
     <Compile Include="MusicFile.cs" />

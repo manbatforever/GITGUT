@@ -47,7 +47,7 @@ namespace BPM_Key_Detection
         }
 
 
-        public MusicFileSamples LowpassFilter(int cutoffFrequency)
+        public void LowpassFilter(int cutoffFrequency)
         {
             NAudio.Dsp.BiQuadFilter lowpassFilter = NAudio.Dsp.BiQuadFilter.LowPassFilter(_sampleRate, cutoffFrequency, 1);
             double[] filteredSamples = new double[_numOfSamples];
@@ -55,16 +55,12 @@ namespace BPM_Key_Detection
             {
                 filteredSamples[i] = lowpassFilter.Transform(Convert.ToSingle(_sampleArray[i]));
             }
-            return new MusicFileSamples(filteredSamples, _sampleRate, _channels);
+            _sampleArray = filteredSamples;
         }
 
-        public MusicFileSamples ToMono()
+        public void ToMono()
         {
-            if (_channels == 1)
-            {
-                return this;
-            }
-            else
+            if (_channels != 1) // Don't convert if samples are already mono
             {
                 int monoLength = _numOfSamples / _channels;
                 double[] monoSamples = new double[monoLength];
@@ -77,12 +73,13 @@ namespace BPM_Key_Detection
                     }
                     monoSamples[monoSample] = channelSum;
                 }
-                return new MusicFileSamples(monoSamples, _sampleRate, 1);
+                _sampleArray = monoSamples;
+                _numOfSamples = monoLength;
+                _channels = 1;
             }
-
         }
 
-        public MusicFileSamples DownSample(int downSamplingFactor)
+        public void DownSample(int downSamplingFactor)
         {
             int newSamplerate = _sampleRate / downSamplingFactor;
             int newLength = _numOfSamples / downSamplingFactor;
@@ -94,7 +91,8 @@ namespace BPM_Key_Detection
                     downSampled[step] = _sampleArray[step * downSamplingFactor + channel];
                 }
             }
-            return new MusicFileSamples(downSampled, newSamplerate, _channels);
+            _sampleArray = downSampled;
+            _sampleRate = newSamplerate;
         }
     }
 }
