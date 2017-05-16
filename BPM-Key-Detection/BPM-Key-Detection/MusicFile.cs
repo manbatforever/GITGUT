@@ -18,8 +18,6 @@ namespace BPM_Key_Detection
         private string _key;
         private string _comment;
         private uint _bpm;
-        private int _sampleRate;
-        private int _channels;
         private bool _badFile;
 
         public MusicFile(string FilePath)
@@ -27,13 +25,12 @@ namespace BPM_Key_Detection
             _badFile = false;
             GetMetadata(FilePath);
             GetSamplerateAndChannels(FilePath);
-            
+            _filepath = FilePath;
+            _fileName = FilePath.Substring(FilePath.LastIndexOf("\\") + 1);
         }
 
         private void GetMetadata(string FilePath)
         {
-            _filepath = FilePath;
-            _fileName = FilePath.Substring(FilePath.LastIndexOf("\\") + 1);
             try
             {
                 File file = File.Create(FilePath);
@@ -54,34 +51,16 @@ namespace BPM_Key_Detection
             }
         }
 
-        private void GetSamplerateAndChannels(string FilePath)
+        public Samples GetRawSamples()
         {
-            AudioFileReader File = new AudioFileReader(FilePath);
-            _sampleRate = File.WaveFormat.SampleRate;
-            _channels = File.WaveFormat.Channels;
-            File.Close();
-        }
-
-        public double[] GetRawSamples()
-        {
-            AudioFileReader File = new AudioFileReader(Filepath);
-
-            int floatLength = (int)(File.Length / 4);
-            float[] buffer = new float[floatLength];
-            File.Read(buffer, 0, floatLength);
-
-            NAudio.Dsp.BiQuadFilter lowPassFilter = NAudio.Dsp.BiQuadFilter.LowPassFilter(_sampleRate, 2000, 1);
-            double[] output = new double[floatLength];
-            for (int i = 0; i < floatLength; i++)
-            {
-                output[i] = lowPassFilter.Transform(buffer[i]);
-            }
-            return output;
-        }
-
-        public void WriteMetada(string key)
-        {
-
+            AudioFileReader file = new AudioFileReader(Filepath);
+            int samplerate = file.WaveFormat.SampleRate;
+            int channels = file.WaveFormat.Channels;
+            int lengthFloat = (int)file.Length / 4;
+            float[] buffer = new float[lengthFloat];
+            file.Read(buffer, 0, lengthFloat);
+            file.Close();
+            return new Samples(buffer, lengthFloat, samplerate, channels);
         }
 
         public string FileName { get { return _fileName; } }
@@ -92,8 +71,6 @@ namespace BPM_Key_Detection
         public string Key { get { return _key; } }
         public string Comment { get { return _comment; } }
         public uint Bpm { get { return _bpm; } }
-        public int Samplerate { get { return _sampleRate; } }
-        public int Channels { get { return _channels; } }
         public bool BadFile { get { return _badFile; } }
     }
 }
