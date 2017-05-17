@@ -8,6 +8,9 @@ using NAudio.Wave;
 
 namespace BPM_Key_Detection
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MusicFile
     {
         private string _fileName;
@@ -167,9 +170,10 @@ namespace BPM_Key_Detection
             {
                 ByteVector tagIDKey = "TKEY";
                 TagLib.Id3v2.TextInformationFrame metadata = TagLib.Id3v2.TextInformationFrame.Get(fileTag, tagIDKey, true);
-                string[] key = { _estimatedKey };
+                string[] key = { _camelotNotation };
                 metadata.Text = key;
             }
+            file.Save();
         }
 
 

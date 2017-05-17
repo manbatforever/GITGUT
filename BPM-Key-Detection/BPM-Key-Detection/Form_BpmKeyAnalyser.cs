@@ -16,9 +16,8 @@ namespace BPM_Key_Detection
         private List<MusicFile> Files = new List<MusicFile>();
         private bool BPMChecked = false;
         private bool KeyChecked = false;
-        private bool keyNotationAsMusic = false;
-        private bool keyNotationAsCamelot = false;
-        private bool writeToMetadata = false;
+        private bool writeBPMToMetadata = false;
+        private bool writeKeyToMetadata = false;
         private bool processRunning = false;
         public Form_BpmKeyAnalyser()
         {
@@ -232,10 +231,15 @@ namespace BPM_Key_Detection
                             if (KeyChecked)
                             {
                                 musicFile.EstimateKey();
+                                MessageBox.Show(musicFile.CamelotNotation);
                                 if (musicFile.Key.Contains(musicFile.CamelotNotation))
                                 {
                                     correctCounter++;
                                 }
+                            }
+                            if (writeKeyToMetadata || writeBPMToMetadata)
+                            {
+                                musicFile.WriteMetadata(writeBPMToMetadata, writeKeyToMetadata);
                             }
                             progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / Files.Count(); }));
                             i++;
@@ -279,19 +283,14 @@ namespace BPM_Key_Detection
 
         }
 
-        private void musicNotation_CheckedChanged(object sender, EventArgs e)
+        private void writeBPM_CheckedChanged(object sender, EventArgs e)
         {
-            keyNotationAsMusic = !keyNotationAsMusic;
+            writeBPMToMetadata = !writeBPMToMetadata;
         }
 
-        private void camelotNotation_CheckedChanged(object sender, EventArgs e)
+        private void writeKey_CheckedChanged(object sender, EventArgs e)
         {
-            keyNotationAsCamelot = !keyNotationAsCamelot;
-        }
-
-        private void writeToFile_CheckedChanged(object sender, EventArgs e)
-        {
-            writeToMetadata = !writeToMetadata;
+            writeKeyToMetadata = !writeKeyToMetadata;
         }
     }
 }
