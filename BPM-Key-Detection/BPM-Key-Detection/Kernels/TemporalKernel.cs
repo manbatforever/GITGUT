@@ -13,8 +13,8 @@ namespace BPM_Key_Detection
 
         internal TemporalKernelSamples TemporalKernelSamples { get => _temporalKernelSamples; }
 
-        public TemporalKernel(double samplerate, int kernelNumber) : 
-            base(samplerate, kernelNumber)
+        public TemporalKernel(double samplerate) : 
+            base(samplerate)
         {
             _Q = 1d / (Math.Pow(2d, 1d / Transformations.TonesPerOctave) - 1d);
             _temporalKernelSamples = new TemporalKernelSamples(GetSingleTemporalKernel(kernelNumber));
@@ -47,7 +47,7 @@ namespace BPM_Key_Detection
 
         private double WindowLength(int k_cq)
         {
-            return _Q * _samplerate / _toneOfInterest;
+            return _Q * _samplerate / _toneOfInterest[k_cq];
         }
     }
 }

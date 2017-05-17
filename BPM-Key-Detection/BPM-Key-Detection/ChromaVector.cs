@@ -8,35 +8,32 @@ namespace BPM_Key_Detection
 {
     class ChromaVector
     {
-        private SingleFrameToneAmplitudes[] _toneAmplitudes;
+        private FramedToneAmplitudes _toneAmplitudes;
         private double[] _vectorValues;
 
         public double[] VectorValues { get => _vectorValues; set => _vectorValues = value; }
 
-        public ChromaVector(SingleFrameToneAmplitudes[] toneAmplitudes)
+        public ChromaVector(FramedToneAmplitudes toneAmplitudes)
         {
             _toneAmplitudes = toneAmplitudes;
             GetVectorValues(toneAmplitudes);
         }
-        public ChromaVector(SingleFrameToneAmplitudes singleFrameToneAmplitudes)
-        {
-            _vectorValues = GetVectorValues(singleFrameToneAmplitudes);
-        }
 
-        private void GetVectorValues(SingleFrameToneAmplitudes[] toneAmplitudes) //For multiple frames
+        private void GetVectorValues(FramedToneAmplitudes toneAmplitudes) //For multiple frames
         {
-            int numOfFrames = toneAmplitudes.Length;
+            int numOfFrames = toneAmplitudes.ToneAmplitudeValues.Length;
             _vectorValues = new double[Transformations.TonesPerOctave];
             for (int frame = 0; frame < numOfFrames; frame++)
             {
-                double[] tempSingleFrameChromaVector = GetVectorValues(toneAmplitudes[frame]);
+                double[] tempSingleFrameChromaVector = GetVectorValues(toneAmplitudes.ToneAmplitudeValues[frame]);
                 for (int element = 0; element < Transformations.TonesPerOctave; element++)
                 {
                     _vectorValues[element] += tempSingleFrameChromaVector[element];
                 }
             }
         }
-        private double[] GetVectorValues(SingleFrameToneAmplitudes singleFrameToneAmplitudes) // For single frame
+
+        private double[] GetVectorValues(double[] singleFrameToneAmplitudes) // For single frame
         {
             double[] chromaVector = new double[Transformations.TonesPerOctave];
             for (int octave = 0; octave < Transformations.NumOfOctaves; octave++)
@@ -44,7 +41,7 @@ namespace BPM_Key_Detection
                 for (int tone = 0; tone < Transformations.TonesPerOctave; tone++)
                 {
                     int f = tone + octave * Transformations.TonesPerOctave;
-                    chromaVector[tone] += singleFrameToneAmplitudes.ToneAmplitudeValues[tone + octave * Transformations.TonesPerOctave] * _octaveWeights[octave];
+                    chromaVector[tone] += singleFrameToneAmplitudes[tone + octave * Transformations.TonesPerOctave] * _octaveWeights[octave];
                 }
             }
             return chromaVector;

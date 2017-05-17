@@ -67,7 +67,7 @@ namespace BPM_Key_Detection
         public void EstimateKey()
         {
             MusicFileSamples musicFileSamples = GetRawSamples();
-            SingleFrameToneAmplitudes[] allToneAmplitudes = Transformations.CQT(musicFileSamples);
+            FramedToneAmplitudes allToneAmplitudes = Transformations.CQT(musicFileSamples);
             ChromaVector chromaVector = new ChromaVector(allToneAmplitudes);
             int key = CalculateKey(chromaVector);
             _camelotNotation = FormatToCamelotNotation(key);

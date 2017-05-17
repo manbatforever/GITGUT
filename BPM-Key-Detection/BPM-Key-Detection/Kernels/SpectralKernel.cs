@@ -8,12 +8,12 @@ namespace BPM_Key_Detection
 {
     public abstract class SpectralKernel : Kernel
     {
-        protected FrequencyBins _spectralKernelBins;
+        protected double[][] _spectralKernelBins;
 
-        public FrequencyBins SpectralKernelBins { get => _spectralKernelBins; }
+        public double[][] SpectralKernelBins { get => _spectralKernelBins; }
 
-        public SpectralKernel(double samplerate, int kernelNumber) : 
-            base(samplerate, kernelNumber)
+        public SpectralKernel(double samplerate) : 
+            base(samplerate)
         {
         }
 

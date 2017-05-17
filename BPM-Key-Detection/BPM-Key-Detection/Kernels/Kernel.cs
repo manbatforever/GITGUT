@@ -12,17 +12,22 @@ namespace BPM_Key_Detection
         protected double _samplerate;
         protected double _binsTotal;
         protected double _samplesPerFrame;
-        protected double _toneOfInterest;
+        protected double[] _toneOfInterest;
 
-        public Kernel(double samplerate, int kernelNumber)
+        public Kernel(double samplerate)
         {
             _samplerate = samplerate;
-            _toneOfInterest = ToneOfInterest(kernelNumber);
+            _toneOfInterest = ToneOfInterest();
         }
 
-        private double ToneOfInterest(int kernelNumber)
+        private double[] ToneOfInterest()
         {
-            return Math.Pow(Math.Pow(2d, 1d / Transformations.TonesPerOctave), kernelNumber) * Transformations.MinimumFrequency;
+            double[] tonesOfInterest = new double[Transformations.TonesTotal];
+            for (int tone = 0; tone < Transformations.TonesTotal; tone++)
+            {
+                tonesOfInterest[tone] = Math.Pow(Math.Pow(2d, 1d / Transformations.TonesPerOctave), tone) * Transformations.MinimumFrequency;
+            }
+            return tonesOfInterest;
         }
     }
 }

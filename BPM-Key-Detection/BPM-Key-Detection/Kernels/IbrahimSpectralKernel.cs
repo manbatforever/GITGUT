@@ -8,11 +8,21 @@ namespace BPM_Key_Detection
 {
     class IbrahimSpectralKernel : SpectralKernel
     {
-        public IbrahimSpectralKernel(double samplerate, int kernelNumber) : 
-            base(samplerate, kernelNumber)
+        public IbrahimSpectralKernel(double samplerate) : 
+            base(samplerate)
         {
             _Q = 0.8d * (Math.Pow(2d, 1d / Transformations.TonesPerOctave) - 1d);
-            _spectralKernelBins = new FrequencyBins(GetSingleSpectralKernel(kernelNumber));
+            _spectralKernelBins = GetAllSpectralKernels();
+        }
+
+        private double[][] GetAllSpectralKernels()
+        {
+            double[][] allSpectralKernel = new double[Transformations.TonesTotal][];
+            for (int kernel = 0; kernel < Transformations.TonesTotal; kernel++)
+            {
+                allSpectralKernel[kernel] = GetSingleSpectralKernel(kernel);
+            }
+            return allSpectralKernel;
         }
 
         private double[] GetSingleSpectralKernel(int k)
@@ -28,7 +38,7 @@ namespace BPM_Key_Detection
                     spectralWindowSum += SpectralWindowFunction(i, k, leftLimit, rightLimit);
                 }
                 if (spectralWindowSum != 0 && rightLimit != leftLimit)
-                    spectralKernel[b] = SpectralWindowFunction(b, k, leftLimit, rightLimit) * _toneOfInterest / spectralWindowSum;
+                    spectralKernel[b] = SpectralWindowFunction(b, k, leftLimit, rightLimit) * _toneOfInterest[k] / spectralWindowSum;
             }
             return spectralKernel;
         }
@@ -40,7 +50,7 @@ namespace BPM_Key_Detection
 
         private double WindowLengthHelpingFunction(int k)
         {
-            return (_toneOfInterest * Transformations.SamplesPerFrame) / _samplerate;
+            return (_toneOfInterest[k] * Transformations.SamplesPerFrame) / _samplerate;
         }
     }
 }

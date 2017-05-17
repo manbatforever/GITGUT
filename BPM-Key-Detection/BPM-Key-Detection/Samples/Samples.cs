@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public class Samples
+    public abstract class Samples
     {
         protected double[] _sampleArray;
         protected int _numOfSamples;

@@ -17,82 +17,35 @@ namespace BPM_Key_Detection
         public static readonly int TonesTotal = TonesPerOctave * NumOfOctaves;
         public static readonly double MinimumFrequency = 27.5;
 
-        public static SingleFrameToneAmplitudes[] CQT(MusicFileSamples musicFileSamples)
+        public static FramedToneAmplitudes CQT(MusicFileSamples musicFileSamples)
         {
             musicFileSamples.LowpassFilter(CutoffFrequency);
             musicFileSamples.ToMono();
             musicFileSamples.DownSample(DownSamplingFactor);
-            MusicFileSamples[] framedMusicFileSamples = CreateSampleFrames(musicFileSamples, SamplesPerFrame, HopSize, new BlackmanWindow());
-            FrequencyBins[] ffTransformedSamples = FFT(framedMusicFileSamples);
-            SpectralKernel[] spectralKernel = CreateSpectralKernels(musicFileSamples.Samplerate);
-            System.IO.StreamWriter file = new System.IO.StreamWriter("trans.txt");
-            foreach (var item in spectralKernel)
-            {
-                file.WriteLine(item);
-            }
-            file.Close();
+            FramedMusicFileSamples framedMusicFileSamples = musicFileSamples.CreateFramedMusicFileSamples(SamplesPerFrame, HopSize, new BlackmanWindow());
+            FramedFrequencyBins ffTransformedSamples = FFT(framedMusicFileSamples);
+            SpectralKernel spectralKernel = new IbrahimSpectralKernel(musicFileSamples.Samplerate);
 
-            return CalculateToneAmplitudes(ffTransformedSamples, spectralKernel);
+            return new FramedToneAmplitudes(ffTransformedSamples, spectralKernel);
         }
 
-        private static SingleFrameToneAmplitudes[] CalculateToneAmplitudes(FrequencyBins[] ffTransformedSamples, SpectralKernel[] spectralKernels)
+        public static FramedFrequencyBins FFT(FramedMusicFileSamples frames)
         {
-            SingleFrameToneAmplitudes[] allFramesToneAmplitudes = new SingleFrameToneAmplitudes[ffTransformedSamples.Length];
-            for (int frame = 0; frame < ffTransformedSamples.Length; frame++)
+            double[][] framedFrequencyBins = new double[frames.NumOfFrames][];
+            for (int frame = 0; frame < frames.NumOfFrames; frame++)
             {
-                allFramesToneAmplitudes[frame] = new SingleFrameToneAmplitudes(ffTransformedSamples[frame], spectralKernels);
+                framedFrequencyBins[frame] = FFT(frames.SampleFrames[frame]).BinValues;
             }
-            return allFramesToneAmplitudes;
+            return new FramedFrequencyBins(framedFrequencyBins);
         }
 
-        private static SpectralKernel[] CreateSpectralKernels(int samplerate)
+        public static FrequencyBins FFT(double[] samples)
         {
-            SpectralKernel[] spectralKernels = new SpectralKernel[TonesTotal];
-            for (int kernel = 0; kernel < TonesTotal; kernel++)
+            int numOfSamples = samples.Length;
+            MathNet.Numerics.Complex32[] tempComplex = new MathNet.Numerics.Complex32[numOfSamples];
+            for (int sample = 0; sample < numOfSamples; sample++)
             {
-                spectralKernels[kernel] = new IbrahimSpectralKernel(samplerate, kernel);
-            }
-            return spectralKernels;
-        }
-
-        private static MusicFileSamples[] CreateSampleFrames(MusicFileSamples allSamples, int samplesPerFrame, int hopSize, Window window = null)
-        {
-            if (window == null)
-            {
-                window = new DefaultWindow(); // Applies a window with no effects
-            }
-            window.WindowFunction(samplesPerFrame);
-            int numOfFrames = allSamples.NumOfSamples / samplesPerFrame;
-            MusicFileSamples[] sampleFrames = new MusicFileSamples[numOfFrames];
-            for (int frame = 0; frame < numOfFrames; frame++)
-            {
-                double[] sampleFrame = new double[samplesPerFrame];
-                for (int sample = 0; sample < samplesPerFrame; sample++)
-                {
-                    sampleFrame[sample] = allSamples.SampleArray[hopSize * frame + sample] * window.WindowArray[sample];
-                }
-                sampleFrames[frame] = new MusicFileSamples(sampleFrame);
-            }
-            return sampleFrames;
-        }
-
-        public static FrequencyBins[] FFT(Samples[] frames)
-        {
-            int numOfFrames = frames.Length;
-            FrequencyBins[] frequencyBinFrames = new FrequencyBins[numOfFrames];
-            for (int frame = 0; frame < numOfFrames; frame++)
-            {
-                frequencyBinFrames[frame] = FFT(frames[frame]);
-            }
-            return frequencyBinFrames;
-        }
-
-        public static FrequencyBins FFT(Samples samples)
-        {
-            MathNet.Numerics.Complex32[] tempComplex = new MathNet.Numerics.Complex32[samples.NumOfSamples];
-            for (int sample = 0; sample < samples.NumOfSamples; sample++)
-            {
-                tempComplex[sample] = new MathNet.Numerics.Complex32((float)samples.SampleArray[sample], 0); // Cast to float, lose precision
+                tempComplex[sample] = new MathNet.Numerics.Complex32((float)samples[sample], 0); // Cast to float, lose precision
             }
             MathNet.Numerics.IntegralTransforms.Fourier.Forward(tempComplex);
             return new FrequencyBins(tempComplex);

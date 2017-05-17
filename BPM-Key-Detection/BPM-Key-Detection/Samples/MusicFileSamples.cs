@@ -94,5 +94,10 @@ namespace BPM_Key_Detection
             _sampleArray = downSampled;
             _sampleRate = newSamplerate;
         }
+
+        public FramedMusicFileSamples CreateFramedMusicFileSamples(int samplesPerFrame, int hopSize, Window window = null)
+        {
+            return new FramedMusicFileSamples(this, samplesPerFrame, hopSize, window);
+        }
     }
 }
