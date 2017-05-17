@@ -36,6 +36,7 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.writeBPM = new System.Windows.Forms.CheckBox();
             this.writeKey = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,7 +66,7 @@
             this.dataGridView.Location = new System.Drawing.Point(12, 76);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
-            this.dataGridView.Size = new System.Drawing.Size(1010, 434);
+            this.dataGridView.Size = new System.Drawing.Size(1010, 421);
             this.dataGridView.TabIndex = 1;
             this.dataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_Files);
             this.dataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView_RowPostPaint);
@@ -107,9 +108,11 @@
             // 
             // progressBar1
             // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.Location = new System.Drawing.Point(12, 526);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(630, 23);
+            this.progressBar1.Size = new System.Drawing.Size(1010, 23);
             this.progressBar1.TabIndex = 5;
             this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
@@ -135,11 +138,22 @@
             this.writeKey.UseVisualStyleBackColor = true;
             this.writeKey.CheckedChanged += new System.EventHandler(this.writeKey_CheckedChanged);
             // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(12, 500);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(1010, 23);
+            this.label1.TabIndex = 8;
+            this.label1.Text = " ";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // Form_BpmKeyAnalyser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1034, 561);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.writeKey);
             this.Controls.Add(this.writeBPM);
             this.Controls.Add(this.progressBar1);
@@ -167,6 +181,7 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.CheckBox writeBPM;
         private System.Windows.Forms.CheckBox writeKey;
+        private System.Windows.Forms.Label label1;
     }
 }
 

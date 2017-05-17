@@ -225,6 +225,14 @@ namespace BPM_Key_Detection
                     {
                         foreach (MusicFile musicFile in Files)
                         {
+
+
+                            label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
+
+                            //this.label1.Text = "Currently analysing: " + musicFile.FileName;
+                            //label1.BackColor = System.Drawing.Color.Transparent;
+                            //label1.Parent = progressBar1;
+                            //label1.BringToFront();
                             if (BPMChecked)
                             {
 
@@ -245,6 +253,7 @@ namespace BPM_Key_Detection
                             progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / Files.Count(); }));
                             i++;
                         }
+                        label1.BeginInvoke(new Action(() => { label1.Text = ""; }));
                         MessageBox.Show(correctCounter.ToString());
                     }
                     else
@@ -292,6 +301,11 @@ namespace BPM_Key_Detection
         private void writeKey_CheckedChanged(object sender, EventArgs e)
         {
             writeKeyToMetadata = !writeKeyToMetadata;
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
