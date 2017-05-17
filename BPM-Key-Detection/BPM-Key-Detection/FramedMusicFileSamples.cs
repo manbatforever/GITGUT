@@ -14,7 +14,8 @@ namespace BPM_Key_Detection
 
         public FramedMusicFileSamples(MusicFileSamples samples, Window window = null)
         {
-            _numOfFrames = (samples.NumOfSamples / Transformations.SamplesPerFrame) - 1;
+            //_numOfFrames = (samples.NumOfSamples / Transformations.SamplesPerFrame) - 1; //Gammel kode før sammenligning med gammel (mere effektiv) version
+            _numOfFrames = (samples.NumOfSamples / Transformations.SamplesPerFrame - 1) * Transformations.HopsPerFrame; //Ny kode efter sammenligning med gammel version
             _sampleFrames = CreateSampleFrames(samples.SampleArray, samples.NumOfSamples, window);
         }
 
@@ -27,6 +28,7 @@ namespace BPM_Key_Detection
             {
                 window = new DefaultWindow(); // Applies a window with no effects
             }
+            int hopSize = Transformations.SamplesPerFrame / Transformations.HopsPerFrame;
             window.WindowFunction(Transformations.SamplesPerFrame);
             double[][] sampleFrames = new double[_numOfFrames][];
             for (int frame = 0; frame < _numOfFrames; frame++)
@@ -34,7 +36,7 @@ namespace BPM_Key_Detection
                 double[] sampleFrame = new double[Transformations.SamplesPerFrame];
                 for (int sample = 0; sample < Transformations.SamplesPerFrame; sample++)
                 {
-                    sampleFrame[sample] = samples[Transformations.HopSize * frame + sample] * window.WindowArray[sample];
+                    sampleFrame[sample] = samples[hopSize * frame + sample] * window.WindowArray[sample];
                 }
                 sampleFrames[frame] = sampleFrame;
             }

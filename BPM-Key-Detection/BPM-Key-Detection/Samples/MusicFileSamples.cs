@@ -97,6 +97,7 @@ namespace BPM_Key_Detection
             }
             _sampleArray = downSampled;
             _sampleRate = newSamplerate;
+            _numOfSamples = newLength;
             _downSampled = true;
         }
 
