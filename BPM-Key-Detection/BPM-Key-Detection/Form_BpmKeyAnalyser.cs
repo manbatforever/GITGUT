@@ -16,6 +16,9 @@ namespace BPM_Key_Detection
         private List<MusicFile> Files = new List<MusicFile>();
         private bool BPMChecked = false;
         private bool KeyChecked = false;
+        private bool keyNotationAsMusic = false;
+        private bool keyNotationAsCamelot = false;
+        private bool writeToMetadata = false;
         private bool processRunning = false;
         public Form_BpmKeyAnalyser()
         {
@@ -274,6 +277,21 @@ namespace BPM_Key_Detection
         private void progressBar1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void musicNotation_CheckedChanged(object sender, EventArgs e)
+        {
+            keyNotationAsMusic = !keyNotationAsMusic;
+        }
+
+        private void camelotNotation_CheckedChanged(object sender, EventArgs e)
+        {
+            keyNotationAsCamelot = !keyNotationAsCamelot;
+        }
+
+        private void writeToFile_CheckedChanged(object sender, EventArgs e)
+        {
+            writeToMetadata = !writeToMetadata;
         }
     }
 }

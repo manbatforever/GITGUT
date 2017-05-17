@@ -34,6 +34,9 @@
             this.GetBPM = new System.Windows.Forms.CheckBox();
             this.GetKey = new System.Windows.Forms.CheckBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.musicNotation = new System.Windows.Forms.CheckBox();
+            this.camelotNotation = new System.Windows.Forms.CheckBox();
+            this.writeToFile = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -111,11 +114,47 @@
             this.progressBar1.TabIndex = 5;
             this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
+            // musicNotation
+            // 
+            this.musicNotation.AutoSize = true;
+            this.musicNotation.Location = new System.Drawing.Point(384, 21);
+            this.musicNotation.Name = "musicNotation";
+            this.musicNotation.Size = new System.Drawing.Size(129, 17);
+            this.musicNotation.TabIndex = 6;
+            this.musicNotation.Text = "Key as music notation";
+            this.musicNotation.UseVisualStyleBackColor = true;
+            this.musicNotation.CheckedChanged += new System.EventHandler(this.musicNotation_CheckedChanged);
+            // 
+            // camelotNotation
+            // 
+            this.camelotNotation.AutoSize = true;
+            this.camelotNotation.Location = new System.Drawing.Point(384, 44);
+            this.camelotNotation.Name = "camelotNotation";
+            this.camelotNotation.Size = new System.Drawing.Size(139, 17);
+            this.camelotNotation.TabIndex = 7;
+            this.camelotNotation.Text = "Key as camelot notation";
+            this.camelotNotation.UseVisualStyleBackColor = true;
+            this.camelotNotation.CheckedChanged += new System.EventHandler(this.camelotNotation_CheckedChanged);
+            // 
+            // writeToFile
+            // 
+            this.writeToFile.AutoSize = true;
+            this.writeToFile.Location = new System.Drawing.Point(584, 35);
+            this.writeToFile.Name = "writeToFile";
+            this.writeToFile.Size = new System.Drawing.Size(110, 17);
+            this.writeToFile.TabIndex = 8;
+            this.writeToFile.Text = "Write to metadata";
+            this.writeToFile.UseVisualStyleBackColor = true;
+            this.writeToFile.CheckedChanged += new System.EventHandler(this.writeToFile_CheckedChanged);
+            // 
             // Form_BpmKeyAnalyser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1034, 561);
+            this.Controls.Add(this.writeToFile);
+            this.Controls.Add(this.camelotNotation);
+            this.Controls.Add(this.musicNotation);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.GetKey);
             this.Controls.Add(this.GetBPM);
@@ -139,6 +178,9 @@
         private System.Windows.Forms.CheckBox GetBPM;
         private System.Windows.Forms.CheckBox GetKey;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.CheckBox musicNotation;
+        private System.Windows.Forms.CheckBox camelotNotation;
+        private System.Windows.Forms.CheckBox writeToFile;
     }
 }
 
