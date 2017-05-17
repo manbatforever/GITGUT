@@ -25,10 +25,12 @@ namespace BPM_Key_Detection
                 framedToneAmplitudes[frame] = new double[Transformations.TonesTotal];
                 for (int tone = 0; tone < Transformations.TonesTotal; tone++)
                 {
+                    double temp = 0;
                     for (int bin = 0; bin < Transformations.SamplesPerFrame; bin++)
                     {
-                        framedToneAmplitudes[frame][tone] += musicFileFFT.FramedFrequencyBinValues[frame][bin] * spectralKernels.SpectralKernelBins[tone][bin]; // Brown & Puckette Equation (5)
+                        temp += musicFileFFT.FramedFrequencyBinValues[frame][bin] * spectralKernels.SpectralKernelBins[tone][bin]; // Brown & Puckette Equation (5)
                     }
+                    framedToneAmplitudes[frame][tone] = temp / Transformations.SamplesPerFrame;
                 }
             }
             return framedToneAmplitudes;
