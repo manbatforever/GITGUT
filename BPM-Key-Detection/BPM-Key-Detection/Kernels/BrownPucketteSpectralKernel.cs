@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BPM_Key_Detection.Kernels
-{
+{   //WARNING: This class is outdated and not used (or compiled) as of this version.
     //Object: A spectral kernel corresponding to the one from Brown and Puckette (1992)
     class BrownPucketteSpectralKernel : SpectralKernel
     {

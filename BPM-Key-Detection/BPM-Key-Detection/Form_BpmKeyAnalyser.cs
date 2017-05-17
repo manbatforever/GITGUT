@@ -232,7 +232,7 @@ namespace BPM_Key_Detection
                             if (KeyChecked)
                             {
                                 musicFile.EstimateKey();
-                                MessageBox.Show(musicFile.CamelotNotation);
+                                //MessageBox.Show(musicFile.CamelotNotation);
                                 if (musicFile.Key.Contains(musicFile.CamelotNotation))
                                 {
                                     correctCounter++;

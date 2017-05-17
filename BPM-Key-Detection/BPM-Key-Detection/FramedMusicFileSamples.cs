@@ -12,17 +12,16 @@ namespace BPM_Key_Detection
         private double[][] _sampleFrames;
         private int _numOfFrames;
 
-        public FramedMusicFileSamples(MusicFileSamples samples, Window window = null)
+        public FramedMusicFileSamples(MusicFileSamples musicFileSamples, Window window = null)
         {
-            //_numOfFrames = (samples.NumOfSamples / Transformations.SamplesPerFrame) - 1; //Gammel kode før sammenligning med gammel (mere effektiv) version
-            _numOfFrames = (samples.NumOfSamples / Transformations.SamplesPerFrame - 1) * Transformations.HopsPerFrame; //Ny kode efter sammenligning med gammel version
-            _sampleFrames = CreateSampleFrames(samples.SampleArray, samples.NumOfSamples, window);
+            _numOfFrames = (musicFileSamples.NumOfSamples / Transformations.SamplesPerFrame - 1) * Transformations.HopsPerFrame; // -1 to eliminate the last incomplete frame
+            _sampleFrames = CreateSampleFrames(musicFileSamples, musicFileSamples.NumOfSamples, window);
         }
 
         public double[][] SampleFrames { get => _sampleFrames; }
         public int NumOfFrames { get => _numOfFrames; }
 
-        private double[][] CreateSampleFrames(double[] samples, int samplesLength, Window window = null)
+        private double[][] CreateSampleFrames(MusicFileSamples musicFileSamples, int samplesLength, Window window)
         {
             if (window == null)
             {
@@ -34,9 +33,10 @@ namespace BPM_Key_Detection
             for (int frame = 0; frame < _numOfFrames; frame++)
             {
                 double[] sampleFrame = new double[Transformations.SamplesPerFrame];
+                int overlapLength = hopSize * frame; //Determines how many samples the next frame repeats from the end of the previous frame (frame overlapping)
                 for (int sample = 0; sample < Transformations.SamplesPerFrame; sample++)
                 {
-                    sampleFrame[sample] = samples[hopSize * frame + sample] * window.WindowArray[sample];
+                    sampleFrame[sample] = musicFileSamples.SampleArray[overlapLength + sample] * window.WindowArray[sample];
                 }
                 sampleFrames[frame] = sampleFrame;
             }
