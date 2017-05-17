@@ -19,6 +19,8 @@ namespace BPM_Key_Detection
         private string _comment;
         private string _camelotNotation;
         private string _musicNotation;
+        private string _estimatedKey;
+        private uint _estimatedBpm;
         private uint _bpm;
         private bool _badFile;
 
@@ -86,6 +88,7 @@ namespace BPM_Key_Detection
             }
             return allSimilarities.ToList().IndexOf(allSimilarities.Max());
         }
+
         private string FormatToMusicNotation(int key)
         {
             Dictionary<int, string> musicNotationDictionary = new Dictionary<int, string>()
@@ -152,6 +155,25 @@ namespace BPM_Key_Detection
             return camelotNotationDictionary[key];
         }
 
+        public void WriteMetadata(bool writeBPM, bool writeKey)
+        {
+            File file = File.Create(_filepath);
+            TagLib.Id3v2.Tag fileTag = (TagLib.Id3v2.Tag)file.GetTag(TagTypes.Id3v2, false);
+            if (writeBPM)
+            {
+                file.Tag.BeatsPerMinute = _estimatedBpm;
+            }
+            if (writeKey)
+            {
+                ByteVector tagIDKey = "TKEY";
+                TagLib.Id3v2.TextInformationFrame metadata = TagLib.Id3v2.TextInformationFrame.Get(fileTag, tagIDKey, true);
+                string[] key = { _estimatedKey };
+                metadata.Text = key;
+            }
+        }
+
+
+
         public string FileName { get { return _fileName; } }
         public string Titel { get { return _titel; } }
         public string Album { get { return _album; } }
@@ -161,7 +183,10 @@ namespace BPM_Key_Detection
         public string Comment { get { return _comment; } }
         public string CamelotNotation { get => _camelotNotation; }
         public string MusicNotation { get => _musicNotation; }
+        public string EstimatedKey { get => _estimatedKey;  }
+        public uint EstimatedBpm { get => _estimatedBpm; }
         public uint Bpm { get { return _bpm; } }
         public bool BadFile { get { return _badFile; } }
+
     }
 }
