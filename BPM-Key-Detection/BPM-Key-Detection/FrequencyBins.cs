@@ -29,5 +29,15 @@ namespace BPM_Key_Detection
 
         public double[] BinValues { get => _binValues; }
         public int NumOfBins { get => _numOfBins; }
+
+        public override string ToString()
+        {
+            string toString = "";
+            foreach (double bin in _binValues)
+            {
+                toString += bin + ";";
+            }
+            return toString;
+        }
     }
 }

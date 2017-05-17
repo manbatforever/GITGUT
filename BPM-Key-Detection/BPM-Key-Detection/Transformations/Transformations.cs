@@ -25,6 +25,12 @@ namespace BPM_Key_Detection
             MusicFileSamples[] framedMusicFileSamples = CreateSampleFrames(musicFileSamples, SamplesPerFrame, HopSize, new BlackmanWindow());
             FrequencyBins[] ffTransformedSamples = FFT(framedMusicFileSamples);
             SpectralKernel[] spectralKernel = CreateSpectralKernels(musicFileSamples.Samplerate);
+            System.IO.StreamWriter file = new System.IO.StreamWriter("trans.txt");
+            foreach (var item in spectralKernel)
+            {
+                file.WriteLine(item);
+            }
+            file.Close();
 
             return CalculateToneAmplitudes(ffTransformedSamples, spectralKernel);
         }

@@ -70,7 +70,6 @@
     <Compile Include="SingleFrameToneAmplitudes.cs" />
     <Compile Include="WindowFunctions\BlackmanWindow.cs" />
     <Compile Include="ChromaVector.cs" />
-    <Compile Include="Transformations\CQTConstants.cs" />
     <Compile Include="WindowFunctions\DefaultWindow.cs" />
     <Compile Include="Transformations\FastFourierTransform.cs" />
     <Compile Include="Form_BpmKeyAnalyser.cs">

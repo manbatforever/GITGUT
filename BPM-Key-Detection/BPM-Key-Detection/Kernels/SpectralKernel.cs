@@ -16,5 +16,10 @@ namespace BPM_Key_Detection
             base(samplerate, kernelNumber)
         {
         }
+
+        public override string ToString()
+        {
+            return _spectralKernelBins.ToString();
+        }
     }
 }

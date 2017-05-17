@@ -13,5 +13,15 @@ namespace BPM_Key_Detection
 
         public double[] SampleArray { get => _sampleArray; }
         public int NumOfSamples { get => _numOfSamples; }
+
+        public override string ToString()
+        {
+            string toString = "";
+            foreach (double sample in _sampleArray)
+            {
+                toString += sample + ";";
+            }
+            return toString;
+        }
     }
 }
