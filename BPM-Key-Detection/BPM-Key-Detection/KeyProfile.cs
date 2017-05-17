@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
+    //A data type specifying the musical note distribution in a key
     abstract class KeyProfile
     {
         private double[] _profile;

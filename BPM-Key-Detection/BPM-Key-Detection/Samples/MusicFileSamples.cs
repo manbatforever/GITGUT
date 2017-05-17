@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public class MusicFileSamples : Samples
+    //Object: Extracted samples from a musicfile. Contains certain functionality such as signal processing
+    class MusicFileSamples : Samples
     {
         private int _sampleRate;
         private int _channels;
@@ -30,6 +31,10 @@ namespace BPM_Key_Detection
             }
             _sampleRate = sampleRate;
             _channels = channels;
+            if (_channels == 1)
+            {
+                _isMono = true;
+            }
         }
 
         public MusicFileSamples(double[] sampleValues, int sampleRate, int channels)
@@ -38,14 +43,11 @@ namespace BPM_Key_Detection
             _sampleArray = sampleValues;
             _sampleRate = sampleRate;
             _channels = channels;
+            if (_channels == 1)
+            {
+                _isMono = true;
+            }
         }
-
-        public MusicFileSamples(double[] sampleValues)
-        {
-            _numOfSamples = sampleValues.Length;
-            _sampleArray = sampleValues;
-        }
-
 
         public void LowpassFilter(int cutoffFrequency)
         {
@@ -56,11 +58,12 @@ namespace BPM_Key_Detection
                 filteredSamples[i] = lowpassFilter.Transform(Convert.ToSingle(_sampleArray[i]));
             }
             _sampleArray = filteredSamples;
+            _lowpassFiltered = true;
         }
 
         public void ToMono()
         {
-            if (_channels != 1) // Don't convert if samples are already mono
+            if (!_isMono) // Don't convert if samples are already mono
             {
                 int monoLength = _numOfSamples / _channels;
                 double[] monoSamples = new double[monoLength];
@@ -76,6 +79,7 @@ namespace BPM_Key_Detection
                 _sampleArray = monoSamples;
                 _numOfSamples = monoLength;
                 _channels = 1;
+                _isMono = true;
             }
         }
 
@@ -93,11 +97,12 @@ namespace BPM_Key_Detection
             }
             _sampleArray = downSampled;
             _sampleRate = newSamplerate;
+            _downSampled = true;
         }
 
-        public FramedMusicFileSamples CreateFramedMusicFileSamples(int samplesPerFrame, int hopSize, Window window = null)
+        public FramedMusicFileSamples CreateFramedMusicFileSamples(Window window = null)
         {
-            return new FramedMusicFileSamples(this, samplesPerFrame, hopSize, window);
+            return new FramedMusicFileSamples(this, window);
         }
     }
 }

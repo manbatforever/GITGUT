@@ -11,7 +11,8 @@ using System.Windows.Forms;
 
 namespace BPM_Key_Detection
 {
-    public partial class Form_BpmKeyAnalyser : Form
+    //A windows form application which is responsible for UI and handling user input.
+    partial class Form_BpmKeyAnalyser : Form
     {
         private List<MusicFile> Files = new List<MusicFile>();
         private bool BPMChecked = false;

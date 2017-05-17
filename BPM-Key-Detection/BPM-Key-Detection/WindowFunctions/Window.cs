@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public abstract class Window
+    //A type of mathematical function that creates a "window" of another function when applied. Used in CQT calculations.
+    abstract class Window
     {
         protected double[] _windowArray;
         private int _length;

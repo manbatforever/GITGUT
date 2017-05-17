@@ -8,10 +8,8 @@ using NAudio.Wave;
 
 namespace BPM_Key_Detection
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class MusicFile
+    //Object: A data representation of a music file, containing functionality regarding music files as well as information about the specific file at hand.
+    class MusicFile
     {
         private string _fileName;
         private string _titel;
@@ -22,7 +20,6 @@ namespace BPM_Key_Detection
         private string _comment;
         private string _camelotNotation;
         private string _musicNotation;
-        private string _estimatedKey;
         private uint _estimatedBpm;
         private uint _bpm;
         private bool _badFile;
@@ -187,7 +184,6 @@ namespace BPM_Key_Detection
         public string Comment { get { return _comment; } }
         public string CamelotNotation { get => _camelotNotation; }
         public string MusicNotation { get => _musicNotation; }
-        public string EstimatedKey { get => _estimatedKey;  }
         public uint EstimatedBpm { get => _estimatedBpm; }
         public uint Bpm { get { return _bpm; } }
         public bool BadFile { get { return _badFile; } }

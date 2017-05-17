@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public abstract class Samples
+    //An abstract data type used to represent music file data and kernel data
+    abstract class Samples
     {
         protected double[] _sampleArray;
         protected int _numOfSamples;

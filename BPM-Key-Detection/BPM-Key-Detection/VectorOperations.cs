@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
+    //Contains functionality concering vector arithmetics.
     static class VectorOperations
     {
         private static double DotProduct(double[] V1, double[] V2, int length)

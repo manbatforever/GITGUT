@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Numerics;
 
 namespace BPM_Key_Detection
-{
-    public class TemporalKernel : Kernel
+{   //WARNING: This class is outdated and not used (or compiled) as of this version.
+    //Object: A temporal kernel used to calculate CQT
+    class TemporalKernel : Kernel
     {
         private TemporalKernelSamples _temporalKernelSamples;
 

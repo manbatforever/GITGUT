@@ -6,26 +6,25 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
+    //Object: Represents an array of tone amplitudes for each target tone.
     class ChromaVector
     {
-        private FramedToneAmplitudes _toneAmplitudes;
         private double[] _vectorValues;
 
         public double[] VectorValues { get => _vectorValues; set => _vectorValues = value; }
 
         public ChromaVector(FramedToneAmplitudes toneAmplitudes)
         {
-            _toneAmplitudes = toneAmplitudes;
-            GetVectorValues(toneAmplitudes);
+            CalculateVectorValues(toneAmplitudes);
         }
 
-        private void GetVectorValues(FramedToneAmplitudes toneAmplitudes) //For multiple frames
+        private void CalculateVectorValues(FramedToneAmplitudes toneAmplitudes) //For multiple frames
         {
             int numOfFrames = toneAmplitudes.ToneAmplitudeValues.Length;
             _vectorValues = new double[Transformations.TonesPerOctave];
             for (int frame = 0; frame < numOfFrames; frame++)
             {
-                double[] tempSingleFrameChromaVector = GetVectorValues(toneAmplitudes.ToneAmplitudeValues[frame]);
+                double[] tempSingleFrameChromaVector = CalculateVectorValues(toneAmplitudes.ToneAmplitudeValues[frame]);
                 for (int element = 0; element < Transformations.TonesPerOctave; element++)
                 {
                     _vectorValues[element] += tempSingleFrameChromaVector[element];
@@ -33,7 +32,7 @@ namespace BPM_Key_Detection
             }
         }
 
-        private double[] GetVectorValues(double[] singleFrameToneAmplitudes) // For single frame
+        private double[] CalculateVectorValues(double[] singleFrameToneAmplitudes) // For single frame
         {
             double[] chromaVector = new double[Transformations.TonesPerOctave];
             for (int octave = 0; octave < Transformations.NumOfOctaves; octave++)
@@ -56,39 +55,5 @@ namespace BPM_Key_Detection
             0.59898115679999996974,
             0.49072435317960994006,
         };
-
-        //private double[] CreateMultiFrameChromaVector(double[][] toneAmplitudes) //Gammel metode
-        //{
-        //    int numOfFrames = toneAmplitudes.Length;
-        //    double[] chromaVector = new double[_tonesPerOctave];
-        //    for (int frame = 0; frame < numOfFrames; frame++)
-        //    {
-        //        double[] tempSingleFrameChromaVector = CreateSingleFrameChromaVector(toneAmplitudes[frame]);
-        //        for (int element = 0; element < _tonesPerOctave; element++)
-        //        {
-        //            chromaVector[element] += tempSingleFrameChromaVector[element];
-        //        }
-        //    }
-        //    return chromaVector;
-        //}
-
-        //public double[] GetSingleFrameChromaVector(int frameNumber) //Gammel metode
-        //{
-        //    return CreateSingleFrameChromaVector(_toneAmplitudes[frameNumber]);
-        //}
-
-        //private double[] CreateSingleFrameChromaVector(double[] singleFrame)
-        //{
-        //    double[] chromaVector = new double[_tonesPerOctave];
-        //    for (int tone = 0; tone < _tonesPerOctave; tone++)
-        //    {
-        //        for (int octave = 0; octave < _numOfOctaves; octave++)
-        //        {
-        //            chromaVector[tone] += singleFrame[tone + octave * _tonesPerOctave];
-        //        }
-        //    }
-        //    return chromaVector;
-        //}
-
     }
 }

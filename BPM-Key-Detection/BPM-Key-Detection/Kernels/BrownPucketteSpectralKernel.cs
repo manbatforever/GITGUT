@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection.Kernels
 {
+    //Object: A spectral kernel corresponding to the one from Brown and Puckette (1992)
     class BrownPucketteSpectralKernel : SpectralKernel
     {
         public BrownPucketteSpectralKernel(double samplerate, int kernelNumber) : 
             base(samplerate, kernelNumber)
         {
-            _spectralKernelBins = Transformations.FFT(new TemporalKernel(samplerate, kernelNumber).TemporalKernelSamples);
+            _spectralKernelBins = Transformations.FFT(new TemporalKernel(samplerate, kernelNumber).TemporalKernelSamples); //This spectral kernel is simply FFT applied on a temporal kernel
         }
     }
 }

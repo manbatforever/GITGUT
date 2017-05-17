@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public static class Transformations
+    //Contains all functionality and constants concering Transformations (FFT and CQT)
+    static class Transformations
     {
         public static readonly int CutoffFrequency = 2000;
         public static readonly int DownSamplingFactor = 10;
@@ -22,11 +23,11 @@ namespace BPM_Key_Detection
             musicFileSamples.LowpassFilter(CutoffFrequency);
             musicFileSamples.ToMono();
             musicFileSamples.DownSample(DownSamplingFactor);
-            FramedMusicFileSamples framedMusicFileSamples = musicFileSamples.CreateFramedMusicFileSamples(SamplesPerFrame, HopSize, new BlackmanWindow());
+            FramedMusicFileSamples framedMusicFileSamples = musicFileSamples.CreateFramedMusicFileSamples(new BlackmanWindow());
             FramedFrequencyBins ffTransformedSamples = FFT(framedMusicFileSamples);
-            SpectralKernel spectralKernel = new IbrahimSpectralKernel(musicFileSamples.Samplerate);
+            IbrahimSpectralKernel ibrahimSpectralKernel = new IbrahimSpectralKernel(musicFileSamples.Samplerate);
 
-            return new FramedToneAmplitudes(ffTransformedSamples, spectralKernel);
+            return new FramedToneAmplitudes(ffTransformedSamples, ibrahimSpectralKernel);
         }
 
         public static FramedFrequencyBins FFT(FramedMusicFileSamples frames)

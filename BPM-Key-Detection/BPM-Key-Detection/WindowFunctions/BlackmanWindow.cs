@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
+    //Object: A type of window
     class BlackmanWindow : Window
     {
+
         public BlackmanWindow()
         {
         }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
+    //Object: Musical note distribution for minor keys
     class MinorProfile : KeyProfile
     {
         public MinorProfile()

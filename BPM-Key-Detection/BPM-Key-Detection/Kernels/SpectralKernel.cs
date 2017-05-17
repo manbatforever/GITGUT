@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public abstract class SpectralKernel : Kernel
+    //Object: A spectral kernel used to calculate CQT. This type represents an array of spectral kernels to be exact.
+    abstract class SpectralKernel : Kernel
     {
         protected double[][] _spectralKernelBins;
 

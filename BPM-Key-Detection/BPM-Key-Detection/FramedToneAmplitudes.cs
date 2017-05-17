@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public class FramedToneAmplitudes
+    //Object: Represents an array of frames containing tone amplitudes.
+    class FramedToneAmplitudes
     {
         private double[][] _toneAmplitudeValues;
 
         public double[][] ToneAmplitudeValues { get => _toneAmplitudeValues; }
 
-        public FramedToneAmplitudes(FramedFrequencyBins musicFileFFT, SpectralKernel spectralKernels)
+        public FramedToneAmplitudes(FramedFrequencyBins musicFileFFT, IbrahimSpectralKernel ibrahimSpectralKernels)
         {
-            _toneAmplitudeValues = CalculateSingleToneAmplitude(musicFileFFT, spectralKernels);
+            _toneAmplitudeValues = CalculateSingleToneAmplitude(musicFileFFT, ibrahimSpectralKernels);
         }
 
-        private double[][] CalculateSingleToneAmplitude(FramedFrequencyBins musicFileFFT, SpectralKernel spectralKernels)
+        private double[][] CalculateSingleToneAmplitude(FramedFrequencyBins musicFileFFT, IbrahimSpectralKernel ibrahimSpectralKernels)
         {
             double[][] framedToneAmplitudes = new double[musicFileFFT.NumOfFrames][];
             for (int frame = 0; frame < musicFileFFT.NumOfFrames; frame++)
@@ -26,9 +27,9 @@ namespace BPM_Key_Detection
                 for (int tone = 0; tone < Transformations.TonesTotal; tone++)
                 {
                     double temp = 0;
-                    for (int bin = 0; bin < Transformations.SamplesPerFrame; bin++)
+                    for (int bin = (int)ibrahimSpectralKernels.LLimitValues[tone]; bin < ibrahimSpectralKernels.RLimitValues[tone]; bin++)
                     {
-                        temp += musicFileFFT.FramedFrequencyBinValues[frame][bin] * spectralKernels.SpectralKernelBins[tone][bin]; // Brown & Puckette Equation (5)
+                        temp += musicFileFFT.FramedFrequencyBinValues[frame][bin] * ibrahimSpectralKernels.SpectralKernelBins[tone][bin]; // Brown & Puckette Equation (5)
                     }
                     framedToneAmplitudes[frame][tone] = temp / Transformations.SamplesPerFrame;
                 }

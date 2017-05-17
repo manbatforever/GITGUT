@@ -73,7 +73,6 @@
     <Compile Include="WindowFunctions\BlackmanWindow.cs" />
     <Compile Include="ChromaVector.cs" />
     <Compile Include="WindowFunctions\DefaultWindow.cs" />
-    <Compile Include="Transformations\FastFourierTransform.cs" />
     <Compile Include="Form_BpmKeyAnalyser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,8 +91,9 @@
     <None Include="Kernels\TemporalKernel.cs" />
     <Compile Include="KeyProfile.cs" />
     <Compile Include="Samples\Samples.cs" />
-    <Compile Include="Transformations\Transformations.cs" />
+    <Compile Include="Transformations.cs" />
     <Compile Include="VectorOperations.cs" />
+    <Compile Include="WindowFunctions\IbrahimWindow.cs" />
     <Compile Include="WindowFunctions\Window.cs" />
     <EmbeddedResource Include="Form_BpmKeyAnalyser.resx">
       <DependentUpon>Form_BpmKeyAnalyser.cs</DependentUpon>

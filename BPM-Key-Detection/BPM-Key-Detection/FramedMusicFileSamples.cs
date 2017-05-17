@@ -6,40 +6,35 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    public class FramedMusicFileSamples
+    //Object: Represents an array of frames containing music file samples.
+    class FramedMusicFileSamples
     {
         private double[][] _sampleFrames;
-        private int _samplesPerFrame;
         private int _numOfFrames;
-        private int _hopSize;
 
-        public FramedMusicFileSamples(MusicFileSamples samples, int samplesPerFrame, int hopSize, Window window = null)
+        public FramedMusicFileSamples(MusicFileSamples samples, Window window = null)
         {
-            _samplesPerFrame = samplesPerFrame;
-            _numOfFrames = (samples.NumOfSamples / samplesPerFrame) - 1;
-            _hopSize = hopSize;
-            _sampleFrames = CreateSampleFrames(samples.SampleArray, samples.NumOfSamples, samplesPerFrame, hopSize, window);
+            _numOfFrames = (samples.NumOfSamples / Transformations.SamplesPerFrame) - 1;
+            _sampleFrames = CreateSampleFrames(samples.SampleArray, samples.NumOfSamples, window);
         }
 
         public double[][] SampleFrames { get => _sampleFrames; }
-        public int SamplesPerFrame { get => _samplesPerFrame; }
         public int NumOfFrames { get => _numOfFrames; }
-        public int HopSize { get => _hopSize; }
 
-        private double[][] CreateSampleFrames(double[] samples, int samplesLength, int samplesPerFrame, int hopSize, Window window)
+        private double[][] CreateSampleFrames(double[] samples, int samplesLength, Window window = null)
         {
             if (window == null)
             {
                 window = new DefaultWindow(); // Applies a window with no effects
             }
-            window.WindowFunction(samplesPerFrame);
+            window.WindowFunction(Transformations.SamplesPerFrame);
             double[][] sampleFrames = new double[_numOfFrames][];
             for (int frame = 0; frame < _numOfFrames; frame++)
             {
-                double[] sampleFrame = new double[samplesPerFrame];
-                for (int sample = 0; sample < samplesPerFrame; sample++)
+                double[] sampleFrame = new double[Transformations.SamplesPerFrame];
+                for (int sample = 0; sample < Transformations.SamplesPerFrame; sample++)
                 {
-                    sampleFrame[sample] = samples[hopSize * frame + sample] * window.WindowArray[sample];
+                    sampleFrame[sample] = samples[Transformations.HopSize * frame + sample] * window.WindowArray[sample];
                 }
                 sampleFrames[frame] = sampleFrame;
             }
