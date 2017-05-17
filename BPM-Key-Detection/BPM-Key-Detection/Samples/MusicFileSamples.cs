@@ -74,7 +74,7 @@ namespace BPM_Key_Detection
                     {
                         channelSum += _sampleArray[monoSample * _channels + channel];
                     }
-                    monoSamples[monoSample] = channelSum;
+                    monoSamples[monoSample] = channelSum / _channels;
                 }
                 _sampleArray = monoSamples;
                 _numOfSamples = monoLength;

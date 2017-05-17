@@ -115,7 +115,7 @@ namespace BPM_Key_Detection
             DataTable dt = new DataTable();
             dt.Columns.Add(new DataColumn("Filename", typeof(string)));
             dt.Columns.Add(new DataColumn("Title", typeof(string)));
-            dt.Columns.Add(new DataColumn("Kunstner", typeof(string)));
+            dt.Columns.Add(new DataColumn("Artist", typeof(string)));
             dt.Columns.Add(new DataColumn("Album", typeof(string)));
             dt.Columns.Add(new DataColumn("Comments", typeof(string)));
             dt.Columns.Add(new DataColumn("BPM", typeof(uint)));
