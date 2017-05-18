@@ -83,8 +83,9 @@ namespace BPM_Key_Detection
             }
         }
 
-        public void DownSample(int downSamplingFactor)
+        public void DownSample(int cutoffFrequency)
         {
+            int downSamplingFactor = _sampleRate / 2 / cutoffFrequency - 1;
             int newSamplerate = _sampleRate / downSamplingFactor;
             int newLength = _numOfSamples / downSamplingFactor;
             double[] downSampled = new double[newLength];

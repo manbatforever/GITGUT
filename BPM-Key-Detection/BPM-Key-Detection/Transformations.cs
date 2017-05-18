@@ -10,7 +10,6 @@ namespace BPM_Key_Detection
     static class Transformations
     {
         public static readonly int CutoffFrequency = 2000;
-        public static readonly int DownSamplingFactor = 10;
         public static readonly int SamplesPerFrame = 16384;
         public static readonly int HopSize = 4;
         public static readonly int TonesPerOctave = 12;
@@ -22,7 +21,7 @@ namespace BPM_Key_Detection
         {
             musicFileSamples.LowpassFilter(CutoffFrequency);
             musicFileSamples.ToMono();
-            musicFileSamples.DownSample(DownSamplingFactor);
+            musicFileSamples.DownSample(CutoffFrequency);
             FramedMusicFileSamples framedMusicFileSamples = musicFileSamples.CreateFramedMusicFileSamples(new BlackmanWindow());
             FramedFrequencyBins ffTransformedSamples = FFT(framedMusicFileSamples);
             IbrahimSpectralKernel ibrahimSpectralKernel = new IbrahimSpectralKernel(musicFileSamples.Samplerate);
