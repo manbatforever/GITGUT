@@ -257,8 +257,11 @@ namespace BPM_Key_Detection
                             progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / Files.Count(); }));
                             i++;
                         }
-                        string messageBadFiles = string.Join(Environment.NewLine, badFiles);
-                        MessageBox.Show("The following files could not be analysed: \n\n" + messageBadFiles, "Analysing Error");
+                        if (badFiles.Any())
+                        {
+                            string messageBadFiles = string.Join(Environment.NewLine, badFiles);
+                            MessageBox.Show("The following files could not be analysed: \n\n" + messageBadFiles, "Analysing Error");
+                        }
                         label1.BeginInvoke(new Action(() => { label1.Text = ""; }));
                         MessageBox.Show(correctCounter.ToString());
                     }
