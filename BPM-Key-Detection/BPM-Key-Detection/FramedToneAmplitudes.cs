@@ -15,10 +15,10 @@ namespace BPM_Key_Detection
 
         public FramedToneAmplitudes(FramedFrequencyBins musicFileFFT, IbrahimSpectralKernel ibrahimSpectralKernels)
         {
-            _toneAmplitudeValues = CalculateSingleToneAmplitude(musicFileFFT, ibrahimSpectralKernels);
+            _toneAmplitudeValues = CalculateAllToneAmplitudes(musicFileFFT, ibrahimSpectralKernels);
         }
 
-        private double[][] CalculateSingleToneAmplitude(FramedFrequencyBins musicFileFFT, IbrahimSpectralKernel ibrahimSpectralKernels)
+        private double[][] CalculateAllToneAmplitudes(FramedFrequencyBins musicFileFFT, IbrahimSpectralKernel ibrahimSpectralKernels)
         {
             double[][] framedToneAmplitudes = new double[musicFileFFT.NumOfFrames][];
             for (int frame = 0; frame < musicFileFFT.NumOfFrames; frame++)
