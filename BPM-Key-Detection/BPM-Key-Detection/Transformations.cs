@@ -11,7 +11,7 @@ namespace BPM_Key_Detection
     {
         public static readonly int CutoffFrequency = 2000;
         public static readonly int SamplesPerFrame = 16384;
-        public static readonly int HopSize = 4;
+        public static readonly int HopsPerFrame = 4;
         public static readonly int TonesPerOctave = 12;
         public static readonly int NumOfOctaves = 6;
         public static readonly int TonesTotal = TonesPerOctave * NumOfOctaves;
