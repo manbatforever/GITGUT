@@ -19,8 +19,8 @@ namespace BPM_Key_Detection
 
         public static FramedToneAmplitudes CQT(MusicFileSamples musicFileSamples)
         {
-            musicFileSamples.LowpassFilter(CutoffFrequency);
             musicFileSamples.ToMono();
+            musicFileSamples.LowpassFilter(CutoffFrequency);
             musicFileSamples.DownSample(CutoffFrequency);
             FramedMusicFileSamples framedMusicFileSamples = musicFileSamples.CreateFramedMusicFileSamples(new BlackmanWindow());
             FramedFrequencyBins ffTransformedSamples = FFT(framedMusicFileSamples);
