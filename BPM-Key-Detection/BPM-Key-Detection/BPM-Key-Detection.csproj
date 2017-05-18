@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="FramedFrequencyBins.cs" />
     <Compile Include="FramedMusicFileSamples.cs" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Kernels\BrownPucketteSpectralKernel.cs" />
     <Compile Include="Kernels\Kernel.cs" />
     <Compile Include="Kernels\SpectralKernel.cs" />

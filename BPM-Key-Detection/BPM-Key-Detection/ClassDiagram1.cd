@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BPM_Key_Detection.Samples">
+    <Position X="0.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAACACBEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Samples\Samples.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BPM_Key_Detection.MusicFileSamples">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QUAAACQAACAAAAAAIJEAAAEAAAAAAAAAAAAAAAAAFAI=</HashCode>
+      <FileName>Samples\MusicFileSamples.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BPM_Key_Detection.IbrahimSpectralKernel">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAABAAAAAAACAAAAAgCgAAAAAIAAAAAAA=</HashCode>
+      <FileName>Kernels\IbrahimSpectralKernel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BPM_Key_Detection.SpectralKernel">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAEAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Kernels\SpectralKernel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BPM_Key_Detection.Kernel">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAgAAAAAAAgAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Kernels\Kernel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
