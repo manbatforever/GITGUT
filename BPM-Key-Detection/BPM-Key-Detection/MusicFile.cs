@@ -68,12 +68,23 @@ namespace BPM_Key_Detection
 
         public void EstimateKey()
         {
-            MusicFileSamples musicFileSamples = GetRawSamples();
-            FramedToneAmplitudes allToneAmplitudes = Transformations.CQT(musicFileSamples);
-            ChromaVector chromaVector = new ChromaVector(allToneAmplitudes);
-            int key = CalculateKey(chromaVector);
-            _camelotNotation = FormatToCamelotNotation(key);
-            _musicNotation = FormatToMusicNotation(key);
+            MusicFileSamples musicFileSamples = null;
+            try
+            {
+                musicFileSamples = GetRawSamples();
+            }
+            catch (InvalidOperationException)
+            {
+                _badFile = true;
+            }
+            if (musicFileSamples != null)
+            {
+                FramedToneAmplitudes allToneAmplitudes = Transformations.CQT(musicFileSamples);
+                ChromaVector chromaVector = new ChromaVector(allToneAmplitudes);
+                int key = CalculateKey(chromaVector);
+                _camelotNotation = FormatToCamelotNotation(key);
+                _musicNotation = FormatToMusicNotation(key);
+            }
         }
 
         private int CalculateKey(ChromaVector chromaVector)

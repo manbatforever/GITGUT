@@ -80,12 +80,12 @@ namespace BPM_Key_Detection
                 int numberOfFiles = alreadyLoaded.Count - 25;
                 if (alreadyLoaded.Count > 25)
                 {
-                    var messageAlreadyLoaded = string.Join(Environment.NewLine, firstItems);
+                    string messageAlreadyLoaded = string.Join(Environment.NewLine, firstItems);
                     MessageBox.Show("The following files were already loaded: \n\n" + messageAlreadyLoaded + "\n+ " + numberOfFiles + " other files.", "Loading Error");
                 }
                 else
                 {
-                    var messageAlreadyLoaded = string.Join(Environment.NewLine, alreadyLoaded);
+                    string messageAlreadyLoaded = string.Join(Environment.NewLine, alreadyLoaded);
                     MessageBox.Show("The following files were already loaded: \n\n" + messageAlreadyLoaded, "Loading Error");
                 }
             }
@@ -96,12 +96,12 @@ namespace BPM_Key_Detection
                 int numberOfFiles = badFiles.Count - 25;
                 if (badFiles.Count > 25)
                 {
-                    var messageBadFiles = string.Join(Environment.NewLine, firstItems);
+                    string messageBadFiles = string.Join(Environment.NewLine, firstItems);
                     MessageBox.Show("The following files  could not be loaded: \n\n" + messageBadFiles + "\n+ " + numberOfFiles + " other files.", "Loading Error");
                 }
                 else
                 {
-                    var messageBadFiles = string.Join(Environment.NewLine, badFiles);
+                    string messageBadFiles = string.Join(Environment.NewLine, badFiles);
                     MessageBox.Show("The following files  could not be loaded: \n\n" + messageBadFiles, "Loading Error");
                 }
             }
@@ -216,6 +216,7 @@ namespace BPM_Key_Detection
             }
             Thread backgroundThread = new Thread( new ThreadStart(() =>
             {
+                List<string> badFiles = new List<string>();
                 processRunning = true;
                 int i = 0;
                 int correctCounter = 0;
@@ -225,14 +226,7 @@ namespace BPM_Key_Detection
                     {
                         foreach (MusicFile musicFile in Files)
                         {
-
-
                             label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
-
-                            //this.label1.Text = "Currently analysing: " + musicFile.FileName;
-                            //label1.BackColor = System.Drawing.Color.Transparent;
-                            //label1.Parent = progressBar1;
-                            //label1.BringToFront();
                             if (BPMChecked)
                             {
 
@@ -240,19 +234,31 @@ namespace BPM_Key_Detection
                             if (KeyChecked)
                             {
                                 musicFile.EstimateKey();
-                                //MessageBox.Show(musicFile.CamelotNotation);
-                                if (musicFile.Key.Contains(musicFile.CamelotNotation))
+                                if (musicFile.BadFile)
                                 {
-                                    correctCounter++;
+                                    badFiles.Add(musicFile.FileName);
+                                }
+                                //MessageBox.Show(musicFile.CamelotNotation);
+                                if (musicFile.CamelotNotation != null)
+                                {
+                                    if (musicFile.Key.Contains(musicFile.CamelotNotation))
+                                    {
+                                        correctCounter++;
+                                    }
                                 }
                             }
-                            if (writeKeyToMetadata || writeBPMToMetadata)
+                            if (!musicFile.BadFile)
                             {
-                                musicFile.WriteMetadata(writeBPMToMetadata, writeKeyToMetadata);
+                                if (writeKeyToMetadata || writeBPMToMetadata)
+                                {
+                                    musicFile.WriteMetadata(writeBPMToMetadata, writeKeyToMetadata);
+                                }
                             }
                             progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / Files.Count(); }));
                             i++;
                         }
+                        string messageBadFiles = string.Join(Environment.NewLine, badFiles);
+                        MessageBox.Show("The following files could not be analysed: \n\n" + messageBadFiles, "Analysing Error");
                         label1.BeginInvoke(new Action(() => { label1.Text = ""; }));
                         MessageBox.Show(correctCounter.ToString());
                     }
