@@ -9,16 +9,16 @@ namespace BPM_Key_Detection
     //Object: Represents an array of frames containing frequency bins.
     public class FramedFrequencyBins
     {
-        private double[][] _framedFrequencyBinValues;
+        private MathNet.Numerics.Complex32[][] _framedFrequencyBinValues;
         private int _numOfFrames;
 
-        public FramedFrequencyBins(double[][] framedFrequencyBinValues)
+        public FramedFrequencyBins(MathNet.Numerics.Complex32[][] framedFrequencyBinValues)
         {
             _framedFrequencyBinValues = framedFrequencyBinValues;
             _numOfFrames = framedFrequencyBinValues.Length;
         }
 
-        public double[][] FramedFrequencyBinValues { get => _framedFrequencyBinValues; }
+        public MathNet.Numerics.Complex32[][] FramedFrequencyBinValues { get => _framedFrequencyBinValues; }
         public int NumOfFrames { get => _numOfFrames; }
     }
 }

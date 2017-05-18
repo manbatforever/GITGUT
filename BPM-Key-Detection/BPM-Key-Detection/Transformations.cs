@@ -31,24 +31,24 @@ namespace BPM_Key_Detection
 
         public static FramedFrequencyBins FFT(FramedMusicFileSamples frames)
         {
-            double[][] framedFrequencyBins = new double[frames.NumOfFrames][];
+            MathNet.Numerics.Complex32[][] framedFrequencyBins = new MathNet.Numerics.Complex32[frames.NumOfFrames][];
             for (int frame = 0; frame < frames.NumOfFrames; frame++)
             {
-                framedFrequencyBins[frame] = FFT(frames.SampleFrames[frame]).BinValues;
+                framedFrequencyBins[frame] = FFT(frames.SampleFrames[frame]);
             }
             return new FramedFrequencyBins(framedFrequencyBins);
         }
 
-        public static FrequencyBins FFT(double[] samples)
+        public static MathNet.Numerics.Complex32[] FFT(double[] samples)
         {
             int numOfSamples = samples.Length;
-            MathNet.Numerics.Complex32[] tempComplex = new MathNet.Numerics.Complex32[numOfSamples];
+            MathNet.Numerics.Complex32[] frequencyBins = new MathNet.Numerics.Complex32[numOfSamples];
             for (int sample = 0; sample < numOfSamples; sample++)
             {
-                tempComplex[sample] = new MathNet.Numerics.Complex32((float)samples[sample], 0); // Cast to float, lose precision
+                frequencyBins[sample] = new MathNet.Numerics.Complex32((float)samples[sample], 0); // Cast to float, lose precision
             }
-            MathNet.Numerics.IntegralTransforms.Fourier.Forward(tempComplex);
-            return new FrequencyBins(tempComplex);
+            MathNet.Numerics.IntegralTransforms.Fourier.Forward(frequencyBins);
+            return frequencyBins;
         }
 
     }

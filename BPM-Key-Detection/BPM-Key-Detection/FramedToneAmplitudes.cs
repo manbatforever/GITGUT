@@ -29,7 +29,7 @@ namespace BPM_Key_Detection
                     double temp = 0;
                     for (int bin = (int)ibrahimSpectralKernels.LLimitValues[tone]; bin < ibrahimSpectralKernels.RLimitValues[tone]; bin++)
                     {
-                        temp += musicFileFFT.FramedFrequencyBinValues[frame][bin] * ibrahimSpectralKernels.SpectralKernelBins[tone][bin]; // Brown & Puckette Equation (5)
+                        temp += musicFileFFT.FramedFrequencyBinValues[frame][bin].Magnitude * ibrahimSpectralKernels.SpectralKernelBins[tone][bin]; // Brown & Puckette Equation (5)
                     }
                     framedToneAmplitudes[frame][tone] = temp / Transformations.SamplesPerFrame;
                 }

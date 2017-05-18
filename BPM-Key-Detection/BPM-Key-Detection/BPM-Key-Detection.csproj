@@ -80,7 +80,7 @@
     <Compile Include="Form_BpmKeyAnalyser.Designer.cs">
       <DependentUpon>Form_BpmKeyAnalyser.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrequencyBins.cs" />
+    <None Include="FrequencyBins.cs" />
     <Compile Include="WindowFunctions\HammingWindow.cs" />
     <Compile Include="WindowFunctions\HannWindow.cs" />
     <Compile Include="Kernels\IbrahimSpectralKernel.cs" />
