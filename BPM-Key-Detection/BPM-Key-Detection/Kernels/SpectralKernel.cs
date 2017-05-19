@@ -13,8 +13,8 @@ namespace BPM_Key_Detection
 
         public double[][] SpectralKernelBins { get => _spectralKernelBins; }
 
-        public SpectralKernel(double samplerate) : 
-            base(samplerate)
+        public SpectralKernel(double samplerate, int tonesPerOctave, int tonesTotal, int samplesPerFrame, double minimumFrequency) : 
+            base(samplerate, tonesPerOctave, tonesTotal, samplesPerFrame, minimumFrequency)
         {
         }
 

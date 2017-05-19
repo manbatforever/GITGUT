@@ -49,7 +49,7 @@ namespace BPM_Key_Detection
                 for (int tone = 0; tone < _tonesPerOctave; tone++)
                 {
                     int f = tone + octave * _tonesPerOctave;
-                    chromaVector[tone] += singleFrameToneAmplitudes[tone + octave * _tonesPerOctave]; // * _octaveWeights[octave]
+                    chromaVector[tone] += singleFrameToneAmplitudes[f]; // * _octaveWeights[octave]
                 }
             }
             return chromaVector;

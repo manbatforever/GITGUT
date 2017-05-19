@@ -63,13 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BPMCorrelationFilterMember.cs" />
-    <Compile Include="BPMDetector.cs" />
+    <Compile Include="BPMEstimator.cs" />
     <Compile Include="CQT.cs" />
     <Compile Include="FFT.cs" />
     <Compile Include="FramedFrequencyBins.cs" />
     <Compile Include="FramedMusicFileSamples.cs" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="Kernels\BrownPucketteSpectralKernel.cs" />
     <Compile Include="Kernels\Kernel.cs" />
     <Compile Include="Kernels\SpectralKernel.cs" />
     <Compile Include="KeyEstimator.cs" />
@@ -94,7 +92,7 @@
     <Compile Include="MusicFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Kernels\TemporalKernel.cs" />
+    <Compile Include="Kernels\TemporalKernel.cs" />
     <Compile Include="KeyProfile.cs" />
     <Compile Include="Samples\Samples.cs" />
     <Compile Include="WindowFunctions\IbrahimWindow.cs" />

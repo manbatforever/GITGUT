@@ -12,21 +12,26 @@ namespace BPM_Key_Detection
     {
         private TemporalKernelSamples _temporalKernelSamples;
 
+        private int _kernelNumber;
+
         internal TemporalKernelSamples TemporalKernelSamples { get => _temporalKernelSamples; }
 
-        public TemporalKernel(double samplerate) : 
-            base(samplerate)
+        public TemporalKernel(double samplerate, int tonesPerOctave, int tonesTotal, int samplesPerFrame, double minimumFrequency, int kernelNumber) :
+            base(samplerate, tonesPerOctave, tonesTotal, samplesPerFrame, minimumFrequency)
         {
-            _Q = 1d / (Math.Pow(2d, 1d / Transformations.TonesPerOctave) - 1d);
+            _kernelNumber = kernelNumber;
+            _tonesPerOctave = tonesPerOctave;
+            _samplesPerFrame = samplesPerFrame;
+            _Q = 1d / (Math.Pow(2d, 1d / _tonesPerOctave) - 1d);
             _temporalKernelSamples = new TemporalKernelSamples(GetSingleTemporalKernel(kernelNumber));
         }
 
         private double[] GetSingleTemporalKernel(int k_cq)
         {
-            double[] SingleTemporalKernel = new double[Transformations.SamplesPerFrame];
-            for (int element = 0;element < Transformations.SamplesPerFrame; element++)
+            double[] SingleTemporalKernel = new double[_samplesPerFrame];
+            for (int element = 0;element < _samplesPerFrame; element++)
             {
-                if (element < ((Transformations.SamplesPerFrame / 2d) + (WindowLength(k_cq) / 2d)) && element > ((Transformations.SamplesPerFrame / 2d) - (WindowLength(k_cq) / 2d)))
+                if (element < ((_samplesPerFrame / 2d) + (WindowLength(k_cq) / 2d)) && element > ((_samplesPerFrame / 2d) - (WindowLength(k_cq) / 2d)))
                 {
                     SingleTemporalKernel[element] = CalculateSingleTemporalKernelElement(element, k_cq).Real;
                 }
@@ -37,7 +42,7 @@ namespace BPM_Key_Detection
         private Complex CalculateSingleTemporalKernelElement(double n, int k_cq)
         {
             Complex c1 = Complex.Exp(new Complex(0, 2d * Math.PI * n * _Q / WindowLength(k_cq))); // Brown lign. (5)
-            return HammingFunction(n - ((Transformations.SamplesPerFrame / 2d) - (WindowLength(k_cq) / 2d)), k_cq) * c1; // Brown og Puckette lign (4)
+            return HammingFunction(n - ((_samplesPerFrame / 2d) - (WindowLength(k_cq) / 2d)), k_cq) * c1; // Brown og Puckette lign (4)
         }
 
         private double HammingFunction(double n, int k_cq)

@@ -134,7 +134,7 @@ namespace BPM_Key_Detection
             {
                 complexSignal[k] = new Complex(_leftChannel.SampleArray[k], _rightChannel.SampleArray[k]);
             }
-            return Transformations.FFT(complexSignal);
+            return new FFT(complexSignal).FrequencyBins;
         }
 
         private BPMCorrelationFilterMember[] InitializeAllCorrelationMembers()

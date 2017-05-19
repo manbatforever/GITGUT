@@ -10,11 +10,13 @@ namespace BPM_Key_Detection
     class FramedToneAmplitudes
     {
         private double[][] _toneAmplitudeValues;
+        private int _tonesTotal;
+        private int _samplesPerFrame;
 
-        public double[][] ToneAmplitudeValues { get => _toneAmplitudeValues; }
-
-        public FramedToneAmplitudes(FramedFrequencyBins musicFileFFT, IbrahimSpectralKernel ibrahimSpectralKernels)
+        public FramedToneAmplitudes(FramedFrequencyBins musicFileFFT, IbrahimSpectralKernel ibrahimSpectralKernels, int tonesTotal, int samplesPerFrame)
         {
+            _tonesTotal = tonesTotal;
+            _samplesPerFrame = samplesPerFrame;
             _toneAmplitudeValues = CalculateAllToneAmplitudes(musicFileFFT, ibrahimSpectralKernels);
         }
 
@@ -23,18 +25,20 @@ namespace BPM_Key_Detection
             double[][] framedToneAmplitudes = new double[musicFileFFT.NumOfFrames][];
             for (int frame = 0; frame < musicFileFFT.NumOfFrames; frame++)
             {
-                framedToneAmplitudes[frame] = new double[Transformations.TonesTotal];
-                for (int tone = 0; tone < Transformations.TonesTotal; tone++)
+                framedToneAmplitudes[frame] = new double[_tonesTotal];
+                for (int tone = 0; tone < _tonesTotal; tone++)
                 {
                     double temp = 0;
                     for (int bin = (int)ibrahimSpectralKernels.LLimitValues[tone]; bin < ibrahimSpectralKernels.RLimitValues[tone]; bin++)
                     {
                         temp += musicFileFFT.FramedFrequencyBinValues[frame][bin].Magnitude * ibrahimSpectralKernels.SpectralKernelBins[tone][bin]; // Brown & Puckette Equation (5)
                     }
-                    framedToneAmplitudes[frame][tone] = temp / Transformations.SamplesPerFrame;
+                    framedToneAmplitudes[frame][tone] = temp / _samplesPerFrame;
                 }
             }
             return framedToneAmplitudes;
         }
+
+        public double[][] ToneAmplitudeValues { get => _toneAmplitudeValues; }
     }
 }

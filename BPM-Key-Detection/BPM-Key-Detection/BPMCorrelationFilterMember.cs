@@ -51,7 +51,7 @@ namespace BPM_Key_Detection
             {
                 ComplexTrainOfImpulsesSignal[k] = new Complex(TrainOfImpulses[k], TrainOfImpulses[k]);
             }
-            return Transformations.FFT(ComplexTrainOfImpulsesSignal);
+            return new FFT(ComplexTrainOfImpulsesSignal).FrequencyBins;
         }
     }
 }

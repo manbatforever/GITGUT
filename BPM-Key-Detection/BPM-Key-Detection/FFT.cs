@@ -12,6 +12,7 @@ namespace BPM_Key_Detection
         private FramedFrequencyBins _framedFrequencyBins; //1st constructer "output"
         private Complex[] _frequencyBins; //2nd constructor "output"
 
+ 
 
         public FFT(FramedMusicFileSamples frames) //Constructor for FramedMusicFileSamples (CQT)
         {
