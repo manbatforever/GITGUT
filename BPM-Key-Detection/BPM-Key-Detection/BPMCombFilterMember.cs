@@ -21,7 +21,7 @@ namespace BPM_Key_Detection
         }
 
         //Computes the period between impulses.
-        private int ComputePeriodeBetweenImpulses(int sampleRate)
+        private int ComputePeriodBetweenImpulses(int sampleRate)
         {
             return Convert.ToInt32(60 / Convert.ToDouble(BPM) * Convert.ToDouble(sampleRate));
         }
@@ -30,7 +30,7 @@ namespace BPM_Key_Detection
         private int[] CreateTrainOfImpulses(int maxAmplitude, int amountOfSamplesTested, int sampleRate)
         {
             int[] trainOfImpulses = new int[amountOfSamplesTested];
-            int periodBetweenImpulses = ComputePeriodeBetweenImpulses(sampleRate);
+            int periodBetweenImpulses = ComputePeriodBetweenImpulses(sampleRate);
 
             for (int i = 0; i < amountOfSamplesTested; i++)
             {
