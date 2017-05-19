@@ -10,15 +10,19 @@ namespace BPM_Key_Detection
     class ChromaVector
     {
         private double[] _vectorValues;
+        private int _tonesPerOctave;
+        private int _numOfOctaves;
 
         public double[] VectorValues { get => _vectorValues; set => _vectorValues = value; }
 
-        public ChromaVector(FramedToneAmplitudes multiFrameToneAmplitudes) //For multiple frames
+        public ChromaVector(FramedToneAmplitudes multiFrameToneAmplitudes, int tonesPerOctave, int numOfOctaves) //For multiple frames
         {
+            _tonesPerOctave = tonesPerOctave;
+            _numOfOctaves = numOfOctaves;
             CalculateMultiFrameVectorValues(multiFrameToneAmplitudes);
         }
 
-        public ChromaVector(double[] singleFrameToneAmplitudes) //For single frame
+        public ChromaVector(double[] singleFrameToneAmplitudes, int tonesPerOctave, int numOfOctaves) //For single frame
         {
            _vectorValues = CalculateSingleFrameVectorValues(singleFrameToneAmplitudes);
         }
@@ -26,11 +30,11 @@ namespace BPM_Key_Detection
         private void CalculateMultiFrameVectorValues(FramedToneAmplitudes multiFrameToneAmplitudes)
         {
             int numOfFrames = multiFrameToneAmplitudes.ToneAmplitudeValues.Length;
-            _vectorValues = new double[Transformations.TonesPerOctave];
+            _vectorValues = new double[_tonesPerOctave];
             for (int frame = 0; frame < numOfFrames; frame++)
             {
                 double[] tempSingleFrameChromaVector = CalculateSingleFrameVectorValues(multiFrameToneAmplitudes.ToneAmplitudeValues[frame]);
-                for (int element = 0; element < Transformations.TonesPerOctave; element++)
+                for (int element = 0; element < _tonesPerOctave; element++)
                 {
                     _vectorValues[element] += tempSingleFrameChromaVector[element];
                 }
@@ -39,13 +43,13 @@ namespace BPM_Key_Detection
 
         private double[] CalculateSingleFrameVectorValues(double[] singleFrameToneAmplitudes)
         {
-            double[] chromaVector = new double[Transformations.TonesPerOctave];
-            for (int octave = 0; octave < Transformations.NumOfOctaves; octave++)
+            double[] chromaVector = new double[_tonesPerOctave];
+            for (int octave = 0; octave < _numOfOctaves; octave++)
             {
-                for (int tone = 0; tone < Transformations.TonesPerOctave; tone++)
+                for (int tone = 0; tone < _tonesPerOctave; tone++)
                 {
-                    int f = tone + octave * Transformations.TonesPerOctave;
-                    chromaVector[tone] += singleFrameToneAmplitudes[tone + octave * Transformations.TonesPerOctave]; // * _octaveWeights[octave]
+                    int f = tone + octave * _tonesPerOctave;
+                    chromaVector[tone] += singleFrameToneAmplitudes[tone + octave * _tonesPerOctave]; // * _octaveWeights[octave]
                 }
             }
             return chromaVector;
