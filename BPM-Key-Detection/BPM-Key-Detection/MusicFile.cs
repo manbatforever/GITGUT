@@ -77,7 +77,8 @@ namespace BPM_Key_Detection
 
         public void EstimateBPM(MusicFileSamples musicFileSamples)
         {
-            _estimatedBPM = (uint)BPMDetector.GetBPM(musicFileSamples.Samplerate, musicFileSamples);
+            BPMEstimator BPMEstimator = new BPMEstimator(musicFileSamples.Samplerate, musicFileSamples);
+            _estimatedBPM = BPMEstimator.EstimatedBPM;
         }
 
         private int CalculateKey(ChromaVector chromaVector)
