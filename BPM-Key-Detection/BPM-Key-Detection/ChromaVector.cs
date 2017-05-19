@@ -51,12 +51,13 @@ namespace BPM_Key_Detection
             return chromaVector;
         }
 
-        private double DotProduct(double[] V1, double[] V2, int length)
+        private double DotProduct(double[] v2)
         {
+            int length = _vectorValues.Length;
             double output = 0;
             for (int i = 0; i < length; i++)
             {
-                output += V1[i] * V2[i];
+                output += _vectorValues[i] * v2[i];
             }
             return output;
         }
@@ -71,9 +72,10 @@ namespace BPM_Key_Detection
             return Math.Sqrt(output);
         }
 
-        public double CosineSimilarity(double[] V1, double[] V2, int length)
+        public double CosineSimilarity(double[] V2)
         {
-            return DotProduct(V1, V2, length) / (Magnitude(V1, length) * Magnitude(V2, length));
+            int length = _vectorValues.Length;
+            return DotProduct(V2) / (Magnitude(_vectorValues, length) * Magnitude(V2, length));
         }
         //private double[] _octaveWeights = new double[]
         //{

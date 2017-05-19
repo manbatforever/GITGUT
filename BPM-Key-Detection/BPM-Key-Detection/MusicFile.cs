@@ -87,8 +87,8 @@ namespace BPM_Key_Detection
             double[] allSimilarities = new double[24];
             for (int i = 0; i < 12; i++)
             {
-                allSimilarities[i] = chromaVector.CosineSimilarity(majorProfile.CreateProfileForTonica(i), chromaVector.VectorValues, 12);
-                allSimilarities[i + 12] = chromaVector.CosineSimilarity(minorProfile.CreateProfileForTonica(i), chromaVector.VectorValues, 12);
+                allSimilarities[i] = chromaVector.CosineSimilarity(majorProfile.CreateProfileForTonica(i));
+                allSimilarities[i + 12] = chromaVector.CosineSimilarity(minorProfile.CreateProfileForTonica(i));
             }
             return allSimilarities.ToList().IndexOf(allSimilarities.Max());
         }
