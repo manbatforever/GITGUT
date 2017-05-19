@@ -16,21 +16,21 @@ namespace BPM_Key_Detection
         public BPMCombFilterMember(int bpm, int amountOfSamplesTested, int maxAmplitude, int sampleRate)
         {
             BPM = bpm;
-            TrainOfImpulses = ComputeTrainOfImpulses(maxAmplitude, amountOfSamplesTested, sampleRate);
+            TrainOfImpulses = CreateTrainOfImpulses(maxAmplitude, amountOfSamplesTested, sampleRate);
             FFTTrainOfImpulses = ComputeFFTTrainOfImpulses(amountOfSamplesTested);
         }
 
         //Computes the period between impulses.
-        private int CalculatePeriodeBetweenImpulses(int sampleRate)
+        private int ComputePeriodeBetweenImpulses(int sampleRate)
         {
             return Convert.ToInt32(60 / Convert.ToDouble(BPM) * Convert.ToDouble(sampleRate));
         }
 
-        //Computes the train of impulses.
-        private int[] ComputeTrainOfImpulses(int maxAmplitude, int amountOfSamplesTested, int sampleRate)
+        //Creates the train of impulses.
+        private int[] CreateTrainOfImpulses(int maxAmplitude, int amountOfSamplesTested, int sampleRate)
         {
             int[] trainOfImpulses = new int[amountOfSamplesTested];
-            int periodBetweenImpulses = CalculatePeriodeBetweenImpulses(sampleRate);
+            int periodBetweenImpulses = ComputePeriodeBetweenImpulses(sampleRate);
 
             for (int i = 0; i < amountOfSamplesTested; i++)
             {
