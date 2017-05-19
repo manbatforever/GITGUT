@@ -34,11 +34,8 @@ namespace BPM_Key_Detection
             musicFileSamples.LowpassFilter(_cutoffFrequency);
             musicFileSamples.DownSample(_cutoffFrequency);
             FramedMusicFileSamples framedMusicFileSamples = new FramedMusicFileSamples(musicFileSamples, new BlackmanWindow());
-
             FFT fft = new FFT(framedMusicFileSamples);
-            
             IbrahimSpectralKernel ibrahimSpectralKernel = new IbrahimSpectralKernel(musicFileSamples.Samplerate);
-
             _framedToneAmplitudes = new FramedToneAmplitudes(fft.FramedFrequencyBins, ibrahimSpectralKernel);
         }
 

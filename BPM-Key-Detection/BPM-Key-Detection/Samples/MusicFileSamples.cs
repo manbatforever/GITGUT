@@ -101,10 +101,5 @@ namespace BPM_Key_Detection
             _numOfSamples = newLength;
             _downSampled = true;
         }
-
-        public FramedMusicFileSamples CreateFramedMusicFileSamples(Window window = null)
-        {
-            return new FramedMusicFileSamples(this, window);
-        }
     }
 }
