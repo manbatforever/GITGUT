@@ -73,7 +73,6 @@ namespace BPM_Key_Detection
             int key = CalculateKey(chromaVector);
             _camelotNotation = FormatToCamelotNotation(key);
             _musicNotation = FormatToMusicNotation(key);
-
         }
 
         public void EstimateBPM(MusicFileSamples musicFileSamples)
@@ -88,8 +87,8 @@ namespace BPM_Key_Detection
             double[] allSimilarities = new double[24];
             for (int i = 0; i < 12; i++)
             {
-                allSimilarities[i] = VectorOperations.CosineSimilarity(majorProfile.CreateProfileForTonica(i), chromaVector.VectorValues, 12);
-                allSimilarities[i + 12] = VectorOperations.CosineSimilarity(minorProfile.CreateProfileForTonica(i), chromaVector.VectorValues, 12);
+                allSimilarities[i] = chromaVector.CosineSimilarity(majorProfile.CreateProfileForTonica(i), chromaVector.VectorValues, 12);
+                allSimilarities[i + 12] = chromaVector.CosineSimilarity(minorProfile.CreateProfileForTonica(i), chromaVector.VectorValues, 12);
             }
             return allSimilarities.ToList().IndexOf(allSimilarities.Max());
         }

@@ -95,7 +95,6 @@
     <Compile Include="KeyProfile.cs" />
     <Compile Include="Samples\Samples.cs" />
     <Compile Include="Transformations.cs" />
-    <Compile Include="VectorOperations.cs" />
     <Compile Include="WindowFunctions\IbrahimWindow.cs" />
     <Compile Include="WindowFunctions\Window.cs" />
     <EmbeddedResource Include="Form_BpmKeyAnalyser.resx">
