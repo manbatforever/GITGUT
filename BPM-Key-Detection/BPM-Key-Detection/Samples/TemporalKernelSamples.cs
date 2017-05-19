@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: A type of samples that a temporal kernel contains
-    class TemporalKernelSamples : Samples
+    internal class TemporalKernelSamples : Samples
     {
         public TemporalKernelSamples(double[] sampleValues)
         {

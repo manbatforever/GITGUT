@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    class BPMCorrelationFilterMember
+    internal class BPMCorrelationFilterMember
     {
         public int BPM { get; private set; }
         public int[] TrainOfImpulses { get; private set; }

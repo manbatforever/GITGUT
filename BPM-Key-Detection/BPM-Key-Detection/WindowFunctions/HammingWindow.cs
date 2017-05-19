@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: A type of window
-    class HammingWindow : Window
+    internal class HammingWindow : Window
     {
         public HammingWindow()
         {

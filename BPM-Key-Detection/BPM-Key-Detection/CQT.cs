@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    class CQT
+    //Object: Contains all Constant Q transform values including output and all functionality
+    internal class CQT
     {
         private int _cutoffFrequency = 2000;
         private int _samplesPerFrame = 16384;
@@ -28,6 +29,7 @@ namespace BPM_Key_Detection
             _framedToneAmplitudes = new FramedToneAmplitudes(fft.FramedFrequencyBins, ibrahimSpectralKernel, _tonesTotal, _samplesPerFrame);
         }
 
+        //Proces input samples to reduce runtime without discarding useful information
         private void ProcesMusicFileSamples(MusicFileSamples musicFileSamples)
         {
             musicFileSamples.ToMono();

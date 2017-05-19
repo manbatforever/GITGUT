@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    class SongNotLongEnoughException : Exception
+    internal class SongNotLongEnoughException : Exception
     {
         public SongNotLongEnoughException() : base("The song does not have enough samples to be analyzed.") { }
         public SongNotLongEnoughException(string songName) : base($"The song {songName} does not have enough samples to be analyzed.") { }
     }
-    class SongIsNotStereoException : Exception
+    internal class SongIsNotStereoException : Exception
     {
         public SongIsNotStereoException() : base("The song is not stereo, and can not be analysed.") { }
         public SongIsNotStereoException(string songName) : base($"The song {songName} is not stereo, and can not be analysed.") { }
     }
-    //This class is able to compute the BPM of a song
-    class BPMEstimator
+    //Contains all data and functionality regarding BPM estimation
+    internal class BPMEstimator
     {
         //The program assumes that the BPM of the song is between _startBpmToTest and _endBpmToTest.
         //The results is between (including) those two values.

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: A spectral kernel corresponding to the one from Ibrahim (2013)
-    class IbrahimSpectralKernel : SpectralKernel
+    internal class IbrahimSpectralKernel : SpectralKernel
     {
         private int[] _lLimitValues;
         private int[] _rLimitValues;
@@ -20,9 +20,7 @@ namespace BPM_Key_Detection
             _Q = 0.8d * (Math.Pow(2d, 1d / _tonesPerOctave) - 1d);
             _spectralKernelBins = GetAllSpectralKernels();
         }
-
-
-
+        
         private double[][] GetAllSpectralKernels()
         {
             double[][] allSpectralKernel = new double[_tonesTotal][];

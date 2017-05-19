@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: Represents an array of frames containing tone amplitudes.
-    class FramedToneAmplitudes
+    internal class FramedToneAmplitudes
     {
         private double[][] _toneAmplitudeValues;
         private int _tonesTotal;

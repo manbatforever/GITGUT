@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    class KeyEstimator
+    internal class KeyEstimator
     {
         private string _camelotNotation;
         private string _musicNotation;
-
-
-
+        
         public KeyEstimator(MusicFileSamples musicFileSamples)
         {
             CQT cqt = new CQT(musicFileSamples);

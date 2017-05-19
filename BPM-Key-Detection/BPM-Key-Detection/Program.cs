@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace BPM_Key_Detection
 {
-    static class Program
+    internal static class Program
     {
         // The main entry point for the application.
         [STAThread]

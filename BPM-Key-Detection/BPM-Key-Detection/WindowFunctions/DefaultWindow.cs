@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: A default window which has no effect when applied
-    class DefaultWindow : Window
+    internal class DefaultWindow : Window
     {
         public DefaultWindow()
         {

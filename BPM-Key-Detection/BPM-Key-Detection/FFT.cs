@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    class FFT
+    //Contains all functionality regarding fast fourier transform and output. Uses the MathNet library to calculate the FFT itself
+    internal class FFT
     {
         private FramedFrequencyBins _framedFrequencyBins; //1st constructer "output"
         private Complex[] _frequencyBins; //2nd constructor "output"
-
- 
 
         public FFT(FramedMusicFileSamples frames) //Constructor for FramedMusicFileSamples (CQT)
         {

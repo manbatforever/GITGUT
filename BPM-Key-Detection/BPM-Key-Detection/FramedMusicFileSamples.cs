@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: Represents an array of frames containing music file samples.
-    class FramedMusicFileSamples
+    internal class FramedMusicFileSamples
     {
         private double[][] _sampleFrames;
         private int _numOfFrames;

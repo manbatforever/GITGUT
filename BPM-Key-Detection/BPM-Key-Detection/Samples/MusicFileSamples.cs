@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: Extracted samples from a musicfile. Contains certain functionality such as signal processing
-    class MusicFileSamples : Samples
+    internal class MusicFileSamples : Samples
     {
         private int _sampleRate;
         private int _channels;

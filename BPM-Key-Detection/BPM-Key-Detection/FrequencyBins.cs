@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {   //WARNING: This class is outdated and not used (or compiled) as of this version.
     //Object: Represents the direct output of a transformation
-    class FrequencyBins
+    internal class FrequencyBins
     {
         private double[] _binValues;
         private int _numOfBins;

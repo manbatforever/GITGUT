@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //A type of mathematical function that creates a "window" of another function when applied.
-    abstract class Window
+    internal abstract class Window
     {
         protected double[] _windowArray;
         private int _length;

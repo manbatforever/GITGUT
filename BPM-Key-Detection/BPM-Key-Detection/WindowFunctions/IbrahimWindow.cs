@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    class IbrahimWindow : Window
+    internal class IbrahimWindow : Window
     {
         public override void WindowFunction(int windowLength)
         {

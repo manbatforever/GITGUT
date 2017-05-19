@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: Represents an array of tone amplitudes for each target tone.
-    class ChromaVector
+    internal class ChromaVector
     {
         private double[] _vectorValues;
         private int _tonesPerOctave;

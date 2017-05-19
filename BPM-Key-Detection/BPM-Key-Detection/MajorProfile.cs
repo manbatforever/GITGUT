@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: Musical note distribution for major keys
-    class MajorProfile : KeyProfile
+    internal class MajorProfile : KeyProfile
     {
         
         public MajorProfile()

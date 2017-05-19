@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //A abstract data type for CQT calculations
-    abstract class Kernel
+    internal abstract class Kernel
     {
         protected double _Q;
         protected double _samplerate;

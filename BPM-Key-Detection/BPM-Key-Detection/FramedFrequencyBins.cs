@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BPM_Key_Detection
 {
     //Object: Represents an array of frames containing frequency bins.
-    public class FramedFrequencyBins
+    internal class FramedFrequencyBins
     {
         private MathNet.Numerics.Complex32[][] _framedFrequencyBinValues;
         private int _numOfFrames;

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TagLib;
+﻿using TagLib;
 using NAudio.Wave;
 
 namespace BPM_Key_Detection
 {
     //Object: A data representation of a music file, containing functionality regarding music files as well as information about the specific file at hand.
-    class MusicFile
+    internal class MusicFile
     {
         private string _fileName;
         private string _titel;
