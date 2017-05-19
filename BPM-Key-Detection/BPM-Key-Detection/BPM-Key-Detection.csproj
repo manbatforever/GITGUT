@@ -62,6 +62,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BPMCorrelationFilterMember.cs" />
+    <Compile Include="BPMDetector.cs" />
     <Compile Include="FramedFrequencyBins.cs" />
     <Compile Include="FramedMusicFileSamples.cs" />
     <None Include="ClassDiagram1.cd" />

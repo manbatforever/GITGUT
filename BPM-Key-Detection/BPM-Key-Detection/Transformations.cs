@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,5 +52,21 @@ namespace BPM_Key_Detection
             return frequencyBins;
         }
 
+        public static Complex[] FFT(Complex[] input)
+        {
+            int length = input.Length;
+            MathNet.Numerics.Complex32[] temp = new MathNet.Numerics.Complex32[length];
+            for (int i = 0; i < length; i++)
+            {
+                temp[i] = new MathNet.Numerics.Complex32(Convert.ToSingle(input[i].Real), Convert.ToSingle(input[i].Imaginary));
+            }
+            MathNet.Numerics.IntegralTransforms.Fourier.Forward(temp);
+            Complex[] output = new Complex[length];
+            for (int i = 0; i < length; i++)
+            {
+                output[i] = new Complex(temp[i].Real, temp[i].Imaginary);
+            }
+            return output;
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace BPM_Key_Detection
         private string _comment;
         private string _camelotNotation;
         private string _musicNotation;
-        private uint _estimatedBpm;
+        private uint _estimatedBPM;
         private uint _bpm;
         private bool _badFile;
 
@@ -66,25 +66,19 @@ namespace BPM_Key_Detection
             return new MusicFileSamples(buffer, samplerate, channels);
         }
 
-        public void EstimateKey()
+        public void EstimateKey(MusicFileSamples musicFileSamples)
         {
-            MusicFileSamples musicFileSamples = null;
-            try
-            {
-                musicFileSamples = GetRawSamples();
-            }
-            catch (InvalidOperationException)
-            {
-                _badFile = true;
-            }
-            if (musicFileSamples != null)
-            {
-                FramedToneAmplitudes allToneAmplitudes = Transformations.CQT(musicFileSamples);
-                ChromaVector chromaVector = new ChromaVector(allToneAmplitudes);
-                int key = CalculateKey(chromaVector);
-                _camelotNotation = FormatToCamelotNotation(key);
-                _musicNotation = FormatToMusicNotation(key);
-            }
+            FramedToneAmplitudes allToneAmplitudes = Transformations.CQT(musicFileSamples);
+            ChromaVector chromaVector = new ChromaVector(allToneAmplitudes);
+            int key = CalculateKey(chromaVector);
+            _camelotNotation = FormatToCamelotNotation(key);
+            _musicNotation = FormatToMusicNotation(key);
+
+        }
+
+        public void EstimateBPM(MusicFileSamples musicFileSamples)
+        {
+            _estimatedBPM = (uint)BPMDetector.GetBPM(musicFileSamples.Samplerate, musicFileSamples);
         }
 
         private int CalculateKey(ChromaVector chromaVector)
@@ -172,7 +166,7 @@ namespace BPM_Key_Detection
             TagLib.Id3v2.Tag fileTag = (TagLib.Id3v2.Tag)file.GetTag(TagTypes.Id3v2, false);
             if (writeBPM)
             {
-                file.Tag.BeatsPerMinute = _estimatedBpm;
+                file.Tag.BeatsPerMinute = _estimatedBPM;
             }
             if (writeKey)
             {
@@ -195,9 +189,9 @@ namespace BPM_Key_Detection
         public string Comment { get { return _comment; } }
         public string CamelotNotation { get => _camelotNotation; }
         public string MusicNotation { get => _musicNotation; }
-        public uint EstimatedBpm { get => _estimatedBpm; }
+        public uint EstimatedBPM { get => _estimatedBPM; }
         public uint Bpm { get { return _bpm; } }
-        public bool BadFile { get { return _badFile; } }
+        public bool BadFile { get { return _badFile; } set { _badFile = value; } }
 
     }
 }

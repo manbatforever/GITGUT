@@ -227,28 +227,35 @@ namespace BPM_Key_Detection
                         foreach (MusicFile musicFile in Files)
                         {
                             label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
-                            if (BPMChecked)
+                            MusicFileSamples musicFileSamples = null;
+                            try
                             {
-
+                                musicFileSamples = musicFile.GetRawSamples();
                             }
-                            if (KeyChecked)
+                            catch (InvalidOperationException)
                             {
-                                musicFile.EstimateKey();
-                                if (musicFile.BadFile)
+                                musicFile.BadFile = true;
+                                badFiles.Add(musicFile.FileName);
+                            }
+                            if (!musicFile.BadFile && musicFileSamples != null)
+                            {
+                                if (BPMChecked)
                                 {
-                                    badFiles.Add(musicFile.FileName);
+                                    musicFile.EstimateBPM(musicFileSamples);
+                                    MessageBox.Show(musicFile.EstimatedBPM.ToString());
                                 }
-                                //MessageBox.Show(musicFile.CamelotNotation);
-                                if (musicFile.CamelotNotation != null)
+                                if (KeyChecked)
                                 {
-                                    if (musicFile.Key.Contains(musicFile.CamelotNotation))
+                                    musicFile.EstimateKey(musicFileSamples);
+                                    //MessageBox.Show(musicFile.CamelotNotation);
+                                    if (musicFile.CamelotNotation != null)
                                     {
-                                        correctCounter++;
+                                        if (musicFile.Key.Contains(musicFile.CamelotNotation))
+                                        {
+                                            correctCounter++;
+                                        }
                                     }
                                 }
-                            }
-                            if (!musicFile.BadFile)
-                            {
                                 if (writeKeyToMetadata || writeBPMToMetadata)
                                 {
                                     musicFile.WriteMetadata(writeBPMToMetadata, writeKeyToMetadata);
@@ -267,7 +274,7 @@ namespace BPM_Key_Detection
                     }
                     else
                     {
-                        MessageBox.Show("BPM or Key not checked!", "Check Error!");
+                        MessageBox.Show("Get BPM or Get Key not checked!", "Check Error!");
                     }
                 }
                 else
