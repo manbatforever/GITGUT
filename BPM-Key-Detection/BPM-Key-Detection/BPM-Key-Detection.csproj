@@ -62,9 +62,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BPMCorrelationFilterMember.cs" />
+    <Compile Include="BPMCombFilterMember.cs" />
     <Compile Include="BPMEstimator.cs" />
     <Compile Include="CQT.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="FFT.cs" />
     <Compile Include="FramedFrequencyBins.cs" />
     <Compile Include="FramedMusicFileSamples.cs" />

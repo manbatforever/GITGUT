@@ -3,16 +3,7 @@ using System.Numerics;
 
 namespace BPM_Key_Detection
 {
-    internal class SongNotLongEnoughException : Exception
-    {
-        public SongNotLongEnoughException() : base("The song does not have enough samples to be analyzed.") { }
-        public SongNotLongEnoughException(string songName) : base($"The song {songName} does not have enough samples to be analyzed.") { }
-    }
-    internal class SongIsNotStereoException : Exception
-    {
-        public SongIsNotStereoException() : base("The song is not stereo, and can not be analysed.") { }
-        public SongIsNotStereoException(string songName) : base($"The song {songName} is not stereo, and can not be analysed.") { }
-    }
+
     //Contains all data and functionality regarding BPM estimation
     internal class BPMEstimator
     {
@@ -28,9 +19,10 @@ namespace BPM_Key_Detection
 
         private int _amountOfSamplesTested;
         private int _sampleRate;
-        private uint _estimatedBPM;
         private MusicFileSamples _leftChannel;
         private MusicFileSamples _rightChannel;
+
+        public uint EstimatedBPM { get; private set; }
 
 
         public BPMEstimator(int sampleRate, MusicFileSamples musicFileSamples)
@@ -43,16 +35,16 @@ namespace BPM_Key_Detection
             _amountOfSamplesTested = sampleRate * _amountOfSecondsTested;
             _leftChannel = FillLeftChannel(musicFileSamples);
             _rightChannel = FillRightChannel(musicFileSamples);
-            _estimatedBPM = (uint)GetBPM();
+            EstimatedBPM = (uint)GetBPM();
         }
         //Starts methods to compute the BPM and returns the computed BPM.
-        public int GetBPM()
+        private int GetBPM()
         {
             DerivationFilter(_leftChannel, _rightChannel);
             Complex[] fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples();
-            BPMCorrelationFilterMember[] BPMCorrelationFilter = InitializeAllCorrelationMembers();
-            double[] similarityEnergies = ComputeAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCorrelationFilter);
-            return ComputeBPM(similarityEnergies, BPMCorrelationFilter);
+            BPMCombFilterMember[] BPMCombFilter = InitializeAllCombMembers();
+            double[] similarityEnergies = ComputeAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCombFilter);
+            return CombFilterProcess(similarityEnergies, BPMCombFilter);
         }
 
         private MusicFileSamples FillLeftChannel(MusicFileSamples musicFileSamples)
@@ -133,19 +125,19 @@ namespace BPM_Key_Detection
             return new FFT(complexSignal).FrequencyBins;
         }
 
-        private BPMCorrelationFilterMember[] InitializeAllCorrelationMembers()
+        private BPMCombFilterMember[] InitializeAllCombMembers()
         {
-            BPMCorrelationFilterMember[] BPMCorrelationFilter = new BPMCorrelationFilterMember[_amountOfBpmsToTest];
+            BPMCombFilterMember[] BPMCombFilter = new BPMCombFilterMember[_amountOfBpmsToTest];
             for (int i = 0, bpm = _startBpmToTest; i < _amountOfBpmsToTest; i++, bpm += _bpmDivisor)
             {
-                BPMCorrelationFilter[i] = new BPMCorrelationFilterMember(bpm, _amountOfSamplesTested, _maxAmplitude, _sampleRate);
+                BPMCombFilter[i] = new BPMCombFilterMember(bpm, _amountOfSamplesTested, _maxAmplitude, _sampleRate);
             }
-            return BPMCorrelationFilter;
+            return BPMCombFilter;
         }
 
         //Computes and inserts the energys which give an evaluatin of the similarity, between the train of impulses and the song.
         //The larger the energy, the larger the similarity.
-        private double[] ComputeAllSimilarityEnergies(Complex[] fftetDerivationFilteredSamples, BPMCorrelationFilterMember[] BPMCorrelationFilter)
+        private double[] ComputeAllSimilarityEnergies(Complex[] fftetDerivationFilteredSamples, BPMCombFilterMember[] BPMCombFilter)
         {
             double[] similarityEnergies = new double[_amountOfBpmsToTest];
             for (int i = 0; i < _amountOfBpmsToTest; i++)
@@ -154,14 +146,14 @@ namespace BPM_Key_Detection
 
                 for (int k = 0; k < _amountOfSamplesTested; k++)
                 {
-                    similarityEnergies[i] += Complex.Abs(fftetDerivationFilteredSamples[k] * BPMCorrelationFilter[i].FFTTrainOfImpulses[k]);
+                    similarityEnergies[i] += Complex.Abs(fftetDerivationFilteredSamples[k] * BPMCombFilter[i].FFTTrainOfImpulses[k]);
                 }
             }
             return similarityEnergies;
         }
 
         //Finds the tested BPM with the greatest energy
-        private int ComputeBPM(double[] similarityEnergies, BPMCorrelationFilterMember[] BPMCorrelationFilter)
+        private int CombFilterProcess(double[] similarityEnergies, BPMCombFilterMember[] BPMCombFilter)
         {
             double GreatestEnergy = 0;
             int IndexOfBPMWithGreatestEnergy = 0;
@@ -173,8 +165,7 @@ namespace BPM_Key_Detection
                     IndexOfBPMWithGreatestEnergy = i;
                 }
             }
-            return BPMCorrelationFilter[IndexOfBPMWithGreatestEnergy].BPM;
+            return BPMCombFilter[IndexOfBPMWithGreatestEnergy].BPM;
         }
-        public uint EstimatedBPM { get => _estimatedBPM; }
     }
 }

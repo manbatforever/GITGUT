@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
-    internal class BPMCorrelationFilterMember
+    internal class BPMCombFilterMember
     {
         public int BPM { get; private set; }
         public int[] TrainOfImpulses { get; private set; }
         public Complex[] FFTTrainOfImpulses { get; private set; }
 
-        public BPMCorrelationFilterMember(int bpm, int amountOfSamplesTested, int maxAmplitude, int sampleRate)
+        public BPMCombFilterMember(int bpm, int amountOfSamplesTested, int maxAmplitude, int sampleRate)
         {
             BPM = bpm;
             TrainOfImpulses = ComputeTrainOfImpulses(maxAmplitude, amountOfSamplesTested, sampleRate);
