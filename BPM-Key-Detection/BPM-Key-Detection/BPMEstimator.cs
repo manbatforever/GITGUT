@@ -18,7 +18,7 @@ namespace BPM_Key_Detection
         public SongIsNotStereoException(string songName) : base($"The song {songName} is not stereo, and can not be analysed.") { }
     }
     //This class is able to compute the BPM of a song
-    static class BPMDetector
+    class BPMEstimator
     {
         //The program assumes that the BPM of the song is between _startBpmToTest and _endBpmToTest.
         //The results is between (including) those two values.
@@ -30,60 +30,71 @@ namespace BPM_Key_Detection
         private static readonly int _amountOfBpmsToTest = _bpmEndAndStartDifference / _bpmDivisor;
         private static readonly int _maxAmplitude = 1;  //maxAplitude is 1 since NAudio converts all aplitudes to values between -1 and 1.
 
-        //Starts methods to compute the BPM and returns the computed BPM.
-        public static int GetBPM(int sampleRate, MusicFileSamples musicFileSamples)
+        private int _amountOfSamplesTested;
+        private int _sampleRate;
+        private uint _estimatedBPM;
+        private MusicFileSamples _leftChannel;
+        private MusicFileSamples _rightChannel;
+
+
+        public BPMEstimator(int sampleRate, MusicFileSamples musicFileSamples)
         {
             if (musicFileSamples.Channels != 2)
             {
                 throw new SongIsNotStereoException();
             }
-            int amountOfSamplesTested = sampleRate * _amountOfSecondsTested;
-            MusicFileSamples leftChannel = FillLeftChannel(musicFileSamples, amountOfSamplesTested, sampleRate);
-            MusicFileSamples rightChannel = FillRightChannel(musicFileSamples, amountOfSamplesTested, sampleRate);
-            DerivationFilter(leftChannel, rightChannel, sampleRate, amountOfSamplesTested);
-            Complex[] fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples(leftChannel, rightChannel, amountOfSamplesTested);
-
-            BPMCorrelationFilterMember[] BPMCorrelationFilter = InitializeAllCorrelationMembers(sampleRate, amountOfSamplesTested);
-            double[] similarityEnergies = ComputeAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCorrelationFilter, amountOfSamplesTested);
+            _sampleRate = sampleRate;
+            _amountOfSamplesTested = sampleRate * _amountOfSecondsTested;
+            _leftChannel = FillLeftChannel(musicFileSamples);
+            _rightChannel = FillRightChannel(musicFileSamples);
+            _estimatedBPM = (uint)GetBPM();
+        }
+        //Starts methods to compute the BPM and returns the computed BPM.
+        public int GetBPM()
+        {
+            DerivationFilter(_leftChannel, _rightChannel);
+            Complex[] fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples();
+            BPMCorrelationFilterMember[] BPMCorrelationFilter = InitializeAllCorrelationMembers();
+            double[] similarityEnergies = ComputeAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCorrelationFilter);
             return ComputeBPM(similarityEnergies, BPMCorrelationFilter);
         }
 
-        private static MusicFileSamples FillLeftChannel(MusicFileSamples musicFileSamples, int amountOfSamplesTested, int sampleRate)
+        private MusicFileSamples FillLeftChannel(MusicFileSamples musicFileSamples)
         {
             double[][] splitStereoSamples = SplitSamples(musicFileSamples);
             //Checks if there are enough samples to be processed.
-            if (splitStereoSamples[0].Length <= amountOfSamplesTested || splitStereoSamples[1].Length <= amountOfSamplesTested)
+            if (splitStereoSamples[0].Length <= _amountOfSamplesTested || splitStereoSamples[1].Length <= _amountOfSamplesTested)
             {
                 throw new SongNotLongEnoughException();
             }
-            int startSample = Convert.ToInt32((splitStereoSamples[0].Length - sampleRate * _amountOfSecondsTested) / 2);
-            double[] leftChannel = new double[amountOfSamplesTested];
-            for (int i = startSample, k = 0; k < amountOfSamplesTested; i++, k++)
+            int startSample = Convert.ToInt32((splitStereoSamples[0].Length - _sampleRate * _amountOfSecondsTested) / 2);
+            double[] leftChannel = new double[_amountOfSamplesTested];
+            for (int i = startSample, k = 0; k < _amountOfSamplesTested; i++, k++)
             {
                 leftChannel[k] = splitStereoSamples[0][i];
             }
 
-            return new MusicFileSamples(leftChannel, sampleRate, 1);
+            return new MusicFileSamples(leftChannel, _sampleRate, 1);
         }
 
-        private static MusicFileSamples FillRightChannel(MusicFileSamples musicFileSamples, int amountOfSamplesTested, int sampleRate)
+        private MusicFileSamples FillRightChannel(MusicFileSamples musicFileSamples)
         {
             double[][] splitStereoSamples = SplitSamples(musicFileSamples);
             //Checks if there are enough samples to be processed.
-            if (splitStereoSamples[0].Length <= amountOfSamplesTested || splitStereoSamples[1].Length <= amountOfSamplesTested)
+            if (splitStereoSamples[0].Length <= _amountOfSamplesTested || splitStereoSamples[1].Length <= _amountOfSamplesTested)
             {
                 throw new SongNotLongEnoughException();
             }
-            int startSample = Convert.ToInt32((splitStereoSamples[0].Length - sampleRate * _amountOfSecondsTested) / 2);
-            double[] rightChannel = new double[amountOfSamplesTested];
-            for (int i = startSample, k = 0; k < amountOfSamplesTested; i++, k++)
+            int startSample = Convert.ToInt32((splitStereoSamples[0].Length - _sampleRate * _amountOfSecondsTested) / 2);
+            double[] rightChannel = new double[_amountOfSamplesTested];
+            for (int i = startSample, k = 0; k < _amountOfSamplesTested; i++, k++)
             {
                 rightChannel[k] = splitStereoSamples[1][i];
             }
-            return new MusicFileSamples(rightChannel, sampleRate, 1);
+            return new MusicFileSamples(rightChannel, _sampleRate, 1);
         }
 
-        private static double[][] SplitSamples(MusicFileSamples samplesStereo)
+        private double[][] SplitSamples(MusicFileSamples samplesStereo)
         {
             double[][] splitSamples = new double[samplesStereo.Channels][];
 
@@ -99,54 +110,53 @@ namespace BPM_Key_Detection
         }
 
         //Makes the beats more detectable.
-        private static void DerivationFilter(MusicFileSamples leftChannel, MusicFileSamples rightChannel, int sampleRate, int amountOfSamplesTested)
+        private void DerivationFilter(MusicFileSamples _leftChannel, MusicFileSamples _rightChannel)
         {
-            for (int k = 0; k < amountOfSamplesTested - 1; k++)
+            for (int k = 0; k < _amountOfSamplesTested - 1; k++)
             {
-                leftChannel.SampleArray[k] = sampleRate * (leftChannel.SampleArray[k + 1] - leftChannel.SampleArray[k]);
+                _leftChannel.SampleArray[k] = _sampleRate * (_leftChannel.SampleArray[k + 1] - _leftChannel.SampleArray[k]);
             }
-            leftChannel.SampleArray[amountOfSamplesTested - 1] = 0;
+            _leftChannel.SampleArray[_amountOfSamplesTested - 1] = 0;
 
-            for (int k = 0; k < amountOfSamplesTested - 1; k++)
+            for (int k = 0; k < _amountOfSamplesTested - 1; k++)
             {
-                rightChannel.SampleArray[k] = sampleRate * (rightChannel.SampleArray[k + 1] - rightChannel.SampleArray[k]);
+                _rightChannel.SampleArray[k] = _sampleRate * (_rightChannel.SampleArray[k + 1] - _rightChannel.SampleArray[k]);
             }
-            rightChannel.SampleArray[amountOfSamplesTested - 1] = 0;
+            _rightChannel.SampleArray[_amountOfSamplesTested - 1] = 0;
         }
 
         //Passes the differentiated samples to the frequency domain.
-        private static Complex[] GetFFTDerivationFilteredSamples(MusicFileSamples leftChannel, MusicFileSamples rightChannel, int amountOfSamplesTested)
+        private Complex[] GetFFTDerivationFilteredSamples()
         {
-            Complex[] complexSignal = new Complex[amountOfSamplesTested];
+            Complex[] complexSignal = new Complex[_amountOfSamplesTested];
             
-            for (int k = 0; k < amountOfSamplesTested; k++)
+            for (int k = 0; k < _amountOfSamplesTested; k++)
             {
-                complexSignal[k] = new Complex(leftChannel.SampleArray[k], rightChannel.SampleArray[k]);
+                complexSignal[k] = new Complex(_leftChannel.SampleArray[k], _rightChannel.SampleArray[k]);
             }
             return Transformations.FFT(complexSignal);
         }
 
-        private static BPMCorrelationFilterMember[] InitializeAllCorrelationMembers(int sampleRate, int amountOfSamplesTested)
+        private BPMCorrelationFilterMember[] InitializeAllCorrelationMembers()
         {
             BPMCorrelationFilterMember[] BPMCorrelationFilter = new BPMCorrelationFilterMember[_amountOfBpmsToTest];
             for (int i = 0, bpm = _startBpmToTest; i < _amountOfBpmsToTest; i++, bpm += _bpmDivisor)
             {
-                BPMCorrelationFilter[i] = new BPMCorrelationFilterMember(bpm, amountOfSamplesTested, _maxAmplitude, sampleRate);
+                BPMCorrelationFilter[i] = new BPMCorrelationFilterMember(bpm, _amountOfSamplesTested, _maxAmplitude, _sampleRate);
             }
             return BPMCorrelationFilter;
         }
 
         //Computes and inserts the energys which give an evaluatin of the similarity, between the train of impulses and the song.
         //The larger the energy, the larger the similarity.
-        private static double[] ComputeAllSimilarityEnergies(Complex[] fftetDerivationFilteredSamples, BPMCorrelationFilterMember[] BPMCorrelationFilter, 
-                                                             int amountOfSamplesTested)
+        private double[] ComputeAllSimilarityEnergies(Complex[] fftetDerivationFilteredSamples, BPMCorrelationFilterMember[] BPMCorrelationFilter)
         {
             double[] similarityEnergies = new double[_amountOfBpmsToTest];
             for (int i = 0; i < _amountOfBpmsToTest; i++)
             {
                 similarityEnergies[i] = 0;
 
-                for (int k = 0; k < amountOfSamplesTested; k++)
+                for (int k = 0; k < _amountOfSamplesTested; k++)
                 {
                     similarityEnergies[i] += Complex.Abs(fftetDerivationFilteredSamples[k] * BPMCorrelationFilter[i].FFTTrainOfImpulses[k]);
                 }
@@ -155,7 +165,7 @@ namespace BPM_Key_Detection
         }
 
         //Finds the tested BPM with the greatest energy
-        private static int ComputeBPM(double[] similarityEnergies, BPMCorrelationFilterMember[] BPMCorrelationFilter)
+        private int ComputeBPM(double[] similarityEnergies, BPMCorrelationFilterMember[] BPMCorrelationFilter)
         {
             double GreatestEnergy = 0;
             int IndexOfBPMWithGreatestEnergy = 0;
@@ -169,5 +179,6 @@ namespace BPM_Key_Detection
             }
             return BPMCorrelationFilter[IndexOfBPMWithGreatestEnergy].BPM;
         }
+        public uint EstimatedBPM { get => _estimatedBPM; }
     }
 }
