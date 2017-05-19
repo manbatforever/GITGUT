@@ -12,6 +12,11 @@ namespace BPM_Key_Detection
         public SongNotLongEnoughException() : base("The song does not have enough samples to be analyzed.") { }
         public SongNotLongEnoughException(string songName) : base($"The song {songName} does not have enough samples to be analyzed.") { }
     }
+    class SongIsNotStereoException : Exception
+    {
+        public SongIsNotStereoException() : base("The song is not stereo, and can not be analysed.") { }
+        public SongIsNotStereoException(string songName) : base($"The song {songName} is not stereo, and can not be analysed.") { }
+    }
     //This class is able to compute the BPM of a song
     static class BPMDetector
     {
@@ -28,10 +33,13 @@ namespace BPM_Key_Detection
         //Starts methods to compute the BPM and returns the computed BPM.
         public static int GetBPM(int sampleRate, MusicFileSamples musicFileSamples)
         {
+            if (musicFileSamples.Channels != 2)
+            {
+                throw new SongIsNotStereoException();
+            }
             int amountOfSamplesTested = sampleRate * _amountOfSecondsTested;
             MusicFileSamples leftChannel = FillLeftChannel(musicFileSamples, amountOfSamplesTested, sampleRate);
             MusicFileSamples rightChannel = FillRightChannel(musicFileSamples, amountOfSamplesTested, sampleRate);
-
             DerivationFilter(leftChannel, rightChannel, sampleRate, amountOfSamplesTested);
             Complex[] fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples(leftChannel, rightChannel, amountOfSamplesTested);
 

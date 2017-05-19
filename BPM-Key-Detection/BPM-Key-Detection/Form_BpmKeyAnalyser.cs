@@ -224,6 +224,7 @@ namespace BPM_Key_Detection
                 {
                     if (BPMChecked || KeyChecked)
                     {
+                        int test = 0;
                         foreach (MusicFile musicFile in Files)
                         {
                             label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
@@ -241,8 +242,27 @@ namespace BPM_Key_Detection
                             {
                                 if (BPMChecked)
                                 {
-                                    musicFile.EstimateBPM(musicFileSamples);
-                                    MessageBox.Show(musicFile.EstimatedBPM.ToString());
+                                    try
+                                    {
+                                        musicFile.EstimateBPM(musicFileSamples);
+                                    }
+                                    catch (SongNotLongEnoughException)
+                                    {
+                                        MessageBox.Show($"{musicFile.FileName} could not be analysed. The music file was to short!","BPM detection error!");
+                                    }
+                                    catch (SongIsNotStereoException)
+                                    {
+                                        MessageBox.Show($"{musicFile.FileName} could not be analysed. The music file was not stereo!", "BPM detection error!");
+                                    }
+                                    catch (Exception)
+                                    {
+                                        MessageBox.Show($"{musicFile.FileName} could not be analysed!", "BPM detection error!");
+                                    }
+                                    //MessageBox.Show(musicFile.EstimatedBPM.ToString());
+                                    if (musicFile.Bpm == musicFile.EstimatedBPM)
+                                    {
+                                        test++;
+                                    }
                                 }
                                 if (KeyChecked)
                                 {
@@ -271,6 +291,7 @@ namespace BPM_Key_Detection
                         }
                         label1.BeginInvoke(new Action(() => { label1.Text = ""; }));
                         MessageBox.Show(correctCounter.ToString());
+                        MessageBox.Show(test.ToString());
                     }
                     else
                     {
