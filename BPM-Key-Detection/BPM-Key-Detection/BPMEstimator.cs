@@ -43,7 +43,7 @@ namespace BPM_Key_Detection
             DerivationFilter(_leftChannel, _rightChannel);
             Complex[] fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples();
             BPMCombFilterMember[] BPMCombFilter = InitializeAllCombMembers();
-            double[] similarityEnergies = ComputeAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCombFilter);
+            double[] similarityEnergies = CalculateAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCombFilter);
             return CombFilterProcess(similarityEnergies, BPMCombFilter);
         }
 
@@ -135,9 +135,9 @@ namespace BPM_Key_Detection
             return BPMCombFilter;
         }
 
-        //Computes and inserts the energys which give an evaluatin of the similarity, between the train of impulses and the song.
+        //Calculates and inserts the energys which give an evaluatin of the similarity, between the train of impulses and the song.
         //The larger the energy, the larger the similarity.
-        private double[] ComputeAllSimilarityEnergies(Complex[] fftetDerivationFilteredSamples, BPMCombFilterMember[] BPMCombFilter)
+        private double[] CalculateAllSimilarityEnergies(Complex[] fftetDerivationFilteredSamples, BPMCombFilterMember[] BPMCombFilter)
         {
             double[] similarityEnergies = new double[_amountOfBpmsToTest];
             for (int i = 0; i < _amountOfBpmsToTest; i++)

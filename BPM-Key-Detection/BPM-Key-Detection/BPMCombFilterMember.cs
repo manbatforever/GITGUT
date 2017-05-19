@@ -17,11 +17,11 @@ namespace BPM_Key_Detection
         {
             BPM = bpm;
             TrainOfImpulses = CreateTrainOfImpulses(maxAmplitude, amountOfSamplesTested, sampleRate);
-            FFTTrainOfImpulses = ComputeFFTTrainOfImpulses(amountOfSamplesTested);
+            FFTTrainOfImpulses = CalculateFFTTrainOfImpulses(amountOfSamplesTested);
         }
 
-        //Computes the period between impulses.
-        private int ComputePeriodBetweenImpulses(int sampleRate)
+        //Calculates the period between impulses.
+        private int CalculatePeriodBetweenImpulses(int sampleRate)
         {
             return Convert.ToInt32(60 / Convert.ToDouble(BPM) * Convert.ToDouble(sampleRate));
         }
@@ -30,7 +30,7 @@ namespace BPM_Key_Detection
         private int[] CreateTrainOfImpulses(int maxAmplitude, int amountOfSamplesTested, int sampleRate)
         {
             int[] trainOfImpulses = new int[amountOfSamplesTested];
-            int periodBetweenImpulses = ComputePeriodBetweenImpulses(sampleRate);
+            int periodBetweenImpulses = CalculatePeriodBetweenImpulses(sampleRate);
 
             for (int i = 0; i < amountOfSamplesTested; i++)
             {
@@ -43,7 +43,7 @@ namespace BPM_Key_Detection
         }
 
         //Runs FFT on each element in the train of impulses.
-        private Complex[] ComputeFFTTrainOfImpulses(int amountOfSamplesTested)
+        private Complex[] CalculateFFTTrainOfImpulses(int amountOfSamplesTested)
         {
             Complex[] ComplexTrainOfImpulsesSignal = new Complex[amountOfSamplesTested];
 
