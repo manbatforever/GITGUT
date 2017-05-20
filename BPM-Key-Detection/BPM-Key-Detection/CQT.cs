@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BPM_Key_Detection
+﻿namespace BPM_Key_Detection
 {
     //Object: Contains all Constant Q transform values including output and all functionality
     internal class CQT

@@ -37,7 +37,7 @@ namespace BPM_Key_Detection
             int rightLimit = (int)Math.Floor((1d + (_Q / 2d)) * WindowLengthHelpingFunction(kernelNumber));
             _lLimitValues[kernelNumber] = leftLimit;
             _rLimitValues[kernelNumber] = rightLimit;
-            Window ibrahimWindow = new IbrahimWindow(leftLimit, rightLimit);
+            Window ibrahimWindow = new IbrahimWindow(rightLimit, leftLimit);
             double[] spectralKernel = new double[_samplesPerFrame];
             for (int b = leftLimit; b <= rightLimit; b++) //Ibrahim Equation (2.7)
             {
