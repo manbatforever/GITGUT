@@ -11,11 +11,11 @@ namespace BPM_Key_Detection
             _lLimit = lLimit;
         }
 
-        protected override void WindowFunction(int windowLength)
+        protected override void WindowFunction()
         {
-            for (int i = windowLength; i < windowLength; i++)
+            for (int i = _lLimit; i < _length; i++)
             {
-                _windowArray[i] = 1d - Math.Cos(2d * Math.PI * ((i - windowLength) / (windowLength - _lLimit)));
+                _windowArray[i] = 1d - Math.Cos(2d * Math.PI * (((double)i - (double)_length) / ((double)_length - (double)_lLimit)));
             }
         }
     }

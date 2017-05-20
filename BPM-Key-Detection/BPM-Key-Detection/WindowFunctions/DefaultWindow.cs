@@ -7,9 +7,9 @@
         {
         }
 
-        protected override void WindowFunction(int windowLength)
+        protected override void WindowFunction()
         {
-            for (int i = 0; i < windowLength; i++)
+            for (int i = 0; i < _length; i++)
             {
                 _windowArray[i] = 1;
             }

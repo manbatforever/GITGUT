@@ -4,15 +4,18 @@
     internal abstract class Window
     {
         protected double[] _windowArray;
-        private int _length;
+        protected int _length;
 
         public Window(int windowLength)
         {
             _length = windowLength;
             _windowArray = new double[windowLength];
-            WindowFunction(windowLength);
         }
-        protected abstract void WindowFunction(int windowLength);
+        public void AssignWindowValues() //This is a necessary detour, instead of calling it in the constructor
+        {
+            WindowFunction();
+        }
+        protected abstract void WindowFunction();
 
         public double[] WindowArray { get => _windowArray; }
     }

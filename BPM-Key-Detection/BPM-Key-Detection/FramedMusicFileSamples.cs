@@ -25,6 +25,7 @@
             {
                 window = new DefaultWindow(_samplesPerFrame); // Applies a window with no effects
             }
+            window.AssignWindowValues();
             int hopSize = _samplesPerFrame / _hopsPerFrame;
             double[][] sampleFrames = new double[_numOfFrames][];
             for (int frame = 0; frame < _numOfFrames; frame++)
