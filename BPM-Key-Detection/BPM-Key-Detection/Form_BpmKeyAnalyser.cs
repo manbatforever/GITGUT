@@ -11,7 +11,7 @@ namespace BPM_Key_Detection
     //A windows form application which is responsible for UI and handling user input.
     partial class Form_BpmKeyAnalyser : Form
     {
-        private List<MusicFile> Files = new List<MusicFile>();
+        private List<MusicFile> ListOfFiles = new List<MusicFile>();
         private bool BPMChecked = false;
         private bool KeyChecked = false;
         private bool writeBPMToMetadata = false;
@@ -50,7 +50,7 @@ namespace BPM_Key_Detection
             foreach (string filePath in FileArray)
             {
                 bool alreadyHere = false;
-                foreach (MusicFile musicFile in Files)
+                foreach (MusicFile musicFile in ListOfFiles)
                 {
                     if (filePath == musicFile.Filepath)
                     {
@@ -61,11 +61,11 @@ namespace BPM_Key_Detection
                 }
                 if (!alreadyHere)
                 {
-                    Files.Add(new MusicFile(filePath));
-                    if (Files.Last().BadFile == true)
+                    ListOfFiles.Add(new MusicFile(filePath));
+                    if (ListOfFiles.Last().BadFile == true)
                     {
-                        badFiles.Add(Files.Last().FileName);
-                        Files.RemoveAt(Files.Count - 1);
+                        badFiles.Add(ListOfFiles.Last().FileName);
+                        ListOfFiles.RemoveAt(ListOfFiles.Count - 1);
                         badFilesInList = true;
                     }
                 }
@@ -103,7 +103,7 @@ namespace BPM_Key_Detection
                 }
             }
 
-            MakeDataTable(Files);
+            MakeDataTable(ListOfFiles);
         }
 
         //Makes a DataTable of MusicFile data, and binds the DataTable to the DataGridView.
@@ -200,8 +200,8 @@ namespace BPM_Key_Detection
         private void dataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             var deletedItem = e.Row.Cells[0].Value.ToString();
-            int index = Files.FindIndex(a => a.FileName == deletedItem);
-            Files.RemoveAt(index);
+            int index = ListOfFiles.FindIndex(a => a.FileName == deletedItem);
+            ListOfFiles.RemoveAt(index);
         }
 
         private void Start_Click(object sender, EventArgs e)
@@ -217,12 +217,12 @@ namespace BPM_Key_Detection
                 processRunning = true;
                 int i = 0;
                 int correctCounter = 0;
-                if (Files.Any() == true)
+                if (ListOfFiles.Any() == true)
                 {
                     if (BPMChecked || KeyChecked)
                     {
                         int test = 0;
-                        foreach (MusicFile musicFile in Files)
+                        foreach (MusicFile musicFile in ListOfFiles)
                         {
                             label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
                             MusicFileSamples musicFileSamples = null;
@@ -278,7 +278,7 @@ namespace BPM_Key_Detection
                                     musicFile.WriteMetadata(writeBPMToMetadata, writeKeyToMetadata);
                                 }
                             }
-                            progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / Files.Count(); }));
+                            progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / ListOfFiles.Count(); }));
                             i++;
                         }
                         if (badFiles.Any())
