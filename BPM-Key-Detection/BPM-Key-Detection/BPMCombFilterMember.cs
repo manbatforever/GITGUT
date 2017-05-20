@@ -53,6 +53,6 @@ namespace BPM_Key_Detection
 
         public int BPM { get => _bpm; }
         public int[] TrainOfImpulses { get => _trainOfImpulses; }
-        internal FrequencyBins FFTTrainOfImpulses { get => _fftTrainOfImpulses; }
+        public FrequencyBins FFTTrainOfImpulses { get => _fftTrainOfImpulses; }
     }
 }
