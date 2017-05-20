@@ -73,7 +73,7 @@
     <Compile Include="Kernels\Kernel.cs" />
     <Compile Include="Kernels\SpectralKernel.cs" />
     <Compile Include="KeyEstimator.cs" />
-    <Compile Include="Samples\TemporalKernelSamples.cs" />
+    <None Include="Samples\TemporalKernelSamples.cs" />
     <Compile Include="Samples\MusicFileSamples.cs" />
     <Compile Include="FramedToneAmplitudes.cs" />
     <Compile Include="WindowFunctions\BlackmanWindow.cs" />
