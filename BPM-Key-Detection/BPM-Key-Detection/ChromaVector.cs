@@ -66,20 +66,20 @@ namespace BPM_Key_Detection
             return output;
         }
 
-        private double Magnitude(double[] Vector, int length)
+        private double Magnitude(double[] vector, int length)
         {
             double output = 0;
             for (int i = 0; i < length; i++)
             {
-                output += Math.Pow(Vector[i], 2d);
+                output += Math.Pow(vector[i], 2d);
             }
             return Math.Sqrt(output);
         }
 
-        public double CosineSimilarity(double[] V2)
+        public double CosineSimilarity(double[] v2)
         {
             int length = _vectorValues.Length;
-            return DotProduct(V2) / (Magnitude(_vectorValues, length) * Magnitude(V2, length));
+            return DotProduct(v2) / (Magnitude(_vectorValues, length) * Magnitude(v2, length));
         }
         //private double[] _octaveWeights = new double[]
         //{
