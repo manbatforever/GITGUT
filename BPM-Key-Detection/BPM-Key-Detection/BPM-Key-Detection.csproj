@@ -75,6 +75,7 @@
     <Compile Include="Samples\TemporalKernelSamples.cs" />
     <Compile Include="Samples\MusicFileSamples.cs" />
     <Compile Include="FramedToneAmplitudes.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="WindowFunctions\BlackmanWindow.cs" />
     <Compile Include="ChromaVector.cs" />
     <Compile Include="WindowFunctions\DefaultWindow.cs" />

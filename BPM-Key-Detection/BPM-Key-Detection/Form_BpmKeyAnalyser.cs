@@ -222,13 +222,18 @@ namespace BPM_Key_Detection
                     if (BPMChecked || KeyChecked)
                     {
                         int test = 0;
+                        KeyEstimationLogs.SetNumberOfFiles(Files.Count);
                         foreach (MusicFile musicFile in Files)
                         {
+                            KeyEstimationLogs.Counter++;
                             label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
                             MusicFileSamples musicFileSamples = null;
                             try
                             {
+                                System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
                                 musicFileSamples = musicFile.GetRawSamples();
+                                timer.Stop();
+                                KeyEstimationLogs.SampleFetchTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
                             }
                             catch (InvalidOperationException)
                             {
@@ -263,6 +268,7 @@ namespace BPM_Key_Detection
                                 }
                                 if (KeyChecked)
                                 {
+                                    KeyEstimationLogs.FileNames[KeyEstimationLogs.Counter] = musicFile.FileName;
                                     musicFile.EstimateKey(musicFileSamples);
                                     //MessageBox.Show(musicFile.CamelotNotation);
                                     if (musicFile.CamelotNotation != null)
@@ -287,6 +293,8 @@ namespace BPM_Key_Detection
                             MessageBox.Show("The following files could not be analysed: \n\n" + messageBadFiles, "Analysing Error");
                         }
                         label1.BeginInvoke(new Action(() => { label1.Text = ""; }));
+                        KeyEstimationLogs.CorrectKeys = correctCounter;
+                        KeyEstimationLogs.WriteToFile();
                         MessageBox.Show(correctCounter.ToString());
                         MessageBox.Show(test.ToString());
                     }

@@ -12,8 +12,17 @@ namespace BPM_Key_Detection
         {
             CQT cqt = new CQT(musicFileSamples);
             FramedToneAmplitudes allToneAmplitudes = cqt.FramedToneAmplitudes;
+
+            System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
             ChromaVector chromaVector = new ChromaVector(allToneAmplitudes, cqt.TonesPerOctave, cqt.NumOfOctaves);
+            timer.Stop();
+            KeyEstimationLogs.ChromaVectorTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
+
+            timer.Restart();
             int key = CalculateKey(chromaVector);
+            timer.Stop();
+            KeyEstimationLogs.KeyCalculationTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
+
             _camelotNotation = FormatToCamelotNotation(key);
             _musicNotation = FormatToMusicNotation(key);
         }
