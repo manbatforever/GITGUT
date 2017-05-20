@@ -24,7 +24,7 @@ namespace BPM_Key_Detection
             ProcesMusicFileSamples(musicFileSamples);
 
             System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
-            FramedMusicFileSamples framedMusicFileSamples = new FramedMusicFileSamples(musicFileSamples, _samplesPerFrame, _hopsPerFrame, new BlackmanWindow());
+            FramedMusicFileSamples framedMusicFileSamples = new FramedMusicFileSamples(musicFileSamples, _samplesPerFrame, _hopsPerFrame, new BlackmanWindow(SamplesPerFrame));
             timer.Stop();
             KeyEstimationLogs.FramingTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
 

@@ -9,7 +9,7 @@ namespace BPM_Key_Detection
     internal class KeyEstimationLogs
     {
         public static int cutoffFrequency = 2000;
-        public static int SamplesPerFrame = 2;
+        public static int SamplesPerFrame = 32;
         public static int HopsPerFrame = 4;
         public static int TonesPerOctave = 12;
         public static int NumberOfOctaves = 6;
@@ -26,6 +26,8 @@ namespace BPM_Key_Detection
         public static long[] ChromaVectorTime;
         public static long[] KeyCalculationTime;
         public static int CorrectKeys;
+
+        public static long TotalTime = 0;
 
         public static void SetNumberOfFiles(int number)
         {
@@ -45,7 +47,7 @@ namespace BPM_Key_Detection
         {
             string directory = @"Key Estimation Logs\";
             System.IO.Directory.CreateDirectory(directory);
-            string fileName = "key " + SamplesPerFrame.ToString() + HopsPerFrame.ToString() + NumberOfOctaves.ToString() + MinimumFrequency.ToString() + ".txt";
+            string fileName = $"key {SamplesPerFrame.ToString()}-{HopsPerFrame.ToString()}-{NumberOfOctaves.ToString()}-{MinimumFrequency.ToString()}.txt";
             System.IO.StreamWriter file = new System.IO.StreamWriter(directory + fileName);
 
             file.WriteLine($"Cutoff Frequency (lowpassfilter): {cutoffFrequency}");
@@ -59,9 +61,10 @@ namespace BPM_Key_Detection
             file.WriteLine($"Correct Keys: {CorrectKeys} out of {NumberOfFiles - 1}");
             file.WriteLine();
             file.WriteLine("Time results\n\n");
+            file.WriteLine($"Total time(ms): {TotalTime}");
             file.WriteLine();
             int numberPad = 15;
-            int namePad = 80;
+            int namePad = 100;
             string header = $"{"Nr.".PadRight(5)} | " +
                 $"{"File Name".PadRight(namePad)} | " +
                 $"{"Sample fetch(ms)".PadRight(numberPad)} |" +
