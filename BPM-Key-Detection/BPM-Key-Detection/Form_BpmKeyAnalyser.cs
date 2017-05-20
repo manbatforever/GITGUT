@@ -47,21 +47,21 @@ namespace BPM_Key_Detection
             var alreadyLoaded = new List<String>();
             var badFiles = new List<String>();
             bool badFilesInList = false;
-            foreach (string item in FileArray)
+            foreach (string filePath in FileArray)
             {
                 bool alreadyHere = false;
-                foreach (MusicFile foo in Files)
+                foreach (MusicFile musicFile in Files)
                 {
-                    if (item == foo.Filepath)
+                    if (filePath == musicFile.Filepath)
                     {
                         alreadyHere = true;
-                        alreadyLoaded.Add(foo.FileName);
+                        alreadyLoaded.Add(musicFile.FileName);
                         break;
                     }
                 }
                 if (!alreadyHere)
                 {
-                    Files.Add(new MusicFile(item));
+                    Files.Add(new MusicFile(filePath));
                     if (Files.Last().BadFile == true)
                     {
                         badFiles.Add(Files.Last().FileName);
