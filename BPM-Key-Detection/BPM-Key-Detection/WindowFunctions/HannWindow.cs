@@ -9,14 +9,11 @@ namespace BPM_Key_Detection
     //Object: A type of window
     internal class HannWindow : Window
     {
-        public HannWindow()
-        {
-        }
         public HannWindow(int windowLength) : base(windowLength)
         {
         }
 
-        public override void WindowFunction(int windowLength)
+        protected override void WindowFunction(int windowLength)
         {
             double[] hannWindow = new double[windowLength];
             for (int n = 0; n < windowLength; n++)

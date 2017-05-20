@@ -9,15 +9,11 @@ namespace BPM_Key_Detection
     //Object: A type of window
     internal class HammingWindow : Window
     {
-        public HammingWindow()
-        {
-        }
-
         public HammingWindow(int windowLength) : base(windowLength)
         {
         }
 
-        public override void WindowFunction(int windowLength)
+        protected override void WindowFunction(int windowLength)
         {
             double alpha = 25d / 46d;
             double[] hammingWindow = new double[windowLength];

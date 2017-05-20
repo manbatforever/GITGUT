@@ -21,9 +21,8 @@ namespace BPM_Key_Detection
             _length = windowLength;
             WindowFunction(windowLength);
         }
+        protected abstract void WindowFunction(int windowLength);
 
         public double[] WindowArray { get => _windowArray; }
-
-        public abstract void WindowFunction(int windowLength);
     }
 }

@@ -29,10 +29,9 @@ namespace BPM_Key_Detection
         {
             if (window == null)
             {
-                window = new DefaultWindow(); // Applies a window with no effects
+                window = new DefaultWindow(_samplesPerFrame); // Applies a window with no effects
             }
             int hopSize = _samplesPerFrame / _hopsPerFrame;
-            window.WindowFunction(_samplesPerFrame);
             double[][] sampleFrames = new double[_numOfFrames][];
             for (int frame = 0; frame < _numOfFrames; frame++)
             {

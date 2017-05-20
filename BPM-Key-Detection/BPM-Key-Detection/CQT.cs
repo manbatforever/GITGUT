@@ -23,7 +23,7 @@ namespace BPM_Key_Detection
             _tonesTotal = _tonesPerOctave * _numOfOctaves;
             ProcesMusicFileSamples(musicFileSamples);
 
-            FramedMusicFileSamples framedMusicFileSamples = new FramedMusicFileSamples(musicFileSamples, _samplesPerFrame, _hopsPerFrame, new BlackmanWindow());
+            FramedMusicFileSamples framedMusicFileSamples = new FramedMusicFileSamples(musicFileSamples, _samplesPerFrame, _hopsPerFrame, new BlackmanWindow(_samplesPerFrame));
             FFT fft = new FFT(framedMusicFileSamples);
             IbrahimSpectralKernel ibrahimSpectralKernel = new IbrahimSpectralKernel(musicFileSamples.Samplerate, _tonesPerOctave, _tonesTotal, _samplesPerFrame, _minimumFrequency);
             _framedToneAmplitudes = new FramedToneAmplitudes(fft.FramedFrequencyBins, ibrahimSpectralKernel, _tonesTotal, _samplesPerFrame);

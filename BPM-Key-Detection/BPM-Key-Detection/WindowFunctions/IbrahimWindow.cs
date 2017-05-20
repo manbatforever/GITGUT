@@ -8,7 +8,7 @@ namespace BPM_Key_Detection
 {
     internal class IbrahimWindow : Window
     {
-        public override void WindowFunction(int windowLength)
+        protected override void WindowFunction(int windowLength)
         {
 
         }
@@ -17,7 +17,7 @@ namespace BPM_Key_Detection
             SpectralWindowFunction(lLimit, rLimit);
         }
 
-        public void SpectralWindowFunction(double lLimit, double rLimit)
+        private void SpectralWindowFunction(double lLimit, double rLimit)
         {
             _windowArray = new double[(int)rLimit + 1];
             for (int i = (int)lLimit; i <= rLimit; i++)
