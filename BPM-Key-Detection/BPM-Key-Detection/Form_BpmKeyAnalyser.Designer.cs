@@ -166,7 +166,7 @@
             this.Controls.Add(this.FileDialog);
             this.MinimumSize = new System.Drawing.Size(900, 500);
             this.Name = "Form_BpmKeyAnalyser";
-            this.Text = "Form1";
+            this.Text = "BPM-Key Analyser";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
