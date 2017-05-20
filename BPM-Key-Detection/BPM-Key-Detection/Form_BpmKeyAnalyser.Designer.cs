@@ -132,9 +132,9 @@
             this.writeKey.AutoSize = true;
             this.writeKey.Location = new System.Drawing.Point(384, 44);
             this.writeKey.Name = "writeKey";
-            this.writeKey.Size = new System.Drawing.Size(71, 17);
+            this.writeKey.Size = new System.Drawing.Size(72, 17);
             this.writeKey.TabIndex = 7;
-            this.writeKey.Text = "Write key";
+            this.writeKey.Text = "Write Key";
             this.writeKey.UseVisualStyleBackColor = true;
             this.writeKey.CheckedChanged += new System.EventHandler(this.writeKey_CheckedChanged);
             // 
