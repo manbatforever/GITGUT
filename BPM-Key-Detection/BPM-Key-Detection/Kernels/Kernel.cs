@@ -11,7 +11,7 @@ namespace BPM_Key_Detection
     {
         protected double _Q;
         protected double _samplerate;
-        protected double[] _toneOfInterest;
+        protected double[] _frequenciesOfInterest;
         protected double _minimumFrequency;
         protected int _tonesPerOctave;
         protected int _tonesTotal;
@@ -25,17 +25,17 @@ namespace BPM_Key_Detection
             _tonesTotal = tonesTotal;
             _samplesPerFrame = samplesPerFrame;
             _minimumFrequency = minimumFrequency;
-            _toneOfInterest = CalculateToneOfInterest();
+            CalculateFrequenciesOfInterest();
         }
 
-        private double[] CalculateToneOfInterest()
+        private void CalculateFrequenciesOfInterest()
         {
             double[] tonesOfInterest = new double[_tonesTotal];
             for (int tone = 0; tone < _tonesTotal; tone++)
             {
                 tonesOfInterest[tone] = Math.Pow(Math.Pow(2d, 1d / _tonesPerOctave), tone) * _minimumFrequency;
             }
-            return tonesOfInterest;
+            _frequenciesOfInterest = tonesOfInterest;
         }
     }
 }

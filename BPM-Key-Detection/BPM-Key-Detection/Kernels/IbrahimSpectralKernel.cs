@@ -47,13 +47,13 @@ namespace BPM_Key_Detection
                     spectralWindowSum += ibrahimWindow.WindowArray[i];
                 }
                 if (spectralWindowSum != 0 && rightLimit != leftLimit)
-                    spectralKernel[b] = ibrahimWindow.WindowArray[b] * _toneOfInterest[kernelNumber] / spectralWindowSum;
+                    spectralKernel[b] = ibrahimWindow.WindowArray[b] * _frequenciesOfInterest[kernelNumber] / spectralWindowSum;
             }
             return spectralKernel;
         }
         private double WindowLengthHelpingFunction(int k)
         {
-            return (_toneOfInterest[k] * _samplesPerFrame) / _samplerate;
+            return (_frequenciesOfInterest[k] * _samplesPerFrame) / _samplerate;
         }
 
         public int[] LLimitValues { get => _lLimitValues; }

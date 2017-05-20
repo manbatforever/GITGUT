@@ -32,13 +32,10 @@ namespace BPM_Key_Detection
             int[] trainOfImpulses = new int[amountOfSamplesTested];
             int periodBetweenImpulses = CalculatePeriodBetweenImpulses(sampleRate);
 
-            for (int i = 0; i < amountOfSamplesTested; i++)
-            {
                 for (int k = 0; k < amountOfSamplesTested; k += periodBetweenImpulses)
                 {
                     trainOfImpulses[k] = maxAmplitude;
                 }
-            }
             return trainOfImpulses;
         }
 
