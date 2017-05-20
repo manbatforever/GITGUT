@@ -18,7 +18,8 @@ namespace BPM_Key_Detection
             timer.Stop();
             KeyEstimationLogs.ChromaVectorTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
 
-            timer.Restart();
+            timer.Reset();
+            timer.Start();
             int key = CalculateKey(chromaVector);
             timer.Stop();
             KeyEstimationLogs.KeyCalculationTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;

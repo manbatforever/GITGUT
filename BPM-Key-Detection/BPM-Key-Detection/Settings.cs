@@ -9,7 +9,7 @@ namespace BPM_Key_Detection
     internal class KeyEstimationLogs
     {
         public static int cutoffFrequency = 2000;
-        public static int SamplesPerFrame = 32;
+        public static int SamplesPerFrame = 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2;
         public static int HopsPerFrame = 4;
         public static int TonesPerOctave = 12;
         public static int NumberOfOctaves = 6;

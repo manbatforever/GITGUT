@@ -12,7 +12,7 @@
         {
             _samplesPerFrame = samplesPerFrame;
             _hopsPerFrame = hopsPerFrame;
-            _numOfFrames = (musicFileSamples.NumOfSamples / _samplesPerFrame - 1) * _hopsPerFrame; // -1 to eliminate the last incomplete frame
+            _numOfFrames = (musicFileSamples.NumOfSamples / _samplesPerFrame) * _hopsPerFrame + 1; // -1 to eliminate the last incomplete frame
             _sampleFrames = CreateSampleFrames(musicFileSamples, musicFileSamples.NumOfSamples, window);
         }
 
@@ -34,7 +34,8 @@
                 int overlapLength = hopSize * frame; //Determines how many samples the next frame repeats from the end of the previous frame (frame overlapping)
                 for (int sample = 0; sample < _samplesPerFrame; sample++)
                 {
-                    sampleFrame[sample] = musicFileSamples.SampleArray[overlapLength + sample] * window.WindowArray[sample];
+                    if (sample + overlapLength< samplesLength)
+                        sampleFrame[sample] = musicFileSamples.SampleArray[overlapLength + sample] * window.WindowArray[sample];
                 }
                 sampleFrames[frame] = sampleFrame;
             }

@@ -213,6 +213,7 @@ namespace BPM_Key_Detection
             }
             Thread backgroundThread = new Thread( new ThreadStart(() =>
             {
+                KeyEstimationLogs.SetNumberOfFiles(ListOfFiles.Count);
                 System.Diagnostics.Stopwatch totaltime = System.Diagnostics.Stopwatch.StartNew();
                 List<string> badFiles = new List<string>();
                 processRunning = true;
