@@ -12,7 +12,7 @@ namespace BPM_Key_Detection
         
         public MajorProfile()
         {
-            this.Profile = new double[]
+            _profile = new double[]
         {
             6.35,
             2.23,
