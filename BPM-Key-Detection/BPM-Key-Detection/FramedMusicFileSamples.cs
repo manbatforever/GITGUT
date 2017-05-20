@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BPM_Key_Detection
+﻿namespace BPM_Key_Detection
 {
     //Object: Represents an array of frames containing music file samples.
     internal class FramedMusicFileSamples
@@ -29,10 +23,10 @@ namespace BPM_Key_Detection
         {
             if (window == null)
             {
-                window = new DefaultWindow(); // Applies a window with no effects
+                window = new DefaultWindow(_samplesPerFrame); // Applies a window with no effects
             }
+            window.AssignWindowValues();
             int hopSize = _samplesPerFrame / _hopsPerFrame;
-            window.WindowFunction(_samplesPerFrame);
             double[][] sampleFrames = new double[_numOfFrames][];
             for (int frame = 0; frame < _numOfFrames; frame++)
             {

@@ -53,7 +53,7 @@ namespace BPM_Key_Detection
 
         private double WindowLength(int k_cq)
         {
-            return _Q * _samplerate / _toneOfInterest[k_cq];
+            return _Q * _samplerate / _frequenciesOfInterest[k_cq];
         }
     }
 }

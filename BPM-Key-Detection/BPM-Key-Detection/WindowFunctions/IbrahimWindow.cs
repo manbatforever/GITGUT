@@ -1,28 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BPM_Key_Detection
 {
     internal class IbrahimWindow : Window
     {
-        public override void WindowFunction(int windowLength)
-        {
+        private int _lLimit;
 
-        }
-        public IbrahimWindow( double lLimit, double rLimit) :base() //This window is a special snowflake and is not constructed from a windowlength
+        public IbrahimWindow(int windowLength, int lLimit) : base(windowLength + 1) //+1 because the upper limit is closed
         {
-            SpectralWindowFunction(lLimit, rLimit);
+            _lLimit = lLimit;
         }
 
-        public void SpectralWindowFunction(double lLimit, double rLimit)
+        protected override void WindowFunction()
         {
-            _windowArray = new double[(int)rLimit + 1];
-            for (int i = (int)lLimit; i <= rLimit; i++)
+            for (int i = _lLimit; i < _length; i++)
             {
-                _windowArray[i] = 1d - Math.Cos(2d * Math.PI * ((i - lLimit) / (rLimit - lLimit)));
+                _windowArray[i] = 1d - Math.Cos(2d * Math.PI * (((double)i - (double)_length) / ((double)_length - (double)_lLimit)));
             }
         }
     }

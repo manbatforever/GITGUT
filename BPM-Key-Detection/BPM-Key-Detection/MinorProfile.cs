@@ -11,7 +11,7 @@ namespace BPM_Key_Detection
     {
         public MinorProfile()
         {
-            this.Profile = new double[]
+            _profile = new double[]
             {
             6.33,
             2.68,

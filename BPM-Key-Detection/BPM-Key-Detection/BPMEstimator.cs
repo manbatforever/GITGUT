@@ -41,7 +41,7 @@ namespace BPM_Key_Detection
         private int GetBPM()
         {
             DerivationFilter(_leftChannel, _rightChannel);
-            Complex[] fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples();
+            FrequencyBins fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples();
             BPMCombFilterMember[] BPMCombFilter = InitializeAllCombMembers();
             double[] similarityEnergies = CalculateAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCombFilter);
             return CombFilterProcess(similarityEnergies, BPMCombFilter);
@@ -114,7 +114,7 @@ namespace BPM_Key_Detection
         }
 
         //Passes the differentiated samples to the frequency domain.
-        private Complex[] GetFFTDerivationFilteredSamples()
+        private FrequencyBins GetFFTDerivationFilteredSamples()
         {
             Complex[] complexSignal = new Complex[_amountOfSamplesTested];
             
@@ -137,7 +137,7 @@ namespace BPM_Key_Detection
 
         //Calculates and inserts the energys which give an evaluatin of the similarity, between the train of impulses and the song.
         //The larger the energy, the larger the similarity.
-        private double[] CalculateAllSimilarityEnergies(Complex[] fftetDerivationFilteredSamples, BPMCombFilterMember[] BPMCombFilter)
+        private double[] CalculateAllSimilarityEnergies(FrequencyBins fftetDerivationFilteredSamples, BPMCombFilterMember[] BPMCombFilter)
         {
             double[] similarityEnergies = new double[_amountOfBpmsToTest];
             for (int i = 0; i < _amountOfBpmsToTest; i++)
@@ -146,7 +146,7 @@ namespace BPM_Key_Detection
 
                 for (int k = 0; k < _amountOfSamplesTested; k++)
                 {
-                    similarityEnergies[i] += Complex.Abs(fftetDerivationFilteredSamples[k] * BPMCombFilter[i].FFTTrainOfImpulses[k]);
+                    similarityEnergies[i] += Complex.Abs(fftetDerivationFilteredSamples.BinValues[k] * BPMCombFilter[i].FFTTrainOfImpulses.BinValues[k]);
                 }
             }
             return similarityEnergies;

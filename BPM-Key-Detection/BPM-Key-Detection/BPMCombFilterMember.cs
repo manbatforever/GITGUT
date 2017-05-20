@@ -9,15 +9,15 @@ namespace BPM_Key_Detection
 {
     internal class BPMCombFilterMember
     {
-        public int BPM { get; private set; }
-        public int[] TrainOfImpulses { get; private set; }
-        public Complex[] FFTTrainOfImpulses { get; private set; }
+        private int _bpm;
+        private int[] _trainOfImpulses;
+        private FrequencyBins _fftTrainOfImpulses;
 
         public BPMCombFilterMember(int bpm, int amountOfSamplesTested, int maxAmplitude, int sampleRate)
         {
-            BPM = bpm;
-            TrainOfImpulses = CreateTrainOfImpulses(maxAmplitude, amountOfSamplesTested, sampleRate);
-            FFTTrainOfImpulses = CalculateFFTTrainOfImpulses(amountOfSamplesTested);
+            _bpm = bpm;
+            _trainOfImpulses = CreateTrainOfImpulses(maxAmplitude, amountOfSamplesTested, sampleRate);
+            _fftTrainOfImpulses = CalculateFFTTrainOfImpulses(amountOfSamplesTested);
         }
 
         //Calculates the period between impulses.
@@ -32,18 +32,15 @@ namespace BPM_Key_Detection
             int[] trainOfImpulses = new int[amountOfSamplesTested];
             int periodBetweenImpulses = CalculatePeriodBetweenImpulses(sampleRate);
 
-            for (int i = 0; i < amountOfSamplesTested; i++)
-            {
                 for (int k = 0; k < amountOfSamplesTested; k += periodBetweenImpulses)
                 {
                     trainOfImpulses[k] = maxAmplitude;
                 }
-            }
             return trainOfImpulses;
         }
 
         //Runs FFT on each element in the train of impulses.
-        private Complex[] CalculateFFTTrainOfImpulses(int amountOfSamplesTested)
+        private FrequencyBins CalculateFFTTrainOfImpulses(int amountOfSamplesTested)
         {
             Complex[] ComplexTrainOfImpulsesSignal = new Complex[amountOfSamplesTested];
 
@@ -53,5 +50,9 @@ namespace BPM_Key_Detection
             }
             return new FFT(ComplexTrainOfImpulsesSignal).FrequencyBins;
         }
+
+        public int BPM { get => _bpm; }
+        public int[] TrainOfImpulses { get => _trainOfImpulses; }
+        internal FrequencyBins FFTTrainOfImpulses { get => _fftTrainOfImpulses; }
     }
 }

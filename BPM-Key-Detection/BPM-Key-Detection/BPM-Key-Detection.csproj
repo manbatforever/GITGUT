@@ -69,10 +69,11 @@
     <Compile Include="FFT.cs" />
     <Compile Include="FramedFrequencyBins.cs" />
     <Compile Include="FramedMusicFileSamples.cs" />
+    <None Include="Kernels\BrownPucketteSpectralKernel.cs" />
     <Compile Include="Kernels\Kernel.cs" />
     <Compile Include="Kernels\SpectralKernel.cs" />
     <Compile Include="KeyEstimator.cs" />
-    <Compile Include="Samples\TemporalKernelSamples.cs" />
+    <None Include="Samples\TemporalKernelSamples.cs" />
     <Compile Include="Samples\MusicFileSamples.cs" />
     <Compile Include="FramedToneAmplitudes.cs" />
     <Compile Include="Settings.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="Form_BpmKeyAnalyser.Designer.cs">
       <DependentUpon>Form_BpmKeyAnalyser.cs</DependentUpon>
     </Compile>
-    <None Include="FrequencyBins.cs" />
+    <Compile Include="FrequencyBins.cs" />
     <Compile Include="WindowFunctions\HammingWindow.cs" />
     <Compile Include="WindowFunctions\HannWindow.cs" />
     <Compile Include="Kernels\IbrahimSpectralKernel.cs" />
@@ -94,7 +95,7 @@
     <Compile Include="MusicFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Kernels\TemporalKernel.cs" />
+    <None Include="Kernels\TemporalKernel.cs" />
     <Compile Include="KeyProfile.cs" />
     <Compile Include="Samples\Samples.cs" />
     <Compile Include="WindowFunctions\IbrahimWindow.cs" />

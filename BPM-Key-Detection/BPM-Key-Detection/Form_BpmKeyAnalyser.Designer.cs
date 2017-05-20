@@ -132,9 +132,9 @@
             this.writeKey.AutoSize = true;
             this.writeKey.Location = new System.Drawing.Point(384, 44);
             this.writeKey.Name = "writeKey";
-            this.writeKey.Size = new System.Drawing.Size(71, 17);
+            this.writeKey.Size = new System.Drawing.Size(72, 17);
             this.writeKey.TabIndex = 7;
-            this.writeKey.Text = "Write key";
+            this.writeKey.Text = "Write Key";
             this.writeKey.UseVisualStyleBackColor = true;
             this.writeKey.CheckedChanged += new System.EventHandler(this.writeKey_CheckedChanged);
             // 
@@ -166,7 +166,7 @@
             this.Controls.Add(this.FileDialog);
             this.MinimumSize = new System.Drawing.Size(900, 500);
             this.Name = "Form_BpmKeyAnalyser";
-            this.Text = "Form1";
+            this.Text = "BPM-Key Analyser";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

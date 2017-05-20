@@ -9,9 +9,7 @@ namespace BPM_Key_Detection
     //A data type specifying the musical note distribution in a key
     internal abstract class KeyProfile
     {
-        private double[] _profile;
-
-        public double[] Profile { get => _profile; protected set => _profile = value; }
+        protected double[] _profile;
 
         // Rearranges the values in the profile, returning an array of a profile for the specified tonica
         public double[] CreateProfileForTonica(int tonica)
