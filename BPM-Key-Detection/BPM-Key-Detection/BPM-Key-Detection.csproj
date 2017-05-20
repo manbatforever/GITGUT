@@ -94,7 +94,7 @@
     <Compile Include="MusicFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Kernels\TemporalKernel.cs" />
+    <None Include="Kernels\TemporalKernel.cs" />
     <Compile Include="KeyProfile.cs" />
     <Compile Include="Samples\Samples.cs" />
     <Compile Include="WindowFunctions\IbrahimWindow.cs" />
