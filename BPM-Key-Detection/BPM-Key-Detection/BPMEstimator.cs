@@ -159,7 +159,7 @@ namespace BPM_Key_Detection
             int IndexOfBPMWithGreatestEnergy = 0;
             for (int i = 0; i < _amountOfBpmsToTest; i++)
             {
-                if (similarityEnergies[i] > GreatestEnergy && (GreatestEnergy + 0.2) < similarityEnergies[i])
+                if (similarityEnergies[i] > GreatestEnergy)
                 {
                     GreatestEnergy = similarityEnergies[i];
                     IndexOfBPMWithGreatestEnergy = i;

@@ -255,7 +255,7 @@ namespace BPM_Key_Detection
                                     {
                                         MessageBox.Show($"{musicFile.FileName} could not be analysed!", "BPM detection error!");
                                     }
-                                    //MessageBox.Show(musicFile.EstimatedBPM.ToString());
+                                    MessageBox.Show(musicFile.EstimatedBPM.ToString());
                                     if (musicFile.Bpm == musicFile.EstimatedBPM)
                                     {
                                         test++;
