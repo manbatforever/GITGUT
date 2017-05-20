@@ -10,16 +10,13 @@ namespace BPM_Key_Detection
     internal class FrequencyBins
     {
         private Complex[] _binValues;
-        private int _numOfBins;
 
         public FrequencyBins(Complex[] binValues)
         {
             _binValues = binValues;
-            _numOfBins = binValues.Length;
         }
 
         public Complex[] BinValues { get => _binValues; }
-        public int NumOfBins { get => _numOfBins; }
 
         public override string ToString()
         {
