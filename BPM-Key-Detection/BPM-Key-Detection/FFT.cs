@@ -11,7 +11,8 @@ namespace BPM_Key_Detection
     internal class FFT
     {
         private FramedFrequencyBins _framedFrequencyBins; //1st constructer "output"
-        private Complex[] _frequencyBins; //2nd constructor "output"
+        //private Complex[] _frequencyBins; 
+        private FrequencyBins _frequencyBins; //2nd constructor "output"
 
         public FFT(FramedMusicFileSamples frames) //Constructor for FramedMusicFileSamples (CQT)
         {
@@ -38,7 +39,7 @@ namespace BPM_Key_Detection
             {
                 output[i] = new Complex(temp[i].Real, temp[i].Imaginary);
             }
-            _frequencyBins = output;
+            _frequencyBins = new FrequencyBins(output);
         }
 
         public  MathNet.Numerics.Complex32[] SingleFrameFFT(double[] samples)
@@ -55,7 +56,7 @@ namespace BPM_Key_Detection
 
 
         public FramedFrequencyBins FramedFrequencyBins { get => _framedFrequencyBins; set => _framedFrequencyBins = value; }
-        public Complex[] FrequencyBins { get => _frequencyBins; set => _frequencyBins = value; }
+        public FrequencyBins FrequencyBins { get => _frequencyBins; }
 
     }
 }
