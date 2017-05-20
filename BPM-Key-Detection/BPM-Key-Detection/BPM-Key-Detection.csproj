@@ -69,6 +69,7 @@
     <Compile Include="FFT.cs" />
     <Compile Include="FramedFrequencyBins.cs" />
     <Compile Include="FramedMusicFileSamples.cs" />
+    <None Include="Kernels\BrownPucketteSpectralKernel.cs" />
     <Compile Include="Kernels\Kernel.cs" />
     <Compile Include="Kernels\SpectralKernel.cs" />
     <Compile Include="KeyEstimator.cs" />
