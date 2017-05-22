@@ -33,7 +33,7 @@ namespace BPM_Key_Detection
             }
             OpenFileDialog fd = new OpenFileDialog()
             {
-                Filter = "Music file (*.mp3, *.wave) | *.mp3; *.wave",
+                Filter = "Music file (*.mp3, *.wav, *.wave) | *.mp3; *.wav; *.wave",
                 Multiselect = true
             };
             fd.ShowDialog();

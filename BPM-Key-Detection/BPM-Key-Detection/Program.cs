@@ -12,10 +12,9 @@ namespace BPM_Key_Detection
         [STAThread]
         static void Main()
         {
-            KeyEstimationLogs.Start();
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form_BpmKeyAnalyser());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form_BpmKeyAnalyser());
         }
     }
 }

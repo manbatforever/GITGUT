@@ -36,11 +36,9 @@ namespace BPM_Key_Detection
                         correctCounter++;
                 }
                 timer.Stop();
-                Console.WriteLine($"{NumberOfOctaves}; {CutoffFrequency}; {MinimumFrequency}; {correctCounter}; {timer.Elapsed.TotalSeconds}");
                 output.WriteLine($"{NumberOfOctaves}; {CutoffFrequency}; {MinimumFrequency}; {correctCounter}; {timer.Elapsed.TotalSeconds}");
             }
             output.Close();
-            Console.ReadKey();
         }
     }
 }

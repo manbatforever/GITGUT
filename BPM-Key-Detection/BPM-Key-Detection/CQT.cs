@@ -9,13 +9,13 @@ namespace BPM_Key_Detection
     //Object: Contains all Constant Q transform values including output and all functionality
     internal class CQT
     {
-        private int _cutoffFrequency = KeyEstimationLogs.CutoffFrequency;
-        private int _samplesPerFrame = KeyEstimationLogs.SamplesPerFrame;
-        private int _hopsPerFrame = KeyEstimationLogs.HopsPerFrame;
-        private int _tonesPerOctave = KeyEstimationLogs.TonesPerOctave;
-        private int _numOfOctaves = KeyEstimationLogs.NumberOfOctaves;
+        private int _cutoffFrequency = 2000;
+        private int _samplesPerFrame = 16384;
+        private int _hopsPerFrame = 4;
+        private int _tonesPerOctave = 12;
+        private int _numOfOctaves = 6;
         private int _tonesTotal;
-        private double _minimumFrequency = KeyEstimationLogs.MinimumFrequency;
+        private double _minimumFrequency = 27.5;
         private FramedToneAmplitudes _framedToneAmplitudes;
         
         public CQT(MusicFileSamples musicFileSamples)
