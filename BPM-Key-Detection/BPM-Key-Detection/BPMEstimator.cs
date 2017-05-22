@@ -44,7 +44,7 @@ namespace BPM_Key_Detection
             FrequencyBins fftetDerivationFilteredSamples = GetFFTDerivationFilteredSamples();
             BPMCombFilterMember[] BPMCombFilter = InitializeAllCombMembers();
             double[] similarityEnergies = CalculateAllSimilarityEnergies(fftetDerivationFilteredSamples, BPMCombFilter);
-            return CombFilterProcess(similarityEnergies, BPMCombFilter);
+            return GetEstimatedBPM(similarityEnergies, BPMCombFilter);
         }
 
         private MusicFileSamples FillLeftChannel(MusicFileSamples musicFileSamples)
@@ -153,7 +153,7 @@ namespace BPM_Key_Detection
         }
 
         //Finds the tested BPM with the greatest energy
-        private int CombFilterProcess(double[] similarityEnergies, BPMCombFilterMember[] BPMCombFilter)
+        private int GetEstimatedBPM(double[] similarityEnergies, BPMCombFilterMember[] BPMCombFilter)
         {
             double GreatestEnergy = 0;
             int IndexOfBPMWithGreatestEnergy = 0;
