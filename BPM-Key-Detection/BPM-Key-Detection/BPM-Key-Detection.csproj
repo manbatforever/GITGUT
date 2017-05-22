@@ -76,7 +76,7 @@
     <None Include="Samples\TemporalKernelSamples.cs" />
     <Compile Include="Samples\MusicFileSamples.cs" />
     <Compile Include="FramedToneAmplitudes.cs" />
-    <None Include="Settings.cs" />
+    <None Include="KeySetimationLogs.cs" />
     <Compile Include="WindowFunctions\BlackmanWindow.cs" />
     <Compile Include="ChromaVector.cs" />
     <Compile Include="WindowFunctions\DefaultWindow.cs" />

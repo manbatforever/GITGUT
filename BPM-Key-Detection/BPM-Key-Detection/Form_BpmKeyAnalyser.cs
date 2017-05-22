@@ -107,7 +107,7 @@ namespace BPM_Key_Detection
         }
 
         //Makes a DataTable of MusicFile data, and binds the DataTable to the DataGridView.
-        private void MakeDataTable(List<MusicFile> Files)
+        private void MakeDataTable(List<MusicFile> ListOfFiles)
         {
             DataTable dt = new DataTable();
             dt.Columns.Add(new DataColumn("Filename", typeof(string)));
@@ -119,7 +119,7 @@ namespace BPM_Key_Detection
             dt.Columns.Add(new DataColumn("Key", typeof(string)));
             dt.Columns.Add(new DataColumn("Filepatch", typeof(string)));
 
-            foreach (var item in Files)
+            foreach (var item in ListOfFiles)
             {
                 dt.Rows.Add(item.FileName,
                             item.Titel,
