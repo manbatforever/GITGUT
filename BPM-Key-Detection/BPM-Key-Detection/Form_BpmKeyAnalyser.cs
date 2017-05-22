@@ -107,7 +107,7 @@ namespace BPM_Key_Detection
         }
 
         //Makes a DataTable of MusicFile data, and binds the DataTable to the DataGridView.
-        private void MakeDataTable(List<MusicFile> Files)
+        private void MakeDataTable(List<MusicFile> ListOfFiles)
         {
             DataTable dt = new DataTable();
             dt.Columns.Add(new DataColumn("Filename", typeof(string)));
@@ -119,7 +119,7 @@ namespace BPM_Key_Detection
             dt.Columns.Add(new DataColumn("Key", typeof(string)));
             dt.Columns.Add(new DataColumn("Filepatch", typeof(string)));
 
-            foreach (var item in Files)
+            foreach (var item in ListOfFiles)
             {
                 dt.Rows.Add(item.FileName,
                             item.Titel,
@@ -217,12 +217,10 @@ namespace BPM_Key_Detection
                 List<string> badFiles = new List<string>();
                 processRunning = true;
                 int i = 0;
-                int correctCounter = 0;
                 if (ListOfFiles.Any() == true)
                 {
                     if (BPMChecked || KeyChecked)
                     {
-                        int test = 0;
                         foreach (MusicFile musicFile in ListOfFiles)
                         {
                             label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
@@ -256,23 +254,10 @@ namespace BPM_Key_Detection
                                     {
                                         MessageBox.Show($"{musicFile.FileName} could not be analysed!", "BPM detection error!");
                                     }
-                                    MessageBox.Show(musicFile.EstimatedBPM.ToString());
-                                    if (musicFile.Bpm == musicFile.EstimatedBPM)
-                                    {
-                                        test++;
-                                    }
                                 }
                                 if (KeyChecked)
                                 {
                                     musicFile.EstimateKey(musicFileSamples);
-                                    //MessageBox.Show(musicFile.CamelotNotation);
-                                    if (musicFile.CamelotNotation != null)
-                                    {
-                                        if (musicFile.Key.Contains(musicFile.CamelotNotation))
-                                        {
-                                            correctCounter++;
-                                        }
-                                    }
                                 }
                                 if (writeKeyToMetadata || writeBPMToMetadata)
                                 {
@@ -288,8 +273,6 @@ namespace BPM_Key_Detection
                             MessageBox.Show("The following files could not be analysed: \n\n" + messageBadFiles, "Analysing Error");
                         }
                         label1.BeginInvoke(new Action(() => { label1.Text = ""; }));
-                        MessageBox.Show(correctCounter.ToString());
-                        MessageBox.Show(test.ToString());
                     }
                     else
                     {
