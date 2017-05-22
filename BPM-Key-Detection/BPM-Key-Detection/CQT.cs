@@ -9,7 +9,7 @@ namespace BPM_Key_Detection
     //Object: Contains all Constant Q transform values including output and all functionality
     internal class CQT
     {
-        private int _cutoffFrequency = KeyEstimationLogs.cutoffFrequency;
+        private int _cutoffFrequency = KeyEstimationLogs.CutoffFrequency;
         private int _samplesPerFrame = KeyEstimationLogs.SamplesPerFrame;
         private int _hopsPerFrame = KeyEstimationLogs.HopsPerFrame;
         private int _tonesPerOctave = KeyEstimationLogs.TonesPerOctave;
@@ -23,25 +23,13 @@ namespace BPM_Key_Detection
             _tonesTotal = _tonesPerOctave * _numOfOctaves;
             ProcesMusicFileSamples(musicFileSamples);
 
-            System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
             FramedMusicFileSamples framedMusicFileSamples = new FramedMusicFileSamples(musicFileSamples, _samplesPerFrame, _hopsPerFrame, new BlackmanWindow(SamplesPerFrame));
-            timer.Stop();
-            KeyEstimationLogs.FramingTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
 
-            timer.Restart();
             FFT fft = new FFT(framedMusicFileSamples);
-            timer.Stop();
-            KeyEstimationLogs.FFTTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
 
-            timer.Restart();
             IbrahimSpectralKernel ibrahimSpectralKernel = new IbrahimSpectralKernel(musicFileSamples.Samplerate, _tonesPerOctave, _tonesTotal, _samplesPerFrame, _minimumFrequency);
-            timer.Stop();
-            KeyEstimationLogs.SpectralKernelTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
 
-            timer.Restart();
             _framedToneAmplitudes = new FramedToneAmplitudes(fft.FramedFrequencyBins, ibrahimSpectralKernel, _tonesTotal, _samplesPerFrame);
-            timer.Stop();
-            KeyEstimationLogs.ToneAmplitudeTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
         }
 
         //Proces input samples to reduce runtime without discarding useful information

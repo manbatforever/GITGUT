@@ -213,7 +213,6 @@ namespace BPM_Key_Detection
             }
             Thread backgroundThread = new Thread( new ThreadStart(() =>
             {
-                KeyEstimationLogs.SetNumberOfFiles(ListOfFiles.Count);
                 System.Diagnostics.Stopwatch totaltime = System.Diagnostics.Stopwatch.StartNew();
                 List<string> badFiles = new List<string>();
                 processRunning = true;
@@ -226,15 +225,11 @@ namespace BPM_Key_Detection
                         int test = 0;
                         foreach (MusicFile musicFile in ListOfFiles)
                         {
-                            KeyEstimationLogs.Counter++;
                             label1.BeginInvoke(new Action(() => { label1.Text = "Currently analysing: " + musicFile.FileName; }));
                             MusicFileSamples musicFileSamples = null;
                             try
                             {
-                                System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
                                 musicFileSamples = musicFile.GetRawSamples();
-                                timer.Stop();
-                                KeyEstimationLogs.SampleFetchTime[KeyEstimationLogs.Counter] = timer.ElapsedMilliseconds;
                             }
                             catch (InvalidOperationException)
                             {
@@ -269,7 +264,6 @@ namespace BPM_Key_Detection
                                 }
                                 if (KeyChecked)
                                 {
-                                    KeyEstimationLogs.FileNames[KeyEstimationLogs.Counter] = musicFile.FileName;
                                     musicFile.EstimateKey(musicFileSamples);
                                     //MessageBox.Show(musicFile.CamelotNotation);
                                     if (musicFile.CamelotNotation != null)
@@ -288,10 +282,6 @@ namespace BPM_Key_Detection
                             progressBar1.BeginInvoke( new Action(() => { progressBar1.Value = i * 100 / ListOfFiles.Count(); }));
                             i++;
                         }
-                        totaltime.Stop();
-                        KeyEstimationLogs.TotalTime = totaltime.ElapsedMilliseconds;
-                        KeyEstimationLogs.CorrectKeys = correctCounter;
-                        KeyEstimationLogs.WriteToFile();
                         if (badFiles.Any())
                         {
                             string messageBadFiles = string.Join(Environment.NewLine, badFiles);

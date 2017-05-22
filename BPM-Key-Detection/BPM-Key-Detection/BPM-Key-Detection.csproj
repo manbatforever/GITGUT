@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{49DDCAB0-67AB-4BBB-8B9B-3DEBB8A5F9B5}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>BPM_Key_Detection</RootNamespace>
     <AssemblyName>BPM-Key-Detection</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
